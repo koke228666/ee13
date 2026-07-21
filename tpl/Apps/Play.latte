@@ -1,0 +1,49 @@
+{extends "../@layout.latte"}
+{var $canReport = $owner->getId() !== $thisUser->getId()}
+
+{block title}
+    {$name}
+{/block}
+
+{block headIncludes}
+    <meta property="og:title" content="{$name} — {$instance_name}" />
+    <meta property="og:url" content="{$baseUrl}/app{$id}" />
+    <meta property="og:type" content="website" />
+    <meta n:if="!is_null($description)" property="og:description" content="{mb_strlen($description) > 300 ? mb_substr($description, 0, 297) . '...' : $description}" />
+    <meta name="twitter:title" content="{$name} — {$instance_name}" />
+    <meta n:if="!is_null($description)" name="twitter:description" content="{mb_strlen($description) > 200 ? mb_substr($description, 0, 197) . '...' : $description}" />
+{/block}
+
+{block header}
+    {$name}
+    <a style="float: right;" onClick="reportApp({$id})" n:if="$canReport ?? false">{_report}</a>
+{/block}
+
+{block content}
+    <center>
+        <iframe id="appFrame" referrerpolicy="unsafe-url" frameBorder="0" src="{$url}" height="600" width="600"
+            sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-downloads-without-user-activation"></iframe>
+    </center>
+
+    <div n:if="!is_null($news)" id="news">
+        <h4>{$news->getName()}</h4>
+        <div id="app_news_container">
+            {$news->getText()|noescape}
+        </div>
+    </div>
+
+    <center>
+        <p>
+            {_app_dev}: <a href="{$owner->getURL()}">{$owner->getFullName()}</a>
+        </p>
+    </center>
+
+    <script>
+        window.appId     = {$id};
+        window.appTitle  = {$name};
+        window.appPerms  = {$perms};
+        window.appOrigin = {$origin};
+    </script>
+
+    {script "js/al_games.js"}
+{/block}

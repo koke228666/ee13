@@ -1,0 +1,176 @@
+{capture $pageTitle}{ifset title}{include title}{/ifset}{/capture}
+{if !isset($parentModule) || substr($parentModule, 0, 21) === 'libchandler:absolute.'}
+
+{include "ee13_vars.latte"}
+{php $ee13vars = $GLOBALS['ee13'];}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="shortcut icon" href="{php echo $ee13vars->get_resource($theme, '/images/faviconnew.ico');}" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="{php echo $_SERVER['HTTP_HOST'];}" />
+<title>{ifset title}{$pageTitle} - {/ifset}{$instance_name}</title>
+<noscript><meta http-equiv="refresh" content="0; URL=/badbrowser.php"></noscript>
+
+<script type="text/javascript">
+var vk = {
+  //ads_rotate_interval: 120000,
+  al: parseInt('{php echo $GLOBALS["ee13"]->get_al();}') || 4,
+  id: {ifset $thisUser}{$thisUser->getId()}{else}0{/ifset},
+  intnat: '' ? true : false,
+  host: location.host,
+  lang: 0, // DB
+  rtl: parseInt('') || 0,
+  version: 1,
+  stDomains: 3,
+  zero: false,
+  contlen: 171412,
+  loginscheme: 'https', 
+  ip_h: '7ace6102d52a24c9d3', // DB
+  vc_h: '39561292e4c9153c5ecdd40962a4181f', // DB
+  navPrefix: '/',
+  dt: parseInt('0') || 0, 
+  fs: parseInt('11') || 11,
+  ts: 1370440132, 
+  pd: 0,
+  pads: 1,
+  time: [2013, 6, 5, 17, 48, 52],
+  st_base_path: "{php echo $ee13vars->get_resource($theme, '');}"
+}
+
+//window.locDomain = vk.host.match(/[a-zA-Z]+\.[a-zA-Z]+\.?$/)[0];
+window.locDomain = location.host;
+var _ua = navigator.userAgent.toLowerCase();
+if (/opera/i.test(_ua) || !/msie 6/i.test(_ua) || document.domain != locDomain) document.domain = locDomain;
+var ___htest = (location.toString().match(/#(.*)/) || {})[1] || '', ___to;
+if (vk.al != 1 && ___htest.length && ___htest.substr(0, 1) == vk.navPrefix) {
+  if (vk.al != 3 || vk.navPrefix != '!') {
+    ___to = ___htest.replace(/^(\/|!)/, '');
+    if (___to.match(/^([^\?]*\.php|login)([^a-z0-9\.]|$)/)) ___to = '';
+    location.replace(location.protocol + '//' + location.host + '/' + ___to);
+  }
+}
+
+var StaticFiles = {
+{syntax off}
+  'common.js' : {v: 1093},
+  'aes_light.css' : {v: 1356},
+  'common.css': {v: 411},
+  'ie6.css'   : {v: 26},
+  'ie7.css'   : {v: 18}
+{/syntax}
+
+{foreach $cur['static'] as $sver => $stat}
+  ,{$stat} : {syntax off}{v: 1}{/syntax}
+{/foreach}
+}
+</script>
+
+<link rel="stylesheet" type="text/css" href="{php echo $ee13vars->get_resource($theme, '/css/al/aes_light.css');}" />
+<link rel="stylesheet" type="text/css" href="{php echo $ee13vars->get_resource($theme, '/css/al/common.css');}" />
+<link type="text/css" rel="stylesheet" href="{php echo $ee13vars->get_resource($theme, '/css/al/notifier.css');}">
+<!--[if lte IE 6]><style type="text/css" media="screen">/* <![CDATA[ */ @import url({php echo $ee13vars->get_resource($theme, '/css/al/ie6.css');}); /* ]]> */</style><![endif]-->
+<!--[if IE 7]><style type="text/css" media="screen">/* <![CDATA[ */ @import url({php echo $ee13vars->get_resource($theme, '/css/al/ie7.css');}); /* ]]> */</style><![endif]-->
+<script type="text/javascript" src="{php echo $ee13vars->get_resource($theme, '/js/al/common.js');}"></script>
+<script type="text/javascript" src="{php echo $ee13vars->get_resource($theme, '/js/loader_nav13322_0.js');}"></script>
+<script type="text/javascript" src="{php echo $ee13vars->get_resource($theme, '/js/lang0_0.js');}"></script>
+{foreach $cur['static'] as $stat => $sver}
+    {if strpos($stat, 'css') !== false}
+        <link rel="stylesheet" href="{php echo $ee13vars->get_resource($theme, '/css/al/' . $stat . '?v=' . $sver);}">
+    {else}
+        <script src="{php echo $ee13vars->get_resource($theme, '/js/al/' . $stat . '?v=' . $sver);}"></script>
+    {/if}
+{/foreach}
+</head>
+
+<body onresize="onBodyResize()" class="is_rtl font_default pads">
+  <div id="system_msg" class="fixed"></div>
+  <div id="utils"></div>
+  <div id="layer_bg" class="fixed"></div><div id="layer_wrap" class="scroll_fix_wrap fixed"><div id="layer"></div></div>
+  <div id="box_layer_bg" class="fixed"></div><div id="box_layer_wrap" class="scroll_fix_wrap fixed"><div id="box_layer"><div id="box_loader"><div class="loader"></div><div class="back"></div></div></div></div>
+  <div id="stl_left"></div><div id="stl_side"></div>
+  <script type="text/javascript">domStarted();</script>
+<div class="scroll_fix_wrap" id="page_wrap">
+<div>
+
+    <div class="scroll_fix">
+        <div id="page_layout" style="width: 791px;">
+            <div id="page_header" class="p_head p_head_l0">
+                <div class="back"/>
+                <div class="left"/>
+                <div class="right"/>
+                <div class="content">
+                {include "components/header.latte"}
+                    <div id="ts_cont_wrap" ontouchstart="event.cancelBubble = true;" onmousedown="event.cancelBubble = true;"/>
+                </div>
+            </div>
+            <div id="side_bar" class="fl_l" style="">
+              {include "components/sidebar.latte"}
+                <div id="left_blocks"/>
+                <div id="left_ads"/>
+            </div>
+            <div id="page_body" class="fl_r" style="">
+                <div id="header_wrap2">
+                    <div id="header_wrap1">
+                        <div id="header" style="<?=(!empty($cur['htitle']))?'':'display:none;'?>">
+                            <h1 id="title">{include header}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div id="wrap_between"/>
+                <div id="wrap3">
+                    <div id="wrap2">
+                      <div id="wrap1">
+                        <div id="content">
+                        {include content}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div id="footer_wrap" class="fl_r" style="width: 661px;">
+                <div id="bottom_nav">
+                    <a class="bnav_a" href="/about">о сайте</a>
+                    <a class="bnav_a" href="/support?act=new" onclick="return nav.go(this, event);" style="">помощь</a>
+                    <a class="bnav_a" href="/terms">правила</a>
+                    <!--<a class="bnav_a" href="/ads">реклама</a>-->
+                    <a class="bnav_a" href="/dev">разработчикам</a>
+                    <!--<a class="bnav_a" href="/jobs.php" style="">вакансии</a>-->
+                </div>
+                <div id="footer" class="clear">
+                    {syntax off}<div class="copy_lang">ВКонтакте &copy; 2013 <a class="bnav_lang" onclick="showBox('lang.php', {act: 'lang_dialog'}, {noreload: true})">Русский</a>{/syntax}
+                    </div>
+                    <div>
+                        <small>
+                            <a href="/durov" onclick="return nav.go(this, event)">Павел Дуров</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"/>
+        </div>
+    </div>
+
+</div>
+</div>
+<script type="text/javascript">
+    if (parent && parent != window && (browser.msie || browser.opera || browser.mozilla || browser.chrome || browser.safari || browser.iphone)) {
+      document.getElementsByTagName('body')[0].innerHTML = '';
+    } else {
+      domReady();
+      //updateMoney(0);
+      <!--<?=$cur['js']?>-->
+    }
+  </script>
+</body>
+
+</html>
+{/if}
+
+{if isset($parentModule) && substr($parentModule, 0, 21) !== 'libchandler:absolute.'}
+    <!-- INCLUDING TEMPLATE FROM PARENTMODULE: {$parentModule} -->
+
+    {include content}
+{/if}

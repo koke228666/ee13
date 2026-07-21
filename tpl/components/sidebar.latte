@@ -1,0 +1,76 @@
+{ifset $thisUser}
+<ol>
+  <li>
+  <table id="myprofile_table" cellspacing="0" cellpadding="0"><tr>
+    <td id="myprofile_wrap">
+      <a href="{$thisUser->getURL()}" onclick="return nav.go(this, event, {syntax off}{noback: true}{/syntax})" id="myprofile" class="left_row">
+      	<span class="left_label inl_bl">Моя Страница</span>
+      </a>
+    </td>
+    <td id="myprofile_edit_wrap">
+      
+      <a href="/edit" id="myprofile_edit" class="left_row"><span class="left_label inl_bl">ред.</span></a>
+    </td>
+  	</tr>
+	</table>
+	</li>
+	<li id="l_fr">
+		<a href="/friends{$thisUser->getId()}" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('fr')" onmousedown="return Pads.show('fr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Друзья</span></a>
+	</li>
+	<li id="l_ph">
+		<a href="/albums{$thisUser->getId()}" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('ph')" onmousedown="return Pads.show('ph', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Фотографии</span></a>
+	</li>
+	<li id="l_vid">
+		<a href="/videos{$thisUser->getId()}" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('vid')" onmousedown="return Pads.show('vid', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Видеозаписи</span></a>
+	</li>
+	<li>
+		<a href="/audios{$thisUser->getId()}" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Аудиозаписи</span></a>
+	</li>
+	<li id="l_msg">
+		<a href="/im" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad left_count_persist" onmousedown="return Pads.show('msg', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Сообщения</span></a>
+	</li>
+	<li id="l_nts">
+		<a href="/notes{$thisUser->getId()}" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Заметки</span></a>
+	</li>
+	<li id="l_gr">
+		<a href="/groups{$thisUser->getId()}" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('gr')" onmousedown="return Pads.show('gr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Группы</span></a>
+	</li>
+	<li id="l_ev">
+		<a href="/events" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Встречи</span></a>
+	</li>
+	<li id="l_nws">
+		<a href="/feed" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('nws')" onmousedown="return Pads.show('nws', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Новости</span></a>
+	</li>
+	<li>
+		<a href="/fave" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Закладки</span></a>
+	</li>
+	<li id="l_set">
+		<a href="/settings" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Настройки</span></a>
+	</li>
+	<div class="more_div"></div>
+	<li id="l_ap">
+		<a href="/apps" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('ap')" onmousedown="return Pads.show('ap', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Приложения</span></a>
+	</li>
+	<li>
+		<a href="/docs" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Документы</span></a>
+	</li>
+	<!--<li id="l_ads">
+		<a href="/ads?act=office" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Реклама</span></a>
+	</li>-->
+	<li id="l_spr">
+		<a href="/support" onclick="return nav.go(this, event, {syntax off}{noback: true, params: {_ref: 'left_nav'}}{/syntax});" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Поддержка</span></a>
+	</li>
+</ol>
+{else}
+<ol>
+	<li>
+		<a href="/index.php" class="left_row"><span class="left_label inl_bl">Главная</span></a>
+	</li>
+	<li>
+		<a href="/login.php" class="left_row"><span class="left_label inl_bl">Вход</span></a>
+	</li>
+	<li>
+		<a href="/reg0" class="left_row"><span class="left_label inl_bl">Регистрация</span></a>
+	</li>
+</ol>
+{/ifset}

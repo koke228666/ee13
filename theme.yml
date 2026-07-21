@@ -1,0 +1,13 @@
+id: ee13
+version: "0.0.1"
+openvk_version: 0
+enabled: 1
+override_templates: true
+inherits_master: false
+metadata:
+    name:
+        _: "VKontakte 2013 (ee13)"
+        en: "VK 2013 (ee13)"
+        ru: "ВКонтакте 2013 (ee13)"
+    author: "koke228"
+    description: "vkontakte 2013"

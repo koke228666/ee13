@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{_2fa_code} - {$instance_name}</title>
+    <link rel="stylesheet" href="/assets/packages/static/openvk/css/main-oauth.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="ovk_logo"></div>
+        </div>
+        <div class="msg msg_{$flashMessage->type}" n:ifset="$flashMessage">
+            <b>{$flashMessage->title}</b><br />
+            {$flashMessage->msg|noescape}
+        </div>
+        <div class="main">
+            <div class="content">
+
+                <div class="section">
+                    <div class="oauth_main">
+                        {_app},
+                        {if is_null($origin)}
+                            {tr("identifies_itself_as", $clientName)}{else}
+                        {tr("located_at_url", $origin)}{/if}</b>, {_wants_your_token}.
+
+                        <br><br>
+                        
+                        <div class="faq_card">
+                            <div id="faq_content"><p><b>{_app_will_have_access_to}</b><br>
+                            {php $perms_array = explode(', ', tr('oauth_scope_all'))}
+                            <ul class="list_prevs" n:foreach="$perms_array as $perm">
+                                <li>{$perm|noescape}</li>  
+                            </ul>
+
+                        <div class="st_clearb"> </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer_choice">
+            <button class="button" id="authAllow">{_oauth_grant}</button>
+            <a class="footer_choice_cancel" id="authDeny">{_oauth_deny}</a>
+        </div>
+
+        {script "js/node_modules/msgpack-lite/dist/msgpack.min.js"}
+        {script "js/al_api.js"}
+        <script>
+            //<![CDATA[
+            let clientName     = {$clientName};
+            let usePostMessage = {$usePostMessage} && window.opener != null;
+            let acceptsStale   = {$acceptsStale};
+            let origin         = {$origin};
+            let redirectUri    = {$redirectUri};
+            let responseType   = {$responseType};
+
+            document.querySelector("#authDeny").addEventListener("click", () => {
+                if (usePostMessage) {
+                    window.opener.postMessage({
+                        error: 'access_denied',
+                        error_reason: 'user_denied',
+                        error_description: 'User denied your request'
+                    }, origin);
+
+                    return;
+                }
+
+                window.location.href = redirectUri + 'error=access_denied&error_reason=user_denied&error_description=User%20denied%20your%20request';
+            });
+
+            document.querySelector("#authAllow").addEventListener("click", async () => {
+                let response = await API.Apps.getRegularToken(clientName, acceptsStale);
+                let ret      = {
+                    access_token: response.token,
+                    expires_in: 0,
+                    user_id: {$thisUser->getId()},
+                    is_stale: response.is_stale
+                };
+
+                if (usePostMessage) {
+                    window.opener.postMessage(ret, origin);
+
+                    return;
+                }
+
+                let newhref = redirectUri + (new URLSearchParams(ret)).toString();
+                if (responseType == 'token') {
+                    newhref = newhref.replace("?", "#");
+                }
+                
+                window.location.href = newhref;
+            });
+            //]]>
+        </script>
+
+</body>
+
+</html>

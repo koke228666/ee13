@@ -1,0 +1,33 @@
+{php
+// новейшая разработка моссада piska framework pro max
+
+if (!isset($GLOBALS['ee13'])) {
+    $GLOBALS['ee13'] = new class {
+        private array $funcs = [];
+        public array $cur = [];
+
+        public function register(string $name, Closure $func): void
+        {
+            $this->funcs[$name] = $func;
+        }
+
+        public function __call($name, $args)
+        {
+            if (!isset($this->funcs[$name])) {
+                throw new Exception("Function '$name' is not registered");
+            }
+            return ($this->funcs[$name])(...$args);
+        }
+    };
+
+    $GLOBALS['ee13']->register('get_resource', function ($theme, $resource) {
+        return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource" . $resource;
+    });
+
+    $GLOBALS['ee13']->register('get_al', function () {
+        $al = $_REQUEST['al'] ?? "4";
+        return $al;
+    });
+
+}
+}
