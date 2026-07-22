@@ -1,0 +1,181 @@
+{if $user->getPrivacyPermission('page.info.read', $thisUser ?? NULL)}
+<div id="profile_full_info" style="display: none;">
+    {var $hasContacts = 
+        !is_null($user->getContactEmail()) || 
+        !is_null($user->getTelegram()) || 
+        !is_null($user->getWebsite()) || 
+        !is_null($user->getCity()) || 
+        !is_null($user->getPhysicalAddress()) || 
+        ($additionalFields && !empty($additionalFields['contacts']))
+    }
+
+    
+    <h4><b>{_contact_information}</b></h4>
+    <div class="profile_info">
+            {if $hasContacts}
+            {var $firstBlockRendered = false}
+
+            <div n:if="!is_null($user->getContactEmail())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                {var $firstBlockRendered = true}
+                <div class="label fl_l">{_email}:</div>
+                <div class="labeled fl_l">
+                    <a href="mailto:{$user->getContactEmail()}" rel="ugc">{$user->getContactEmail()}</a>
+                </div>
+            </div>
+
+            <div n:if="!is_null($user->getTelegram())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                {var $firstBlockRendered = true}
+                <div class="label fl_l">{_telegram}:</div>
+                <div class="labeled fl_l">
+                    <a href="https://t.me/{$user->getTelegram()}" rel="ugc" target="_blank">@{$user->getTelegram()}</a>
+                </div>
+            </div>
+
+            <div n:if="!is_null($user->getWebsite())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                {var $firstBlockRendered = true}
+                <div class="label fl_l">{_personal_website}:</div>
+                <div class="labeled fl_l">
+                    <a href="{$user->getWebsite()}" rel="ugc" target="_blank">{$user->getWebsite()}</a>
+                </div>
+            </div>
+
+            <div n:if="!is_null($user->getCity())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                {var $firstBlockRendered = true}
+                <div class="label fl_l">{_city}:</div>
+                <div class="labeled fl_l">
+                    <a href="/search?type=section&q=&city={$user->getCity()}">{$user->getCity()}</a>
+                </div>
+            </div>
+
+            <div n:if="!is_null($user->getPhysicalAddress())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                {var $firstBlockRendered = true}
+                <div class="label fl_l">{_address}:</div>
+                <div class="labeled fl_l">{$user->getPhysicalAddress()}</div>
+            </div>
+
+            {if $additionalFields}
+                <div n:foreach="$additionalFields['contacts'] as $field" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                    {var $firstBlockRendered = true}
+                    <div class="label fl_l">{$field->getName()}:</div>
+                    <div class="labeled fl_l">{$field->getContent()}</div>
+                </div>
+            {/if}
+            
+            {else}
+            <div class="profile_no_info clear_fix">
+                <div class="label fl_l">&nbsp;</div>
+                <div class="labeled fl_l">{_no_information_provided}</div>
+            </div>
+            {/if}
+    </div>
+
+
+    {var $hasInterests = 
+        !is_null($user->getInterests()) || 
+        !is_null($user->getFavoriteMusic()) || 
+        !is_null($user->getFavoriteFilms()) || 
+        !is_null($user->getFavoriteShows()) || 
+        !is_null($user->getFavoriteBooks()) || 
+        !is_null($user->getFavoriteQuote()) || 
+        !is_null($user->getFavoriteGames()) || 
+        ($additionalFields && !empty($additionalFields['interests'])) || 
+        !is_null($user->getDescription())
+    }
+
+
+    <h4><b>{_personal_information}</b></h4>
+    <div class="profile_info">
+        {if $hasInterests}
+        {var $firstBlockRendered = false}
+
+        <div n:if="!is_null($user->getInterests())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_interests}:</div>
+            <div class="labeled fl_l">
+                {var $interests = explode(", ", $user->getInterests())}
+                {foreach $interests as $interest}
+                    <span style="white-space: pre-line">{$interest}</span>{if $interest != end($interests)},{/if}
+                {/foreach}
+            </div>
+        </div>
+
+        <div n:if="!is_null($user->getFavoriteMusic())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_favorite_music}:</div>
+            <div class="labeled fl_l">
+                {var $musics = explode(", ", $user->getFavoriteMusic())}
+                {foreach $musics as $music}
+                    <a href="/search?section=audios&q={urlencode($music)}" style="white-space: pre-line">{$music}</a>{if $music != end($musics)},{/if}
+                {/foreach}
+            </div>
+        </div>
+
+        <div n:if="!is_null($user->getFavoriteFilms())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_favorite_films}:</div>
+            <div class="labeled fl_l">
+                {var $films = explode(", ", $user->getFavoriteFilms())}
+                {foreach $films as $film}
+                    <a href="/search?section=users&q=&fav_films={urlencode($film)}" style="white-space: pre-line">{$film}</a>{if $film != end($films)},{/if}
+                {/foreach}
+            </div>
+        </div>
+
+        <div n:if="!is_null($user->getFavoriteShows())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_favorite_shows}:</div>
+            <div class="labeled fl_l">
+                {var $shows = explode(", ", $user->getFavoriteShows())}
+                {foreach $shows as $show}
+                    <a href="/search?section=users&q=&fav_shows={urlencode($show)}" style="white-space: pre-line">{$show}</a>{if $show != end($shows)},{/if}
+                {/foreach}
+            </div>
+        </div>
+
+        <div n:if="!is_null($user->getFavoriteBooks())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_favorite_books}:</div>
+            <div class="labeled fl_l">
+                {var $books = explode(", ", $user->getFavoriteBooks())}
+                {foreach $books as $book}
+                    <a href="/search?section=users&q=&fav_books={urlencode($book)}" style="white-space: pre-line">{$book}</a>{if $book != end($books)},{/if}
+                {/foreach}
+            </div>
+        </div>
+
+        <div n:if="!is_null($user->getFavoriteQuote())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_favorite_quotes}:</div>
+            <div class="labeled fl_l" style="white-space: pre-line">{$user->getFavoriteQuote()}</div>
+        </div>
+
+        <div n:if="!is_null($user->getFavoriteGames())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_favorite_games}:</div>
+            <div class="labeled fl_l">{$user->getFavoriteGames()}</div>
+        </div>
+
+        {if $additionalFields}
+            <div n:foreach="$additionalFields['interests'] as $field" n:class="clear_fix, $firstBlockRendered ? miniblock">
+                {var $firstBlockRendered = true}
+                <div class="label fl_l">{$field->getName()}:</div>
+                <div class="labeled fl_l" style="white-space: pre-line">{$field->getContent()}</div>
+            </div>
+        {/if}
+
+        <div n:if="!is_null($user->getDescription())" n:class="clear_fix, $firstBlockRendered ? miniblock">
+            {var $firstBlockRendered = true}
+            <div class="label fl_l">{_information_about}:</div>
+            <div class="labeled fl_l" style="white-space: pre-line">{$user->getDescription()}</div>
+        </div>
+        
+        {else}
+        <div class="profile_no_info clear_fix">
+            <div class="label fl_l">&nbsp;</div>
+            <div class="labeled fl_l">{_no_information_provided}</div>
+        </div>
+        {/if}
+    </div>
+    <!--<div id="profile_map"></div>-->
+</div>
+{/if}

@@ -1,0 +1,89 @@
+{var $photoCount = (new \openvk\Web\Models\Repositories\Photos())->getUserPhotosCount($user)}
+
+<div class="clear {if $photoCount > 0}module photos_module{/if}" id="profile_photos_module" n:if="($photoCount > 0 && $user->getPrivacyPermission('photos.read', $thisUser ?? NULL)) || (isset($thisUser) && $user->getId() == $thisUser->getId())">
+    <a n:if="$photoCount > 0" href="albums{$user->getId()}?profile=1" onclick="return nav.change({ z: 'albums{$user->getId()}' }, event)" class="module_header">
+        <div class="header_top clear_fix">
+            <span class="right_link fl_r" onmouseover="this.parentNode.parentNode.href='/albums{$user->getId()}'" onmouseout="this.parentNode.parentNode.href='/albums{$user->getId()}'" style="text-transform:lowercase;">{_all_title}</span>
+            {if $photoCount == 1}
+                {$photoCount} {_photo}
+            {else}
+                {$photoCount} {_photos}
+            {/if}
+        </div>
+    </a>
+    <div n:if="$photoCount > 0" id="profile_photos" class="clear_fix profile_photos_other">
+    
+    {php
+        $photosList = iterator_to_array((new \openvk\Web\Models\Repositories\Photos())->getEveryUserPhoto($user, 0, 5));
+        $photoCount = count($photosList);
+
+        $containerWidth = 397;
+        $gap = 3;
+        $availableWidth = $containerWidth - max(0, $photoCount - 1) * $gap;
+
+        $sumRatios = 0;
+        $ratios = [];
+        foreach ($photosList as $photo) {
+            $sizes = $photo->getSizes();
+            $w = $sizes['normal']->width ?? 1;
+            $h = $sizes['normal']->height ?? 1;
+            if ($h == 0) $h = 1;
+            
+            $ratio = $w / $h;
+            $ratios[] = $ratio;
+            $sumRatios += $ratio;
+        }
+
+        $rowHeight = $sumRatios > 0 ? floor($availableWidth / $sumRatios) : 68;
+
+        $isCapped = false;
+        if ($rowHeight > 100) {
+            $rowHeight = 100;
+            $isCapped = true;
+        }
+
+        $widths = [];
+        $currentWidthSum = 0;
+        for ($i = 0; $i < $photoCount; $i++) {
+        if ($i === $photoCount - 1 && !$isCapped) {
+                $widths[] = $availableWidth - $currentWidthSum;
+            } else {
+                $w = floor($rowHeight * $ratios[$i]);
+                $widths[] = $w;
+                $currentWidthSum += $w;
+            }
+        }
+    }
+    
+        <div class="page_post_sized_thumbs clear_fix profile_sized_photos" style="width: {$containerWidth}px; height: {$rowHeight}px;" n:if="$photoCount > 0">
+            {foreach $photosList as $index => $photo}
+                {var $photosizes = $photo->getSizes()}
+                {var $w = $widths[$index]}
+                {var $isLast = ($index === $photoCount - 1)}
+                
+                <a href="{$photo->getPageURL()}"
+                   onclick="return showPhoto('{$photo->getPrettyId()|noescape}', 'photos{$user->getId()}', { temp:{ base:'',x_:['{$photo->getURLBySizeId('normal')|noescape}',{$photosizes['normal']->width ?? 0},{$photosizes['normal']->height ?? 0}],y_:['{$photo->getURLBySizeId('large')|noescape}',{$photosizes['large']->width ?? 0},{$photosizes['large']->height ?? 0}],z_:['{$photo->getURLBySizeId('larger')|noescape}',{$photosizes['larger']->width ?? 0},{$photosizes['larger']->height ?? 0}] } }, event)"
+                   style="width: {$w}px; height: {$rowHeight}px;" 
+                   class="page_post_thumb_wrap page_post_thumb_last_row fl_l {if $isLast}page_post_thumb_last_column{/if}">
+
+                    <img src="{$photo->getURLBySizeId('normal')}" 
+                         width="{$w}" 
+                         height="{$rowHeight}" 
+                         style="margin: 0;" 
+                         class="page_post_thumb_sized_photo"/>
+                </a>
+            {/foreach}
+        </div>
+        <table cellspacing="0" cellpadding="0">
+            <tbody>
+                <tr class="bottom"></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div n:if="$photoCount < 1" id="profile_photos_upload_wrap">
+      <a href="#" id="profile_photos_upload">
+        <span class="profile_photos_upload_label">{_add_photos}</span>
+      </a>
+    </div>
+</div>

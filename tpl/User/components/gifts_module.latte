@@ -1,0 +1,16 @@
+{var $canSeeGifts   = \OPENVK_ROOT_CONF['openvk']['preferences']['commerce'] && $user->getGiftCount() > 0}
+{var $thatIsThisUser = isset($thisUser) && $user->getId() == $thisUser->getId()}
+
+<div class="module clear gifts_list_module" id="profile_gifts" n:if="$canSeeGifts">
+    <a href="/gifts{$user->getId()}" class="module_header">
+        <div class="header_top clear_fix">
+            <span class="right_link fl_r" onmouseover="this.parentNode.parentNode.href='/gifts?act=pick&user={$user->getId()}'" onmouseout="this.parentNode.parentNode.href='/gifts?act=pick&user={$user->getId()}'"></span>
+            <div id="gifts_module_header" class="fl_l">{if !$thatIsThisUser}{_send_gift}{else}{_gifts}{/if}</div>
+        </div>
+    </a>
+    <div class="module_body clear_fix">
+        <a href="/gifts{$user->getId()}" style="text-decoration: none !important;">
+        <img n:foreach="$user->getGifts(1, 4) as $giftDescriptor" class="giftImg" src="{$giftDescriptor->gift->getImage(2)}" align="">
+        </a>
+    </div>
+</div>

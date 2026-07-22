@@ -2917,7 +2917,11 @@ var ajax = {
         hide(boxLayerWrap);
       }
     }
-    return ajax._post("/badbrowser.php", q, o);
+    if (query.__query) {
+        return ajax._post(query.__query, q, o);
+    } else {
+        return ajax._post("/badbrowser.php", q, o);
+    }
   },
   preload: function(url, query, data) {
     if (url.substr(0, 1) != '/') url = '/' + url;

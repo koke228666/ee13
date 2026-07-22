@@ -110,7 +110,7 @@ var OwnerPhoto = {
       vars[i] = winToUtf(vars[i]);
     }
     var opts = {
-      url: '/swf/CaptureImg.swf',
+      url: vk.st_base_path + '/swf/CaptureImg.swf',
       id: 'flash_camera',
       width: 604,
       height: 480,

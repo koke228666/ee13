@@ -1242,7 +1242,7 @@ function Sound(filename) {
         guid = 'flash_sound_' + (cur.__sound_guid++);
 
     var opts = {
-      url: '/swf/audio_lite.swf?4',
+      url: vk.st_base_path + '/swf/audio_lite.swf?4',
       id: guid
     }
     var params = {

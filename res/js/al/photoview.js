@@ -1,12 +1,13 @@
 var Photoview = {
-  blank: '/images/blank.gif',
+  blank: vk.st_base_path + '/images/blank.gif',
   blankf: function() {},
   cacheSize: 3,
   allSizes: ['x', 'y', 'z'/*, 'w'*/],
   genUrl: function(base, add) {
-    if (!add.match(/\.[a-z]{3}$/i)) add += '.jpg';
-    if (add.match(/https?:\/\//i)) return add;
-    return (base || '').replace(/\/[a-z0-9_:\.]*$/i, '') + '/' + add;
+    return add;
+    //if (!add.match(/\.[a-z]{3}$/i)) add += '.jpg';
+    //if (add.match(/https?:\/\//i)) return add;
+    //return (base || '').replace(/\/[a-z0-9_:\.]*$/i, '') + '/' + add;
   },
   genData: function(ph, size) {
     var f = (size == 'x') ? 3 : ((size == 'y') ? 2 : ((size == 'z') ? 1 : 0)), c = ['w', 'z', 'y', 'x'].slice(f), d, s, i, l;
@@ -125,7 +126,7 @@ var Photoview = {
 
     addClass(layerWrap, colorClass);
     addClass(layerBG, colorClass);
-    vkImage().src = '/images/upload.gif';
+    vkImage().src = vk.st_base_path + '/images/upload.gif';
 
     var hhHide = Photoview.hhCheck() ? '' : ' style="display: none;"',
         albumsHtml = cur.pvAlbumsShown ? cur.pvAlbumsData[cur.pvAlbumsShown].html : '',
@@ -202,7 +203,7 @@ var Photoview = {
 </div>\
 <div class="no_select" id="pv_left_nav" '+'onmouseover="Photoview.activate(cur.pvLeft)" onmouseout="Photoview.deactivate(cur.pvLeft)" onmousedown="cur.pvClicked = true; Photoview.show(false, cur.pvIndex - 1, event);" onselectstart="return cancelEvent(event);"></div>\
 <div class="no_select" id="pv_right_nav" '+'onmouseover="Photoview.activate(cur.pvClose)" onmouseout="Photoview.deactivate(cur.pvClose)" onmousedown="cur.pvClicked = true; Photoview.onClick(event, true);"></div>\
-<div class="pv_switch no_select" id="pv_switch" onmouseover="if (!browser.msie6) Photoview.activate(this)" onmouseout="if (!browser.msie6) Photoview.deactivate(this)" onmousedown="Photoview.switchColor(this); cur.pvClicked = true;"><div class="pv_switch_wrap"><img class="pv_switch_img" width="10" height="22" src="/images/photoswitch'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.png" /></div></div>\
+<div class="pv_switch no_select" id="pv_switch" onmouseover="if (!browser.msie6) Photoview.activate(this)" onmouseout="if (!browser.msie6) Photoview.deactivate(this)" onmousedown="Photoview.switchColor(this); cur.pvClicked = true;"><div class="pv_switch_wrap"><img class="pv_switch_img" width="10" height="22" src="'+vk.st_base_path+'/images/photoswitch'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.png" /></div></div>\
     ';
 
     if (cur.pvYourComment) {
@@ -710,7 +711,7 @@ var Photoview = {
         }
         if (direction > 0) {
           if (newIndex < cur.pvJumpFrom && newIndex + 4 > cur.pvJumpFrom || newIndex < cur.pvJumpFrom + count && newIndex + 4 > cur.pvJumpFrom + count) {
-            vkImage().src = stManager._srcPrefix('.css')+'/images/icons/post_hh'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.png?2';
+            vkImage().src = vk.st_base_path+'/images/icons/post_hh'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.png?2';
             var m = cur.pvJumpTo.z.match(/^albums(-?\d+)$/);
             if (m) {
               if (!cur.pvAlbumsData) cur.pvAlbumsData = {};
@@ -769,7 +770,7 @@ var Photoview = {
       var needControls = (count > 1) || ((cur.pvJumpTo || {}).z == 'albums' + val('pva_owner')) || ((cur.pvJumpTo || {}).z == 'album' + val('pvsa_album'));
       (needControls ? show : hide)(cur.pvLeft, cur.pvLeftNav, cur.pvRightNav, cur.pvClose);
     }
-    cur.pvSummary.innerHTML = (listId == 'temp') ? '<img src="/images/upload.gif" />' : ((count > 1) ? getLang('photos_photo_num_of_N').replace('%s', cur.pvIndex + 1).replace('%s', count) : getLang('photos_view_one_photo'));
+    cur.pvSummary.innerHTML = (listId == 'temp') ? '<img src="'+vk.st_base_path+'/images/upload.gif" />' : ((count > 1) ? getLang('photos_photo_num_of_N').replace('%s', cur.pvIndex + 1).replace('%s', count) : getLang('photos_view_one_photo'));
 
     cur.pvCurPhoto = ph;
     if (!cur.pvCurData.width || !cur.pvCurData.height) {
@@ -3053,7 +3054,7 @@ if (ph.actions.edit/* & 2*/) {
       animate(next.firstChild, {opacity: 1}, 400);
 
       if (!cur.rvPreloadBig) {
-        vkImage().src = '/images/icons/post_big_hh.png';
+        vkImage().src = vk.st_base_path + '/images/icons/post_big_hh.png';
         cur.rvPreloadBig = true;
       }
     } else {
@@ -3088,7 +3089,7 @@ if (ph.actions.edit/* & 2*/) {
     Photoview.hhOver(obj);
 
     if (!liked && !(browser.msie && intval(browser.version) < 9 || browser.mozilla && intval(browser.version) < 9)) {
-      obj.innerHTML = '<img class="pvs_hh_ah" width="38" height="34" src="/images/icons/post_big_hh.png" />';
+      obj.innerHTML = '<img class="pvs_hh_ah" width="38" height="34" src="'+vk.st_base_path+'/images/icons/post_big_hh.png" />';
       var img = obj.firstChild;
       animate(img, {marginLeft: -3, marginTop: 3, width: 78, height: 71, opacity: 0}, {duration: 600, transition: Fx.Transitions.easeOutCubic});
     }
@@ -3104,7 +3105,7 @@ if (ph.actions.edit/* & 2*/) {
 
     geByClass1('pva_link', row).insertBefore(ce('div', {className: 'pva_repeat', innerHTML: '\
 <div class="pva_repeat_blob">\
-  <div class="pva_repeat_cont"><img class="pva_repeat_img png" src="'+stManager._srcPrefix('.css')+'/images/icons/post_hh'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.png?2" /><span class="pva_repeat_text">' + getLang('photos_repeat_album') + '</span></div>\
+  <div class="pva_repeat_cont"><img class="pva_repeat_img png" src="'+vk.st_base_path+'/images/icons/post_hh'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.png?2" /><span class="pva_repeat_text">' + getLang('photos_repeat_album') + '</span></div>\
 </div>'}), geByClass1('pva_title', row));
   },
 

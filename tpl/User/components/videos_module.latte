@@ -1,0 +1,27 @@
+{var $videos = iterator_to_array($videos)}
+{var $canSeeVideos  = $videosCount  > 0 && $user->getPrivacyPermission('videos.read',  $thisUser ?? NULL)}
+
+<div class="module clear video_module" id="profile_videos" n:if="$canSeeVideos">
+    <a href="/videos{$user->getId()}" class="module_header">
+        <div class="header_top clear_fix">
+            <span class="right_link fl_r" onmouseover="this.parentNode.parentNode.href=''" onmouseout="this.parentNode.parentNode.href='/videos{$user->getId()}'"></span>
+            {_videos}
+        </div>
+        <div class="p_header_bottom">
+            <span class="fl_r"></span>
+            {tr("videos", $videosCount)}
+        </div>
+    </a>
+    <div class="module_body clear_fix">
+        <div class="fl_l video_row" n:foreach="$videos as $video">
+            <a class="video fl_l" href="/video{$video->getPrettyId()}" onclick="return showVideo('{$video->getPrettyId()}', 'videos{$video->getPrettyId()}', { autoplay: 1 }, event);">
+                <div><span class="bg fl_r">{$video->getFormattedLength()}</span></div>
+                <div><span class="fl_r">{$video->getFormattedLength()}</span></div>
+                <div class="page_video_play_icon"></div>
+                <img src="{$video->getThumbnailURL()}">
+            </a>
+            <div class="info clear"><a href="/video{$video->getPrettyId()}">{ovk_proc_strtr($video->getName(), 30)}</a></div>
+            <div class="info"><small>{$video->getPublicationTime()}<span class="divide">|</span><a href="/video{$video->getPrettyId()}">{_comments} {$video->getCommentsCount()}</a></small></div>
+        </div>
+    </div>
+</div>

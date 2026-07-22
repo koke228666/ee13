@@ -16,7 +16,7 @@
 
 {php
 
-if (true) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch($_REQUEST['target']) {
         case "/page.php":
             switch($_REQUEST['act']) {
@@ -45,6 +45,8 @@ if (true) {
             echo("todo: implement " . $_REQUEST['target']);
         break;
     }
+} else {
+    echo("baddragon.php");
 }
 
 }

@@ -7,13 +7,13 @@
         <a class="top_home_link" href="/feed" onmousedown="addClass('top_logo_down','tld_d');" onclick="return nav.go(this, event);" onmouseup="removeClass('top_logo_down','tld_d');"></a>
       </td>
       <td class="top_back_link_td">
-        <a class="top_nav_link fl_l" href="" id="top_back_link" onclick="if (nav.go(this, event, {syntax off}{back: true}){/syntax} === false) {syntax off}{ showBackLink(); return false; }"></a>
+        <a class="top_nav_link fl_l" href="" id="top_back_link" onclick="if (nav.go(this, event, { back: true }) === false) {  showBackLink(); return false; }"></a>
       </td>
       <td style=""><nobr>
-        <a class="top_nav_link" id="head_people" href="/search?c[section]=people" onclick="return nav.go(this, event, {syntax off}{search: true}){/syntax};" onmouseover="gSearch.preload();">люди</a>
+        <a class="top_nav_link" id="head_people" href="/search?section=users" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">люди</a>
       </nobr></td>
       <td style=""><nobr>
-        <a class="top_nav_link" id="head_groups" href="/search?c[section]=groups" onclick="return nav.go(this, event, {syntax off}{search: true}){/syntax};" onmouseover="gSearch.preload();">сообщества</a>
+        <a class="top_nav_link" id="head_groups" href="/search?section=groups" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">сообщества</a>
       </nobr></td>
       <td style=""><nobr>
         <a class="top_nav_link" id="head_games" href="/apps">игры</a>
@@ -25,10 +25,10 @@
         </a>
       </nobr></td>
       <td id="support_link_td" style=""><nobr>
-        <a class="top_nav_link" id="top_support_link" href="/support?act=new" onclick="return nav.go(this, event, {syntax off}{noback: true}){/syntax};">помощь</a>
+        <a class="top_nav_link" id="top_support_link" href="/support?act=new" onclick="return nav.go(this, event, { noback: true });">помощь</a>
       </nobr></td>
       <td id="logout_link_td"><nobr>
-        <a class="top_nav_link" id="logout_link" href="/login.php?act=logout" onclick="if (checkEvent(event) === false) {syntax off}{ location.href = this.href; return cancelEvent(event); }">выйти</a>
+        <a class="top_nav_link" id="logout_link" href="/login.php?act=logout" onclick="if (checkEvent(event) === false) {  location.href = this.href; return cancelEvent(event); }">выйти</a>
       </nobr></td>
     </tr>
   </table>
@@ -50,10 +50,10 @@
   <a id="top_home_link" class="top_home_link fl_l" href="/" onmousedown="addClass('top_logo_down','tld_d');"  onmouseup="removeClass('top_logo_down','tld_d');"></a>
   <div id="top_links">
     <div class="fl_r" id="top_menu_wrap" style="">
-      <a id="top_reg_link" class="fl_r top_nav_link" href="/join" style="" onclick="return !showBox('join.php', {syntax off}{act: 'box', from: nav.strLoc}, {syntax off}{}, event)">регистрация</a>
-      <a id="top_switch_lang" class="fl_r top_nav_link" style="display: none;" onclick="ajax.post('al_index.php', {syntax off}{act: 'change_lang', lang_id: 3, hash: ''}){/syntax};">Switch to English</a>
+      <a id="top_reg_link" class="fl_r top_nav_link" href="/join" style="" onclick="return !showBox('join.php', { act: 'box', from: nav.strLoc}, { }, event)">регистрация</a>
+      <a id="top_switch_lang" class="fl_r top_nav_link" style="display: none;" onclick="ajax.post('al_index.php', { act: 'change_lang', lang_id: 3, hash: '' });">Switch to English</a>
     </div>
-    <a class="fl_l top_nav_link" href="" id="top_back_link" onclick="return nav.go(this, event, {syntax off}{back: true}){/syntax}" style="max-width: 748px;"></a>
+    <a class="fl_l top_nav_link" href="" id="top_back_link" onclick="return nav.go(this, event, { back: true })" style="max-width: 748px;"></a>
   </div>
 </div>
 {/ifset}

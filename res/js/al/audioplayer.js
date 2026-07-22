@@ -14,9 +14,9 @@ var audioPlayer = {
   gpMaxW: 553,
   prStep: 10,
   images: {
-    icon: '/images/favicon' + (vk.intnat ? '_vk' : 'new') + '.ico',
-    playicon: '/images/playiconnew'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.ico',
-    pauseicon: '/images/pauseiconnew'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.ico'
+    icon: vk.st_base_path + '/images/favicon' + (vk.intnat ? '_vk' : 'new') + '.ico',
+    playicon: vk.st_base_path + '/images/playiconnew'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.ico',
+    pauseicon: vk.st_base_path + '/images/pauseiconnew'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.ico'
   },
   songInfos: {},
   shareMusic: function() {
@@ -34,7 +34,7 @@ var audioPlayer = {
     if (browser.mobile || browser.msie6) _a.gpDisabled = true;
     if (browser.flash >= 9 && !(browser.mac && (browser.chrome || browser.safari) && html5AudioSupport)) {
       var opts = {
-        url: '/swf/audio_lite.swf',
+        url: vk.st_base_path + '/swf/audio_lite.swf',
         id: 'player',
         height: 2
       }

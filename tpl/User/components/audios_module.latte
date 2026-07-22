@@ -1,0 +1,18 @@
+{var $audios = iterator_to_array((new \openvk\Web\Models\Repositories\Audios())->getByEntityID($user->getId(), 0, 3))}
+{var $canSeeAudios  = $audiosCount  > 0 && $user->getPrivacyPermission('audios.read',  $thisUser ?? NULL)}
+
+<div class="module clear audios_module" id="profile_audios" n:if="$canSeeAudios">
+    <a href="/audios{$user->getId()}" class="module_header">
+        <div class="header_top clear_fix">
+            <span class="right_link fl_r" onmouseover="this.parentNode.parentNode.href=''" onmouseout="this.parentNode.parentNode.href='/audios{$user->getId()}'"/>{tr('audios')}</div>
+        <div class="p_header_bottom">
+            <span class="fl_r"/>{tr("audios_count", $audiosCount)}</div>
+    </a>
+    <div class="module_body clear_fix">
+        <div id='initial_list'>
+            <div n:foreach="$audios as $audio">
+                {include "../../Audio/player.latte", audio => $audio, compactMode => true}
+            </div>
+        </div>
+    </div>
+</div>

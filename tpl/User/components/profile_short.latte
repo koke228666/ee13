@@ -1,0 +1,56 @@
+<div class="profile_info">
+    <div class="clear_fix" n:if="!is_null($user->getBirthday())">
+        <div class="label fl_l">{_birth_date}:</div>
+        <div n:if="$user->getBirthdayPrivacy() == 0" class="labeled fl_l">{$user->getBirthday()->format('%e %B %Y')}{if $user->onlineStatus() != 2},
+            {tr("years", $user->getAge())}{/if}
+        </div>
+        <div n:if="$user->getBirthdayPrivacy() == 1" class="labeled fl_l">{$user->getBirthday()->format('%e %B')}</div>
+    </div>
+    <div class="clear_fix miniblock">
+        <div class="label fl_l">{_pronouns}:</div>
+        <div class="labeled fl_l">{$user->isFemale() ? tr("female") : ($user->isNeutral() ? tr("neutral") : tr("male"))}</div>
+    </div>
+    <div class="clear_fix miniblock">
+        <div class="label fl_l">{_relationship}</div>
+        <div class="labeled fl_l">                                {$user->getLocalizedMaritalStatus()}
+            {if $user->getMaritalStatusUser()}
+            {$user->getMaritalStatusUserPrefix()}
+            <a class="mem_link" href="{$user->getMaritalStatusUser()->getURL()}" target="_blank">
+            {$user->getMaritalStatusUser()->getCanonicalName()}
+            </a>
+            {/if}
+        </div>
+    </div>
+    <div class="clear_fix miniblock">
+        <div class="label fl_l">{_registration_date}:</div>
+        <div class="labeled fl_l">{$user->getRegistrationTime()}</div>
+    </div>
+</div>
+
+{var $hasContacts = 
+    !is_null($user->getContactEmail()) ||
+    !is_null($user->getTelegram()) ||
+    !is_null($user->getWebsite()) ||
+    !is_null($user->getCity()) ||
+    !is_null($user->getPhysicalAddress()) ||
+    ($additionalFields && !empty($additionalFields['contacts']))
+}
+{var $hasInterests = 
+    !is_null($user->getInterests()) || 
+    !is_null($user->getFavoriteMusic()) || 
+    !is_null($user->getFavoriteFilms()) || 
+    !is_null($user->getFavoriteShows()) || 
+    !is_null($user->getFavoriteBooks()) || 
+    !is_null($user->getFavoriteQuote()) || 
+    !is_null($user->getFavoriteGames()) || 
+    ($additionalFields && !empty($additionalFields['interests'])) || 
+    !is_null($user->getDescription())
+}
+
+{if $user->getPrivacyPermission('page.info.read', $thisUser ?? NULL)}
+    {if $hidden == 1}
+        <a class="profile_info_link noselect" onclick="Profile.showFull({$user->getId()}, '{php echo getLanguage()}')">Показать подробную информацию</a>
+    {else}
+        <a class="profile_info_link noselect" onclick="Profile.hideFull()">Скрыть подробную информацию</a>
+    {/if}
+{/if}

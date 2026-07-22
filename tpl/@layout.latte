@@ -5,13 +5,13 @@
 {php $ee13vars = $GLOBALS['ee13'];}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{php echo getLanguage()}" lang="{php echo getLanguage()}">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <link rel="shortcut icon" href="{php echo $ee13vars->get_resource($theme, '/images/faviconnew.ico');}" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="description" content="{php echo $_SERVER['HTTP_HOST'];}" />
-<title>{ifset title}{$pageTitle} - {/ifset}{$instance_name}</title>
+<title>{ifset title}{$pageTitle} | {/ifset}{$instance_name}</title>
 <noscript><meta http-equiv="refresh" content="0; URL=/badbrowser.php"></noscript>
 
 <script type="text/javascript">
@@ -55,16 +55,14 @@ if (vk.al != 1 && ___htest.length && ___htest.substr(0, 1) == vk.navPrefix) {
 }
 
 var StaticFiles = {
-{syntax off}
-  'common.js' : {v: 1093},
-  'aes_light.css' : {v: 1356},
-  'common.css': {v: 411},
-  'ie6.css'   : {v: 26},
-  'ie7.css'   : {v: 18}
-{/syntax}
+  'common.js' : { v: 1093 },
+  'aes_light.css' : { v: 1356 },
+  'common.css': { v: 411 },
+  'ie6.css'   : { v: 26 },
+  'ie7.css'   : { v: 18 }
 
 {foreach $cur['static'] as $sver => $stat}
-  ,{$stat} : {syntax off}{v: 1}{/syntax}
+  ,{$stat} : { v: 1 }
 {/foreach}
 }
 </script>
@@ -122,13 +120,23 @@ var StaticFiles = {
                 </div>
                 <div id="wrap_between"/>
                 <div id="wrap3">
-                    <div id="wrap2">
-                      <div id="wrap1">
-                        <div id="content">
-                        {include content}
+                    {ifset wrap}
+                        <div class="msg msg_{$flashMessage->type}" n:ifset="$flashMessage">
+                            <b>{$flashMessage->title}</b><br/>
+                            {$flashMessage->msg|noescape}
                         </div>
-                      </div>
-                    </div>
+                        {include wrap}
+                    {else}
+                        {ifset content}
+                        <div id="wrap2">
+                          <div id="wrap1">
+                            <div id="content">
+                                {include content}
+                            </div>
+                          </div>
+                        </div>
+                        {/ifset}
+                    {/ifset}
                 </div>
             </div>
             <div id="footer_wrap" class="fl_r" style="width: 661px;">
@@ -141,7 +149,7 @@ var StaticFiles = {
                     <!--<a class="bnav_a" href="/jobs.php" style="">вакансии</a>-->
                 </div>
                 <div id="footer" class="clear">
-                    {syntax off}<div class="copy_lang">ВКонтакте &copy; 2013 <a class="bnav_lang" onclick="showBox('lang.php', {act: 'lang_dialog'}, {noreload: true})">Русский</a>{/syntax}
+                    <div class="copy_lang">ВКонтакте &copy; 2013 <a class="bnav_lang" onclick="showBox('lang.php', { act: 'lang_dialog' }, { noreload: true} )">Русский</a>
                     </div>
                     <div>
                         <small>

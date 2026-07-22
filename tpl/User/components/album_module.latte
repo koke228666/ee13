@@ -1,0 +1,31 @@
+{var $albums = iterator_to_array($albums)}
+{var $canSeeAlbums  = $albumsCount > 0 && $user->getPrivacyPermission('photos.read',  $thisUser ?? NULL)}
+
+<div class="module clear album_module" id="profile_albums" n:if="$canSeeAlbums">
+    <a href="/albums{$user->getId()}" onclick="return nav.go(this, event)" class="module_header">
+        <div class="header_top clear_fix">
+            <span class="right_link fl_r" onmouseover="this.parentNode.parentNode.href=''" onmouseout="this.parentNode.parentNode.href='/albums{$user->getId()}'"></span>
+            {_albums}
+        </div>
+        <div class="p_header_bottom">
+            <span class="fl_r"></span>
+            {tr("albums", $albumsCount)}
+        </div>
+    </a>
+    <div class="module_body clear_fix">
+        <div n:foreach="$albums as $album" class="fl_l clear_fix clear page_album_row" onmouseover="Page.albumOver(this, '53083705_172149613');" onmouseout="Page.albumOut(this, '53083705_172149613', true);">
+            <a href="/album{$album->getPrettyId()}" onclick="return nav.change({ z: 'album53083705_172149613' }, event)" class="img_link">
+                {var $cover = $album->getCoverPhoto()}
+                <img class="page_photo_thumb_big" src="{is_null($cover)?'/assets/packages/static/openvk/img/camera_200.png':$cover->getURLBySizeId('small')}">
+                <div class="page_album_title_wrap">
+                    <div class="clear_fix" style="margin: 0px">
+                        <div class="page_album_title fl_l" title="{$album->getName()}">{$album->getName()}</div>
+                        <div class="page_album_camera fl_r">{$album->getPhotosCount()}</div>
+                    </div>
+                    <div class="page_album_description">{$album->getDescription()}</div>
+                </div>
+            </a>
+            <a class="bg"></a>
+        </div>
+    </div>
+</div>

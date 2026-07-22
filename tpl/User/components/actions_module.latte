@@ -1,0 +1,17 @@
+{var $thatIsThisUser = isset($thisUser) && $user->getId() == $thisUser->getId()}
+
+<div id="profile_main_actions" n:if="!$thatIsThisUser" >
+    <div id="friend_status">
+      <div class="profile_action_btn">
+        <div class="button_wide button_blue">
+          <button onclick="return Profile.toggleFriend(this, '{$csrfToken|noescape}', {$user->getId()}, event)">
+            Добавить в друзья
+          </button>
+        </div>
+      </div>
+
+      <div onmouseover="return Profile.friendTooltip()" class="friend_status_info" id="profile_am_subscribed">
+        Пользователь у Вас в друзьях
+      </div>
+    </div>
+  </div>

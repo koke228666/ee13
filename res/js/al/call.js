@@ -76,7 +76,7 @@ baseVideoBox: function(wrap, options, params) {
     return false;
   }
   renderFlash(ge(wrap), extend({
-    url: '/swf/vkvideochat.swf?2',
+    url: vk.st_base_path + '/swf/vkvideochat.swf?2',
     id: wrap+'_pl',
     width: 480,
     height: 360,

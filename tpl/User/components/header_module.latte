@@ -1,0 +1,24 @@
+{var $thatIsThisUser = isset($thisUser) && $user->getId() == $thisUser->getId()}
+
+{$user->getCanonicalName()}
+
+<div n:if="$user->isVerified()" title="" class="profile_verified"></div>
+<span n:if="$thatIsThisUser"><b>({_this_is_you})</b></span>
+
+<div n:if="$user->getOnline()->timestamp() + 2505600 > time()" style="float:right;">
+    {var $platform = $user->getOnlinePlatform()}
+    {var $platformDetails = $user->getOnlinePlatformDetails()}
+    {if $user->isOnline()}
+        <b id="profile_online_lv" class="fl_r">
+        Online
+            <b n:if="!empty($platform)" class="mob_onl profile_mob_onl" id="profile_mobile_online" onmouseover="mobileOnlineTip(this, { mid: cur.oid, right: 1 })" onclick="mobilePromo(); "></b>
+        </b>
+    {else}
+        <b id="profile_time_lv" class="fl_r">{$user->isFemale() ? tr("was_online_f") : tr("was_online_m")} {$user->getOnline()}
+            <b n:if="!empty($platform)" class="mob_onl profile_mob_onl" id="profile_mobile_online" onmouseover="mobileOnlineTip(this, { mid: cur.oid, right: 1 })" onclick="mobilePromo(); "></b>
+        </b>
+    {/if}
+</div>
+<div n:if="$user->onlineStatus() == 2" style="float:right;">
+    <span><b>{_deceased_person}</b></span>
+</div>

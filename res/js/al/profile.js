@@ -934,7 +934,7 @@ var Profile = {
       },
       onDebug: debugLog,
 
-      flashPath: '/swf/photo_uploader_lite.swf',
+      flashPath: vk.st_base_path + '/swf/photo_uploader_lite.swf',
       hoverEl: ge('profile_photos_upload') || ge('profile_photos_extra_link'),
       flash_lite: 1,
       noCheck: 1,

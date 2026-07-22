@@ -285,7 +285,7 @@ checkFileApi: function() {
 initFlash: function(iUpload, obj) {
   var postData = [], vars = Upload.vars[iUpload], options = Upload.options[iUpload];
   var opts = {
-    url: options.flashPath || '/swf/uploader_lite.swf',
+    url: options.flashPath || vk.st_base_path + '/swf/uploader_lite.swf',
     id: 'uploader_lite'+iUpload,
     preventhide: true,
     width: '100%',

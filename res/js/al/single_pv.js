@@ -1,5 +1,5 @@
 var SinglePhotoview = {
-  blank: '/images/blank.gif',
+  blank: vk.st_base_path + '/images/blank.gif',
   blankf: function() {},
   cacheSize: 3,
 
