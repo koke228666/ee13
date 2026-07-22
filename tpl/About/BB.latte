@@ -1,4 +1,4 @@
-{extends "../@layout.latte"}
+{*{extends "../@layout.latte"}
 {block title}{_deprecated_browser}{/block}
 
 {block header}
@@ -7,4 +7,44 @@
 
 {block content}
     {_deprecated_browser_description}
-{/block}
+{/block} *}
+
+{include "../ee13_vars.latte"}
+{php $ee13vars = $GLOBALS['ee13'];}
+
+{* здесь мы поставим роутер для веб вк апи *}
+
+{php
+
+if (true) {
+    switch($_REQUEST['target']) {
+        case "/page.php":
+            switch($_REQUEST['act']) {
+                case "current_info":
+                    if (!$ee13vars->check_csrf()) {
+                        echo("csrf check <b>FAILED</b>");
+                    }
+
+                    if ($_REQUEST['oid'] < 0) {
+                        echo("сори но нет");
+                        break;
+                    }
+
+                    if ($_REQUEST['info']) {
+                        $thisUser->setStatus($_REQUEST['info']);
+                        $thisUser->save();
+                        echo($ee13vars->ajax(0));
+                    }
+                break;
+                default:
+                    echo("todo: implement " . $_REQUEST['act']);
+                break;
+            }
+        break;
+        default:
+            echo("todo: implement " . $_REQUEST['target']);
+        break;
+    }
+}
+
+}

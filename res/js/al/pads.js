@@ -322,7 +322,7 @@ var Pads = {
           var s = getSize(loadEl);
           setStyle(loadEl, {width: s[0] + wDiff, display: 'inline-block'})
           loadEl.padLoad = loadEl.innerHTML;
-          loadEl.innerHTML = '<img style="position: absolute; margin-top: 3px; margin-left: '+((s[0] + wDiff) / 2 - 16)+'px;" src="/images/upload_inv'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.gif" width="32" height="8"/>&nbsp;';
+          loadEl.innerHTML = '<img style="position: absolute; margin-top: 3px; margin-left: '+((s[0] + wDiff) / 2 - 16)+'px;" src="'+ vk.st_base_path +'/images/upload_inv'+(window.devicePixelRatio >= 2 ? '_2x' : '')+'.gif" width="32" height="8"/>&nbsp;';
         }
       }
       addClass(ge('head_'+(id == 'mus' ? 'music' : 'games')), 'over');

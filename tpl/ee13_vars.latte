@@ -29,5 +29,42 @@ if (!isset($GLOBALS['ee13'])) {
         return $al;
     });
 
+    $GLOBALS['ee13']->register('check_csrf', function () {
+        return $GLOBALS["csrfCheck"];
+    });
+
+    $GLOBALS['ee13']->register('ajax', function ($code = 0, $payload = [], $headers = []) {
+        $navVersion = isset($headers['navVersion']) ? $headers['navVersion'] : 10000;
+        $newStatic  = isset($headers['newStatic']) ? $headers['newStatic'] : '';
+        $langId     = isset($headers['langId']) ? $headers['langId'] : 3;
+        $langVer    = isset($headers['langVer']) ? $headers['langVer'] : 1000;
+
+        $response = [
+            $navVersion,
+            $newStatic,
+            $langId,
+            $langVer,
+            $code
+        ];
+
+        foreach ($payload as $item) {
+            if (is_array($item) || is_object($item)) {
+                $response[] = '<!json>' . json_encode($item, JSON_UNESCAPED_UNICODE);
+            } elseif (is_int($item)) {
+                $response[] = '<!int>' . $item;
+            } elseif (is_float($item)) {
+                $response[] = '<!float>' . $item;
+            } elseif (is_bool($item)) {
+                $response[] = '<!bool>' . ($item ? '1' : '0');
+            } elseif (is_null($item)) {
+                $response[] = '<!null>';
+            } else {
+                $response[] = $item; 
+            }
+        }
+
+        return implode('<!>', $response);
+    });
+
 }
 }

@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
 var vk = {
-  //ads_rotate_interval: 120000,
+  ads_rotate_interval: 120000,
   al: parseInt('{php echo $GLOBALS["ee13"]->get_al();}') || 4,
   id: {ifset $thisUser}{$thisUser->getId()}{else}0{/ifset},
   intnat: '' ? true : false,
@@ -27,9 +27,10 @@ var vk = {
   stDomains: 3,
   zero: false,
   contlen: 171412,
-  loginscheme: 'https', 
-  ip_h: '7ace6102d52a24c9d3', // DB
-  vc_h: '39561292e4c9153c5ecdd40962a4181f', // DB
+  //loginscheme: 'https', 
+  loginscheme: location.protocol.replace(":", ""),
+  ip_h: {$csrfToken}, // DB
+  vc_h: {$csrfToken}, // DB
   navPrefix: '/',
   dt: parseInt('0') || 0, 
   fs: parseInt('11') || 11,
@@ -165,6 +166,10 @@ var StaticFiles = {
     }
   </script>
 </body>
+
+{ifset view_script}
+    {include view_script}
+{/ifset}
 
 </html>
 {/if}

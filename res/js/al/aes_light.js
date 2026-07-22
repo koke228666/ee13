@@ -2,7 +2,8 @@
 
 var AdsLight = {};
 
-var isVkDomain = (document.domain === 'vk.com');
+//var isVkDomain = (document.domain === 'vk.com');
+var isVkDomain = true;
 
 var uaLight = navigator.userAgent.toLowerCase();
 var browserLight = {
@@ -494,7 +495,7 @@ AdsLight.canUpdate = function() {
   var result = true;
 
   // Is visible
-  result = (result && vk__adsLight.activeTab > 0 && containerElem && isVisible(containerElem) && AdsLight.isVisibleBlockWrap());
+  result = (result /*&& vk__adsLight.activeTab > 0*/ && containerElem && isVisible(containerElem) && AdsLight.isVisibleBlockWrap());
   // Is reasonable
   result = (result && vk.id && (vk__adsLight.adsCanShow >= 1 || vkNow() + vk__adsLight.adsCanShow > 3600000)); // hour
 

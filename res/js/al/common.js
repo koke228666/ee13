@@ -2681,7 +2681,7 @@ var stManager = {
 
       StaticFiles[f].t = 'js';
     } else if (f.indexOf('.css') != -1) {
-      var p = '/css/' + (stTypes.fromRoot[f] ? '' : 'al/');
+      var p = vk.st_base_path + '/css/' + (stTypes.fromRoot[f] ? '' : 'al/');
       headNode.appendChild(ce('link', {
         type: 'text/css',
         rel: 'stylesheet',
@@ -2897,7 +2897,7 @@ var ajax = {
   },
   post: function(url, query, options) {
     if (url.substr(0, 1) != '/') url = '/' + url;
-    var o = extend({_captcha: false, _box: false}, options || {}), q = extend({al: o.frame ? -1 : 1}, query);
+    var o = extend({_captcha: false, _box: false}, options || {}), q = extend({al: o.frame ? -1 : 1, target: url}, query);
     if (o.progress) {
       if (!o.showProgress) {
         o.showProgress = show.pbind(o.progress);
@@ -2917,7 +2917,7 @@ var ajax = {
         hide(boxLayerWrap);
       }
     }
-    return ajax._post(url, q, o);
+    return ajax._post("/badbrowser.php", q, o);
   },
   preload: function(url, query, data) {
     if (url.substr(0, 1) != '/') url = '/' + url;
