@@ -1,7 +1,215 @@
-{var $microblogEnabled = isset($thisUser) ? $thisUser->hasMicroblogEnabled() : false}
+{var $author = $post->getOwner()}
+{var $comments = $post->getLastComments(3)}
+{var $commentsCount = $post->getCommentsCount()}
+{var $likesCount = $post->getLikesCount()}
+{var $repostsCount = $post->getRepostCount()}
+{var $canBeDeleted = $post->canBeDeletedBy($thisUser)}
+{var $postId = $post->getPrettyId()}
 
-{if $microblogEnabled}
-    {include "post/microblogpost.latte", post => $post, commentSection => $commentSection}
-{else}
-    {include "post/oldpost.latte", post => $post}
-{/if}
+<div id="post{$postId}" class="post all own {if $post->isExplicit()}post-nsfw{/if}" onmouseover="wall.postOver('{$postId}')" onmouseout="wall.postOut('{$postId}')" onclick="wall.postClick('{$postId}', event)">
+    <div class="post_table">
+        <div class="post_image">
+            <a class="post_image" href="{$author->getURL()}">
+                <img src="{$author->getAvatarURL('miniscule')}" width="50" height="50"/>
+            </a>
+            <span n:if="!$post->isPostedOnBehalfOfGroup() && $author->isOnline()" class="online">{_online}</span>
+        </div>
+        <div class="post_info">
+            
+            <div class="fl_r post_actions_wrap">
+                <div class="post_actions" n:if="$canBeDeleted && !($forceNoDeleteLink ?? false)">
+                    <div id="post_delete{$postId}" class="post_delete_button fl_r" onclick="wall.markAsSpam('{$postId}', '{rawurlencode($csrfToken)}');" onmouseover="wall.activeDeletePost('{$postId}', '{_delete}', 'post_delete')" onmouseout="wall.deactiveDeletePost('{$postId}', 'post_delete')"></div>
+                </div>
+            </div>
+            
+            <div class="wall_text">
+                <a class="author" href="{$author->getURL()}" data-from-id="{$author->getId()}">{$author->getCanonicalName()}</a>
+                
+                <div id="wpt{$postId}">
+                    <div class="wall_post_text">{$post->getText()|noescape}</div>
+                    
+                    {var $width = ($bigWall ?? false) ? 550 : 320}
+                    {if isset($nestedLevel)}
+                        {var $width = $width - 70 * $nestedLevel}
+                    {/if}
+                    {var $attachmentsLayout = $post->getChildrenWithLayout($width)}
+                    
+                    {php
+                        $photos = []; $extras = [];
+                        foreach ($post->getChildren() as $child) {
+                            if ($child instanceof \openvk\Web\Models\Entities\Photo || ($child instanceof \openvk\Web\Models\Entities\Video && $child->getDimensions())) {
+                                $photos[] = $child;
+                            } else {
+                                $extras[] = $child;
+                            }
+                        }
+                        
+                        $photoCount = count($photos);
+                        $gridW = $width; $gridH = 0; $tiles = [];
+                        
+                        if ($photoCount === 1) {
+                            $media = $photos[0];
+                            $w = 1; $h = 1;
+                            
+                            if ($media instanceof \openvk\Web\Models\Entities\Photo) {
+                                $sizes = $media->getSizes();
+                                $w = $sizes['normal']->width ?? 1; $h = $sizes['normal']->height ?? 1;
+                            } else {
+                                $dim = $media->getDimensions();
+                                if (is_array($dim)) {
+                                    $w = $dim[0] ?? $dim['width'] ?? 16;
+                                    $h = $dim[1] ?? $dim['height'] ?? 9;
+                                } elseif (is_object($dim)) {
+                                    $w = $dim->width ?? 16; $h = $dim->height ?? 9;
+                                } elseif (is_string($dim) && strpos($dim, 'x') !== false) {
+                                    $parts = explode('x', strtolower($dim));
+                                    $w = (int)($parts[0] ?? 16); $h = (int)($parts[1] ?? 9);
+                                }
+                            }
+                            if ($h == 0) $h = 1;
+                            
+                            if ($w > $gridW) { $h *= $gridW / $w; $w = $gridW; }
+                            if ($h > 510) { $w *= 510 / $h; $h = 510; }
+                            
+                            $gridW = floor($w); $gridH = floor($h);
+                            $tiles[] = ['photo' => $media, 'w' => $gridW, 'h' => $gridH, 'isLastCol' => true, 'isLastRow' => true];
+                        } elseif ($photoCount > 1) {
+                            $curr = []; $currRatio = 0;
+                            for ($i = 0; $i < $photoCount; $i++) {
+                                $media = $photos[$i];
+                                $w = 1; $h = 1;
+                                
+                                if ($media instanceof \openvk\Web\Models\Entities\Photo) {
+                                    $sizes = $media->getSizes();
+                                    $w = $sizes['normal']->width ?? 1; $h = $sizes['normal']->height ?? 1;
+                                } else {
+                                    $dim = $media->getDimensions();
+                                    if (is_array($dim)) {
+                                        $w = $dim[0] ?? $dim['width'] ?? 16;
+                                        $h = $dim[1] ?? $dim['height'] ?? 9;
+                                    } elseif (is_object($dim)) {
+                                        $w = $dim->width ?? 16; $h = $dim->height ?? 9;
+                                    } elseif (is_string($dim) && strpos($dim, 'x') !== false) {
+                                        $parts = explode('x', strtolower($dim));
+                                        $w = (int)($parts[0] ?? 16); $h = (int)($parts[1] ?? 9);
+                                    }
+                                }
+                                if ($h == 0) $h = 1;
+                                
+                                $ratio = $w / $h;
+                                $curr[] = ['photo' => $media, 'ratio' => $ratio];
+                                $currRatio += $ratio;
+
+                                if ($currRatio * 210 + (count($curr) - 1) * 4 >= $gridW || $i === $photoCount - 1) {
+                                    $availW = $gridW - (count($curr) - 1) * 4;
+                                    $rowH = floor($availW / $currRatio);
+                                    $isFull = true;
+
+                                    if ($i === $photoCount - 1 && $rowH > 210 * 1.5) {
+                                        $rowH = floor(210 * 1.2);
+                                        $isFull = false;
+                                    }
+                                    
+                                    $gridH += $rowH + 4;
+                                    $cSum = 0;
+                                    foreach ($curr as $j => $c) {
+                                        $isLastCol = ($j === count($curr) - 1);
+                                        $itemW = ($isLastCol && $isFull) ? ($availW - $cSum) : floor($rowH * $c['ratio']);
+                                        $cSum += $itemW;
+                                        
+                                        $tiles[] = [
+                                            'photo' => $c['photo'], 'w' => $itemW, 'h' => $rowH,
+                                            'isLastCol' => $isLastCol, 'isLastRow' => ($i === $photoCount - 1)
+                                        ];
+                                    }
+                                    $curr = []; $currRatio = 0;
+                                }
+                            }
+                            $gridH -= 4;
+                        }
+                    }
+                    
+                    <div class="page_post_queue_narrow">
+                        <div n:if="count($tiles) > 0" class="page_post_sized_thumbs clear_fix" style="width: {$gridW}px; height: {$gridH}px;">
+                            {foreach $tiles as $tile}
+                                {include "attachment.latte", attachment => $tile['photo'], parent => $post, parentType => "post", exactW => $tile['w'], exactH => $tile['h'], isLastCol => $tile['isLastCol'], isLastRow => $tile['isLastRow'], totalPhotos => $photoCount}
+                            {/foreach}
+                        </div>
+                    </div>
+
+                    <div n:ifcontent class="attachments attachments_m">
+                        <div class="attachment" n:foreach="$attachmentsLayout->extras as $attachment">
+                            {include "attachment.latte", attachment => $attachment, post => $post}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post_full_like_wrap fl_r">
+                <div class="post_full_like">
+                    <div class="post_like fl_r" onmouseover="wall.postLikeOver('{$postId}')" onmouseout="wall.postLikeOut('{$postId}')" onclick="wall.like('{$postId}', '{rawurlencode($csrfToken)}'); event.cancelBubble = true;" n:if="!($forceNoLike ?? false)">
+                        <span class="post_like_link fl_l" id="like_link{$postId}">{_mobile_like}</span>
+                        <i class="post_like_icon sp_main fl_l" id="like_icon{$postId}"></i>
+                        <span class="post_like_count fl_l" id="like_count{$postId}">
+                            {if $likesCount > 0}{$likesCount}{/if}
+                        </span>
+                    </div>
+                    <div class="post_share fl_r {if false}no_shares{/if}" onmouseover="wall.postShareOver('{$postId}')" onmouseout="wall.postShareOut('{$postId}', event)" onclick="wall.likeShareCustom('{$postId}'); event.cancelBubble = true;" n:if="!($forceNoShareLink ?? false)">
+                        <span class="post_share_link fl_l" id="share_link{$postId}"></span>
+                        <i class="post_share_icon sp_main fl_l" id="share_icon{$postId}"></i>
+                        <span class="post_share_count fl_l" id="share_count{$postId}">
+                            {if $repostsCount > 0}{$repostsCount}{/if}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="replies">
+                <div class="reply_link_wrap" id="wpe_bottom{$postId}">
+                    <small>
+                        <a href="/wall{$postId}" onclick="return showWiki({ w: 'wall{$postId}' }, false, event);">
+                            <span class="rel_date">{$post->getPublicationTime()}</span>
+                        </a>
+                    </small>
+                    <span id="reply_link{$postId}" class="reply_link" n:if="!($forceNoCommentsLink ?? false) && ($commentSection ?? true) && isset($thisUser)">
+                        <span class="divide">|</span>
+                        <a class="reply_link" onclick="wall.showEditReply('{$postId}')">{_comment}</a>
+                    </span>
+                </div>
+
+                <a class="wr_header" id="wrh_link{$postId}" onclick="profile.show_replies('{$postId}'); return false" n:if="!($forceNoCommentsLink ?? false) && $commentsCount > 3">
+                    <div class="wrh_text" id="wrh_text{$postId}">{_view_other_comments} ({$commentsCount - 3})</div>
+                    <div class="progress wrh_prg" id="wrh_prg{$postId}"></div>
+                </a>
+                
+                <div id="show_replies{$postId}"></div>
+                
+                <div class="replies_wrap clear" id="replies_wrap{$postId}" n:attr="style => ($commentsCount == 0 && ($forceNoCommentsLink ?? false) ? 'display: none;' : '')">
+                    <div id="replies{$postId}">
+                        {if !($forceNoCommentsLink ?? false) && ($commentSection ?? true)}
+                            {foreach $comments as $comment}
+                                {include "../comment.latte", comment => $comment}
+                            {/foreach}
+                        {/if}
+                        <input type="hidden" id="start_reply{$postId}" value=""/>
+                    </div>
+                    
+                    <div id="post_replies{$postId}"></div>
+                    
+                    {if !($forceNoCommentsLink ?? false) && ($commentSection ?? true) && isset($thisUser)}
+                        <div class="reply_fakebox_wrap" id="reply_fakebox{$postId}" onclick="wall.showEditReply('{$postId}')" n:attr="style => ($commentsCount == 0 ? 'display: none;' : '')">
+                            <div class="reply_fakebox">{_comment}..</div>
+                        </div>
+                        
+                        <div id="commentTextArea{$postId}" class="commentsTextFieldWrap" style="display: none;">
+                            {var $commentsURL = "/al_comments/create/posts/" . $post->getId()}
+                            {var $club = is_null($club ?? null) ? ($post->getTargetWall() < 0 ? (new openvk\Web\Models\Repositories\Clubs)->get(abs($post->getTargetWall())) : NULL) : $club}
+                            {include "textArea.latte", route => $commentsURL, postOpts => false, graffiti => (bool) ovkGetQuirk("comments.allow-graffiti"), post => $post, club => $club}
+                        </div>
+                    {/if}
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

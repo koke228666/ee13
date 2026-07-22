@@ -1,30 +1,25 @@
-<div class="content_divider wall_block">
-    <div class="content_title_expanded">
-        {_wall} 
-        <nobold>
-            <span class='wall_block_counter'>{tr("wall", $count)}</span>
-            <a href="/wall{$owner}" class="float-right lowercase">{_all_title}</a>
-        </nobold>
+<div class="wall_module" id="profile_wall">
+    <div class="module_header wall_header">
+        <a id="page_wall_header" class="header_top clear_fix" href="/wall{$owner}?type=owners">
+            <span class="right_link fl_r" id="page_wall_switch" onclick="if (checkEvent(event)) return true; return wall.switchWall(event);" style="display: none;"/>
+            <b id="page_wall_posts_count">{tr("wall", $count)}</b>
+        </a>
     </div>
-    <div>
-    <div class="insertThere" id="wall_block_posts"></div>
-    <div id="underHeader">
-        <div n:if="$canPost" class="content_subtitle">
-            {include "../components/textArea.latte", route => "/wall$owner/makePost", graffiti => true, polls => true, notes => true, hasSource => true, geo => true, docs => true}
-        </div>
-        
-        <div class="content scroll_container">
+    <div class="clear_fix">
+        <div id="page_wall_posts" class="wall_posts own">
+            <input type="hidden" id="page_wall_count_own" value="{$count}">
+
             {if sizeof($posts) > 0}
-                <div class='scroll_node' n:foreach='$posts as $post' data-uniqueid="{$post->getPrettyId()}">
-                    <a name="postGarter={$post->getId()}"></a>
-                    
+                {foreach $posts as $post}
                     {include "../components/post.latte", post => $post, commentSection => true}
-                </div>
-                {include "../components/paginator.latte", conf => $paginatorConf}
+                {/foreach}
+                <a class="more_link clear" id="wall_more_link" onclick="wall.showMore(10);" style="display: block;">
+                    <div class="progress" id="wall_more_progress"/>
+                    <div>к предыдущим записям</div>
+                </a>
             {else}
                 {_no_posts_abstract}
             {/if}
         </div>
-    </div>
     </div>
 </div>

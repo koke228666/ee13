@@ -1,11 +1,31 @@
 {if $attachment instanceof \openvk\Web\Models\Entities\Photo}
     {if !$attachment->isDeleted()}
         {var $link = "/photo" . ($attachment->isAnonymous() ? ("s/" . base_convert((string) $attachment->getId(), 10, 32)) : $attachment->getPrettyId())}
-        <a href="{$link}" onclick="OpenMiniature(event, {$attachment->getURLBySizeId('larger')}, {$parent->getPrettyId()}, {$attachment->getPrettyId()}, {$parentType})">
-            <img n:class="media, $tilesCount > 1 ? media_makima" src="{$attachment->getURLBySizeId('normal')}" alt="{$attachment->getDescription()}" loading=lazy />
+        {var $photosizes = $attachment->getSizes()}
+        
+        {var $w = $exactW ?? 200}
+        {var $h = $exactH ?? 200}
+        
+        {var $classes = ['page_post_thumb_wrap']}
+        {if ($totalPhotos ?? 1) > 1}
+            {php $classes[] = 'fl_l'}
+        {/if}
+        {if $isLastCol ?? true}
+            {php $classes[] = 'page_post_thumb_last_column'}
+        {/if}
+        {if $isLastRow ?? true}
+            {php $classes[] = 'page_post_thumb_last_row'}
+        {/if}
+
+        <a href="{$link}" 
+           onclick="return showPhoto('{$attachment->getPrettyId()}', 'wall{$parent->getPrettyId()}', { temp: { base: '', x_: ['{$attachment->getURLBySizeId('normal')|noescape}', {$photosizes['normal']->width ?? 0}, {$photosizes['normal']->height ?? 0}], y_: ['{$attachment->getURLBySizeId('large')|noescape}', {$photosizes['large']->width ?? 0}, {$photosizes['large']->height ?? 0}], z_: ['{$attachment->getURLBySizeId('larger')|noescape}', {$photosizes['larger']->width ?? 0}, {$photosizes['larger']->height ?? 0}] }, queue: 1 }, event)" 
+           style="width: {$w}px; height: {$h}px;" 
+           class="{implode(' ', $classes)}">
+            
+            <img src="{$attachment->getURLBySizeId('normal')}" width="{$w}" height="{$h}" style="margin: 0;" class="page_post_thumb_sized_photo">
         </a>
     {else}
-        <a href="javascript:alert('{_attach_no_longer_available}');">
+        <a href="javascript:alert('{_attach_no_longer_available}');" class="page_post_thumb_wrap page_post_thumb_last_column page_post_thumb_last_row">
             <img class="media" src="/assets/packages/static/openvk/img/camera_200.png" alt="{_attach_no_longer_available}" />
         </a>
     {/if}
@@ -63,7 +83,7 @@
     {/if}
 {elseif $attachment instanceof \openvk\Web\Models\Entities\Audio}
     <div style="width:100%;" data-att_type='audio' data-att_id="{$attachment->getPrettyId()}">
-        {include "../Audio/player.latte", audio => $attachment}
+        {include "../Audio/player.latte", audio => $attachment, $compactMode => true}
     </div>
 {elseif $attachment instanceof \openvk\Web\Models\Entities\Document}
     <div style="width:100%;">
