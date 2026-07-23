@@ -5,14 +5,19 @@ if (!isset($GLOBALS['ee13'])) {
         private array $funcs = [];
         public array $locale = [
             "ru" => [
+                "baddragon_php" => "baddragon.php",
                 "csrf_fail" => "ошибка проверки csrf"
+            ],
+            "en" => [
+                "baddragon_php" => "baddragon.php",
+                "csrf_fail" => "csrf check fail"
             ]
         ];
         
-        public function lang(string $key)
+        public function get_lang(string $key)
         {
             $langCode = function_exists('getLanguage') ? getLanguage() : 'ru';
-            return $this->locale[$langCode][$key] ?? $this->locale['ru'][$key] ?? str_replace("_", " ", $key);
+            return $this->locale[$langCode][$key] ?? $this->locale['en'][$key] ?? str_replace("_", " ", $key);
         }
 
         public function enable_bully_bob()
