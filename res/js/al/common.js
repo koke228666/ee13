@@ -3658,8 +3658,8 @@ function leftBlockFriendTooltip() {
 function updateOtherCounters(url, referrer) {
   if (vk.zero) return;
   referrer = referrer || document.referrer;
-  vkImage().src = locProtocol + '//counter.yadro.ru/hit?r' + escape(referrer) + (window.screen === undefined ? '' : ';s' + screen.width + '*' + screen.height + '*' + (screen.colorDepth ? screen.colorDepth : screen.pixelDepth)) + ';u' + escape(url) + ';' + Math.random() + '';
-  vkImage().src = locProtocol + '//' + (locProtocol == 'https:' ? 'sb' : 'b') + '.scorecardresearch.com/p?c1=2&c2=13765216&c3=&c4=' + escape(url) + '&c5=&c9=' + escape(referrer) + 'c15=&cv=2.0&cj=1&rn=' + Math.random();
+  // vkImage().src = locProtocol + '//counter.yadro.ru/hit?r' + escape(referrer) + (window.screen === undefined ? '' : ';s' + screen.width + '*' + screen.height + '*' + (screen.colorDepth ? screen.colorDepth : screen.pixelDepth)) + ';u' + escape(url) + ';' + Math.random() + '';
+  // vkImage().src = locProtocol + '//' + (locProtocol == 'https:' ? 'sb' : 'b') + '.scorecardresearch.com/p?c1=2&c2=13765216&c3=&c4=' + escape(url) + '&c5=&c9=' + escape(referrer) + 'c15=&cv=2.0&cj=1&rn=' + Math.random();
 }
 
 // Установка размера страницы и параметров отображения.

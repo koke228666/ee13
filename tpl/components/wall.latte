@@ -1,6 +1,6 @@
 <div class="wall_module" id="profile_wall">
     <div class="module_header wall_header">
-        <a id="page_wall_header" class="header_top clear_fix" href="/wall{$owner}?type=owners">
+        <a id="page_wall_header" class="header_top clear_fix" onclick ="nav.go(this, event);" href="/wall{$owner}?type=owners">
             <span class="right_link fl_r" id="page_wall_switch" onclick="if (checkEvent(event)) return true; return wall.switchWall(event);" style="display: none;"/>
             <b id="page_wall_posts_count">{tr("wall", $count)}</b>
         </a>

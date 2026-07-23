@@ -16,7 +16,7 @@
         <a class="top_nav_link" id="head_groups" href="/search?section=groups" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">сообщества</a>
       </nobr></td>
       <td style=""><nobr>
-        <a class="top_nav_link" id="head_games" href="/apps">игры</a>
+        <a class="top_nav_link" onclick="return nav.go(this, event, { noback: true });" id="head_games" href="/apps">игры</a>
       </nobr></td>
       <td style=""><nobr>
         <a class="top_nav_link" id="head_music" href="/audios{$thisUser->getId()}" onclick="return Pads.show('mus', event);">

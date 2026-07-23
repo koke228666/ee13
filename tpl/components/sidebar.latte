@@ -9,7 +9,7 @@
     </td>
     <td id="myprofile_edit_wrap">
       
-      <a href="/edit" id="myprofile_edit" class="left_row"><span class="left_label inl_bl">ред.</span></a>
+      <a href="/edit" onclick="return nav.go(this, event, { noback: true });" id="myprofile_edit" class="left_row"><span class="left_label inl_bl">ред.</span></a>
     </td>
   	</tr>
 	</table>
@@ -35,9 +35,9 @@
 	<li id="l_gr">
 		<a href="/groups{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('gr')" onmousedown="return Pads.show('gr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Группы</span></a>
 	</li>
-	<li id="l_ev">
-		<a href="/events" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Встречи</span></a>
-	</li>
+	<!--<li id="l_ev">
+		<a href="/events{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Встречи</span></a>
+	</li>-->
 	<li id="l_nws">
 		<a href="/feed" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('nws')" onmousedown="return Pads.show('nws', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Новости</span></a>
 	</li>

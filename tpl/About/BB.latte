@@ -22,10 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             switch($_REQUEST['act']) {
                 case "current_info":
                     if (!$ee13vars->check_csrf()) {
-                        echo("csrf check <b>FAILED</b>");
+                        echo($GLOBALS['ee13']->get_lang("csrf_fail"));
+                        break;
                     }
 
-                    if ($_REQUEST['oid'] < 0) {
+                    if ($_REQUEST['oid'] < 0 || !$_REQUEST['info']) {
                         echo("сори но нет");
                         break;
                     }
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         break;
     }
 } else {
-    echo("baddragon.php");
+    echo($GLOBALS['ee13']->get_lang("csrf_fail"));
 }
 
 }

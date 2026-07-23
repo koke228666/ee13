@@ -1,74 +1,75 @@
 {php
 // новейшая разработка моссада piska framework pro max
-
 if (!isset($GLOBALS['ee13'])) {
     $GLOBALS['ee13'] = new class {
         private array $funcs = [];
-        public array $cur = [];
-
-        public function register(string $name, Closure $func): void
+        public array $locale = [
+            "ru" => [
+                "csrf_fail" => "ошибка проверки csrf"
+            ]
+        ];
+        
+        public function lang(string $key)
         {
-            $this->funcs[$name] = $func;
+            $langCode = function_exists('getLanguage') ? getLanguage() : 'ru';
+            return $this->locale[$langCode][$key] ?? $this->locale['ru'][$key] ?? str_replace("_", " ", $key);
         }
 
-        public function __call($name, $args)
+        public function enable_bully_bob()
         {
-            if (!isset($this->funcs[$name])) {
-                throw new Exception("Function '$name' is not registered");
+            \Tracy\Debugger::$showBar = false;
+        }
+
+        public function get_resource($theme, $resource)
+        {
+            return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource" . $resource;
+        }
+
+        public function get_al()
+        {
+            $al = $_REQUEST['al'] ?? 3;
+            return $al;
+        }
+
+        // токо если есть hash в запросе
+        public function check_csrf()
+        {
+            return $GLOBALS["csrfCheck"];
+        }
+
+        public function ajax($code = 0, $payload = [], $headers = [])
+        {
+            $navVersion = isset($headers['navVersion']) ? $headers['navVersion'] : 1;
+            $newStatic  = isset($headers['newStatic']) ? $headers['newStatic'] : '';
+            $langId     = isset($headers['langId']) ? $headers['langId'] : 0;
+            $langVer    = isset($headers['langVer']) ? $headers['langVer'] : 1000;
+
+            $response = [
+                $navVersion,
+                $newStatic,
+                $langId,
+                $langVer,
+                $code
+            ];
+
+            foreach ($payload as $item) {
+                if (is_array($item) || is_object($item)) {
+                    $response[] = '<!json>' . json_encode($item, JSON_UNESCAPED_UNICODE);
+                } elseif (is_int($item)) {
+                    $response[] = '<!int>' . $item;
+                } elseif (is_float($item)) {
+                    $response[] = '<!float>' . $item;
+                } elseif (is_bool($item)) {
+                    $response[] = '<!bool>' . ($item ? '1' : '0');
+                } elseif (is_null($item)) {
+                    $response[] = '<!null>';
+                } else {
+                    $response[] = $item; 
+                }
             }
-            return ($this->funcs[$name])(...$args);
+
+            return implode('<!>', $response);
         }
     };
-
-    $GLOBALS['ee13']->register('get_resource', function ($theme, $resource) {
-        return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource" . $resource;
-    });
-
-    $GLOBALS['ee13']->register('get_al', function () {
-        $al = $_REQUEST['al'] ?? "3";
-        return $al;
-    });
-
-    $GLOBALS['ee13']->register('check_csrf', function () {
-        return $GLOBALS["csrfCheck"];
-    });
-
-    $GLOBALS['ee13']->register('ajax', function ($code = 0, $payload = [], $headers = []) {
-        $navVersion = isset($headers['navVersion']) ? $headers['navVersion'] : 1;
-        $newStatic  = isset($headers['newStatic']) ? $headers['newStatic'] : '';
-        $langId     = isset($headers['langId']) ? $headers['langId'] : 0;
-        $langVer    = isset($headers['langVer']) ? $headers['langVer'] : 1000;
-
-        $response = [
-            $navVersion,
-            $newStatic,
-            $langId,
-            $langVer,
-            $code
-        ];
-
-        foreach ($payload as $item) {
-            if (is_array($item) || is_object($item)) {
-                $response[] = '<!json>' . json_encode($item, JSON_UNESCAPED_UNICODE);
-            } elseif (is_int($item)) {
-                $response[] = '<!int>' . $item;
-            } elseif (is_float($item)) {
-                $response[] = '<!float>' . $item;
-            } elseif (is_bool($item)) {
-                $response[] = '<!bool>' . ($item ? '1' : '0');
-            } elseif (is_null($item)) {
-                $response[] = '<!null>';
-            } else {
-                $response[] = $item; 
-            }
-        }
-
-        return implode('<!>', $response);
-    });
-
-    $GLOBALS['ee13']->register('enable_bully_bob', function () {
-        \Tracy\Debugger::$showBar = false;
-    });
-
 }
 }
