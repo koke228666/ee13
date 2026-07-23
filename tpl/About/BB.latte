@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $thisUser->save();
                         echo($ee13vars->ajax(0));
                     }
-                break;
+                    break;
                 default:
                     echo("todo: implement " . $_REQUEST['target'] . "<br>act: <b>" . $_REQUEST['act'] . "</b>");
                 break;
@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo("todo: implement " . $_REQUEST['target'] . "<br>act: <b>" . $_REQUEST['act'] . "</b>");
                     break;
             }
+        break;
         default:
             echo("todo: implement " . $_REQUEST['target'] . "<br>act: <b>" . $_REQUEST['act'] . "</b>");
             break;
