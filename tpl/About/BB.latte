@@ -37,12 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 break;
                 default:
-                    echo("todo: implement " . $_REQUEST['act']);
+                    echo("todo: implement " . $_REQUEST['target'] . "<br>act: <b>" . $_REQUEST['act'] . "</b>");
                 break;
             }
         break;
         default:
-            echo("todo: implement " . $_REQUEST['target']);
+            echo("todo: implement " . $_REQUEST['target'] . "<br>act: <b>" . $_REQUEST['act'] . "</b>");
         break;
     }
 } else {

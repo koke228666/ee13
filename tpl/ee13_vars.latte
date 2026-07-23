@@ -34,9 +34,9 @@ if (!isset($GLOBALS['ee13'])) {
     });
 
     $GLOBALS['ee13']->register('ajax', function ($code = 0, $payload = [], $headers = []) {
-        $navVersion = isset($headers['navVersion']) ? $headers['navVersion'] : 10000;
+        $navVersion = isset($headers['navVersion']) ? $headers['navVersion'] : 1;
         $newStatic  = isset($headers['newStatic']) ? $headers['newStatic'] : '';
-        $langId     = isset($headers['langId']) ? $headers['langId'] : 3;
+        $langId     = isset($headers['langId']) ? $headers['langId'] : 0;
         $langVer    = isset($headers['langVer']) ? $headers['langVer'] : 1000;
 
         $response = [
@@ -64,6 +64,10 @@ if (!isset($GLOBALS['ee13'])) {
         }
 
         return implode('<!>', $response);
+    });
+
+    $GLOBALS['ee13']->register('enable_bully_bob', function () {
+        \Tracy\Debugger::$showBar = false;
     });
 
 }

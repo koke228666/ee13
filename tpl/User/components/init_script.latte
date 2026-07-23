@@ -1,7 +1,5 @@
-{capture $profileShow}{include 'profile_short.latte', hidden => 1}{/capture}
-{capture $profileHide}{include 'profile_short.latte', hidden => 0}{/capture}
+{contentType javascript}
 
-<script>
 __lq = layerQueue = {
   push: function(onShow) {
     var clayer, last = __lq.count() ? __lq._layers[__lq._layers.length - 1] : false;
@@ -158,4 +156,3 @@ Profile.init({
   }
 });
 cur.module = 'profile';
-</script>

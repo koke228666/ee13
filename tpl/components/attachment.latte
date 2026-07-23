@@ -32,8 +32,16 @@
 {elseif $attachment instanceof \openvk\Web\Models\Entities\Video}
     {if $tilesCount <= 1}
         {if $attachment->getType() === 0}
-            <div class="bsdn media" data-name="{$attachment->getName()}" data-author="{$attachment->getOwner()->getCanonicalName()}">
-                <video class="media" src="{$attachment->getURL()}"></video>
+            <div class="page_media_thumb page_media_video page_media_thumb1 fl_l">
+                <a class="video" href="video{$attachment->getPrettyId()}" onclick="return showInlineVideo('{$attachment->getPrettyId()|noescape}', '', { autoplay: 1 }, event, this);">
+                    <div class="video_play_inline"></div>
+                    <img src="{$attachment->getThumbnailURL()}">
+                </a>
+            </div>
+            <div class="media_desc">
+                <a class="lnk" id="post_media_lnk{$parent->getPrettyId()}_1" onclick="return showVideo('{$attachment->getPrettyId()|noescape}', '', { autoplay: 1 }, event);" href="video{$attachment->getPrettyId()}">
+                <b class="fl_l video"></b><span class="a post_video_title">{$attachment->getName()}</span> <span class="post_video_duration">{$attachment->getFormattedLength()}</span>
+                </a>
             </div>
         {else}
             {var $driver = $attachment->getVideoDriver()}
@@ -43,12 +51,6 @@
                 {$driver->getEmbed("100%")|noescape}
             {/if}
         {/if}
-
-        <div class="video-wowzer">
-            <div class="small-video-ico"></div>
-            <a href="/video{$attachment->getPrettyId()}" id="videoOpen" data-id="{$attachment->getPrettyId()}">{$attachment->getName()}</a>
-            <span class="video-wowzer-length" n:if="$attachment->getLength() != NULL">({$attachment->getFormattedLength()})</span>
-        </div>
     {else}
         <a class='compact_video' id='videoOpen' data-id='{$attachment->getPrettyId()}' href="/video{$attachment->getPrettyId()}">
             <div class='play-button'>

@@ -16,7 +16,7 @@
         <div n:foreach="$albums as $album" class="fl_l clear_fix clear page_album_row" onmouseover="Page.albumOver(this, '53083705_172149613');" onmouseout="Page.albumOut(this, '53083705_172149613', true);">
             <a href="/album{$album->getPrettyId()}" onclick="return nav.change({ z: 'album53083705_172149613' }, event)" class="img_link">
                 {var $cover = $album->getCoverPhoto()}
-                <img class="page_photo_thumb_big" src="{is_null($cover)?'/assets/packages/static/openvk/img/camera_200.png':$cover->getURLBySizeId('small')}">
+                <img class="page_photo_thumb_big" src="{is_null($cover)?"/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/m_noalbum.png":$cover->getURLBySizeId('small')}">
                 <div class="page_album_title_wrap">
                     <div class="clear_fix" style="margin: 0px">
                         <div class="page_album_title fl_l" title="{$album->getName()}">{$album->getName()}</div>
