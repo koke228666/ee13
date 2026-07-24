@@ -65,7 +65,7 @@
 	{var $thatIsThisUser = isset($thisUser) && $user->getId() == $thisUser->getId()}
     {var $canSeeGroups  = $user->getClubCount() > 0 && $user->getPrivacyPermission('groups.read', $thisUser ?? NULL)}
 
-    {var $hasAvatar = !str_contains($user->getAvatarUrl('miniscule'), "/assets/packages/static/openvk/img/camera_200.png")}
+    {var $hasAvatar = (!str_contains($user->getAvatarUrl('miniscule'), "/assets/packages/static/openvk/img/camera_200.png")) && !$user->getAvatarPhoto()->isDeleted()}
 
     {if !$user->isBanned()}
     

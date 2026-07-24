@@ -3670,9 +3670,9 @@ var IM = {
       acts['14'] = getLang('mail_im_show_docs_history');
 
       var bgsprite = window.devicePixelRatio >= 2 ? {
-        backgroundImage: 'url(/images/icons/attach_icons_2x.png?6)',
+        backgroundImage: 'url(' + vk.st_base_path + '/images/icons/attach_icons_2x.png?6)',
         backgroundSize: '20px 220px'
-      } : {backgroundImage: 'url(/images/icons/attach_icons.png?6)'};
+      } : {backgroundImage: 'url(' + vk.st_base_path + '/images/icons/attach_icons.png?6)'};
       cstyles = {
         '11': extend({backgroundPosition: '3px 3px'}, bgsprite),
         '12': extend({backgroundPosition: '3px -20px'}, bgsprite),

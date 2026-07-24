@@ -1906,10 +1906,10 @@ function initCustomMedia(lnk, types, opts) {
   if (opts.bgsprite) {
     var icons = opts.bgsprite;
   } else if (window.devicePixelRatio >= 2) {
-    var icons = '/images/icons/attach_icons_2x.png?6';
+    var icons = vk.st_base_path + '/images/icons/attach_icons_2x.png?6';
     opts.bgSize = '20px 220px';
   } else {
-    var icons = '/images/icons/attach_icons.png?6';
+    var icons = vk.st_base_path + '/images/icons/attach_icons.png?6';
   }
   vkImage().src = icons;
 
