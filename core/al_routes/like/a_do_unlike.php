@@ -65,14 +65,21 @@ if ($_REQUEST["object"]) {
 
         $postable->setLike(false, $thisUser);
 
-        return $ee13vars->ajax(0, [[
-            'like_my'    => (int)$postable->hasLikeFrom($thisUser),
-            'like_num'   => $postable->getLikesCount(),
-            'like_title' => tr('liked_by_x_people', ($like_count === 0) ? 1 : $postable->getLikesCount()),
-            'share_my'    => 0,
-            'share_num'   => 0,
-            'share_title' => "поделилось 0 человек пиздец"
-        ]]);
+        if ($type === "wall") {
+            return $ee13vars->ajax(0, [[
+                'like_my'    => (int)$postable->hasLikeFrom($thisUser),
+                'like_num'   => $postable->getLikesCount(),
+                'like_title' => tr('liked_by_x_people', ($like_count === 0) ? 1 : $postable->getLikesCount()),
+                'share_my'    => 0,
+                'share_num'   => 0,
+                'share_title' => "поделилось 0 человек пиздец"
+            ]]);
+        } else {
+            return $ee13vars->ajax(0, [
+                $postable->getLikesCount(),
+                tr('liked_by_x_people', ($like_count === 0) ? 1 : $postable->getLikesCount())
+            ]);
+        }
     } else {
         return $ee13vars->ajax(8, [$ee13vars->get_lang("type_unknown")]);
     }
