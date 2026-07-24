@@ -1,5 +1,7 @@
 <?php
-$photos = new \openvk\Web\Models\Repositories\Photos();
+use openvk\Web\Models\Repositories\Photos as PhotosRepo;
+
+$photos = new PhotosRepo();
 $photo_id = explode("_", $_REQUEST['photo']);
 
 // todo: возможно положить ХЕР на это и просто не возвращать альбом, если вот так вот получилось (хотя лучше не надо)

@@ -1,4 +1,6 @@
 <?php
+use openvk\Web\Models\Repositories\Photos as PhotosRepo;
+
 if (!$thisUser) {
     return $ee13vars->get_lang("user_reqiured");
 }
@@ -7,7 +9,7 @@ if (!$ee13vars->check_csrf()) {
 }
 
 if ($_REQUEST["text"] && $_REQUEST["photo"]) {
-    $photos = new \openvk\Web\Models\Repositories\Photos();
+    $photos = new PhotosRepo();
     $id_split = explode("_", $_REQUEST["photo"]);
     $desc = $_REQUEST["text"];
 
