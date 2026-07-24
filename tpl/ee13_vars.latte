@@ -47,7 +47,7 @@ if (!isset($GLOBALS['ee13'])) {
             $navVersion = isset($headers['navVersion']) ? $headers['navVersion'] : 1;
             $newStatic  = isset($headers['newStatic']) ? $headers['newStatic'] : '';
             $langId     = isset($headers['langId']) ? $headers['langId'] : 0;
-            $langVer    = isset($headers['langVer']) ? $headers['langVer'] : 1000;
+            $langVer    = isset($headers['langVer']) ? $headers['langVer'] : 1;
 
             $response = [
                 $navVersion,
@@ -74,6 +74,10 @@ if (!isset($GLOBALS['ee13'])) {
             }
 
             return implode('<!>', $response);
+        }
+        
+        public function cookie($name, $value) {
+            setcookie($name, $value, time() + (365 * 24 * 60 * 60), '/');
         }
     };
 }

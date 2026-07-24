@@ -18,7 +18,7 @@
         {/if}
 
         <a href="{$link}" 
-           onclick="return showPhoto('{$attachment->getPrettyId()}', 'wall{$parent->getPrettyId()}', { temp: { base: '', x_: ['{$attachment->getURLBySizeId('normal')|noescape}', {$photosizes['normal']->width ?? 0}, {$photosizes['normal']->height ?? 0}], y_: ['{$attachment->getURLBySizeId('large')|noescape}', {$photosizes['large']->width ?? 0}, {$photosizes['large']->height ?? 0}], z_: ['{$attachment->getURLBySizeId('larger')|noescape}', {$photosizes['larger']->width ?? 0}, {$photosizes['larger']->height ?? 0}] }, queue: 1 }, event)" 
+           onclick="return showPhoto('{$attachment->getPrettyId()|noescape}', 'wall{$parent->getPrettyId()|noescape}', { temp: { base: '', x_: ['{$attachment->getURLBySizeId('normal')|noescape}', {$photosizes['normal']->width ?? 0}, {$photosizes['normal']->height ?? 0}], y_: ['{$attachment->getURLBySizeId('large')|noescape}', {$photosizes['large']->width ?? 0}, {$photosizes['large']->height ?? 0}], z_: ['{$attachment->getURLBySizeId('larger')|noescape}', {$photosizes['larger']->width ?? 0}, {$photosizes['larger']->height ?? 0}] }, queue: 1 }, event)" 
            style="width: {$w}px; height: {$h}px;" 
            class="{implode(' ', $classes)}">
             

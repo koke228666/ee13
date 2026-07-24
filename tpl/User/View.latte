@@ -90,7 +90,7 @@
       {/if}
           <div id="page_avatar">
           {if $hasAvatar}
-            <a id="profile_photo_link" href="{$user->getAvatarLink()|nocheck}" onclick="return showPhoto('{$user->getAvatarPhoto()->getPrettyId()|noescape}', '{$user->getAvatarPhoto()->getAlbum()->getPrettyId()|noescape}/rev', { temp:{ base: '', x_:['{$user->getAvatarUrl('normal')|noescape}'], y_:['{$user->getAvatarUrl('large')|noescape}'], z_:['{$user->getAvatarUrl('larger')|noescape}'] }, dark:1 }, event)">
+            <a id="profile_photo_link" href="{$user->getAvatarLink()|nocheck}" onclick="return showPhoto('{$user->getAvatarPhoto()->getPrettyId()|noescape}', '{$user->getAvatarPhoto()->getAlbum()->getPrettyId()|noescape}/rev', { temp:{ base: '', x_:['{$user->getAvatarUrl('normal')|noescape}'], y_:['{$user->getAvatarUrl('large')|noescape}'], z_:['{$user->getAvatarUrl('larger')|noescape}'] } }, event)">
                 <img width="200" src="{$user->getAvatarUrl('normal')}">
             </a>
           {else}
