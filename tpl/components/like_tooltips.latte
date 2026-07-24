@@ -14,7 +14,7 @@ if (count) {
     if (tip.out) addEvent(tip.container, 'mouseout', tip.out);
     setTimeout(function () {
       if (!tip.likeInvalidated) {
-       {if $type === "photo"}Wall.likeUpdate('{$target_id|noescape}', 0, 1);{/if}
+       {if $type === "wall"}Wall.likeUpdate('{$target_id|noescape}', 0, 1);{/if}
       }
     }, 10);
     tip.inited = true;
@@ -23,14 +23,14 @@ if (count) {
 return count > 0;{/capture}
 
 {capture $tt}
-{if $type === "wall"}
-<div class="header" onclick="showWiki({ w: 'likes/{$target_id|noescape}' }, false, false, { queue: 1 });">
+<div class="header">
     <div class="like_head_wrap">
-        <span id="like_title_wall{$target_id|noescape}">{tr('liked_by_x_people', $like_count)}</span>
+        <span id="like_title_{$target_id|noescape}">{tr('liked_by_x_people', ($like_count === 0) ? 1 : $like_count)}</span>
     </div>
 </div>
 <div class="wrap">
-    <input type="hidden" id="like_real_count_wall{$target_id|noescape}" value="{$like_count}"/>
+    <input type="hidden" id="like_real_count_{$type . $target_id|noescape}" value="{$like_count}"/>
+{if $type === "wall"}
     <div class="content">
         <div class="hider">
             <table cellspacing="0" cellpadding="0" id="like_table_wall{$target_id|noescape}" class="like_stats" {if !$liked_by_me}style="left: -31px"{/if}>
@@ -60,16 +60,7 @@ return count > 0;{/capture}
             <span class="like_published_label">Вы рассказали друзьям</span> 
         </div>&nbsp;
     </div>-->
-</div>
-
 {elseif $type === "photo"}
-<div class="header">
-    <div class="like_head_wrap">
-        <span id="like_title_photo{$target_id|noescape}">{tr('liked_by_x_people', $like_count)}</span>
-    </div>
-</div>
-<div class="wrap">
-    <input type="hidden" id="like_real_count_photo{$target_id|noescape}" value="{$like_count}"/>
     <div class="content">
         <div class="hider">
             <table cellspacing="0" cellpadding="0" id="like_table_photo{$target_id|noescape}" class="like_stats" {if !$liked_by_me}style="left: -31px"{/if}>
@@ -92,8 +83,8 @@ return count > 0;{/capture}
             </table>
         </div>
     </div>
-</div>
 {/if}
+</div>
 {/capture}
 
 {php

@@ -52,8 +52,8 @@
     </script>
     {capture $header}{include header}{/capture}
     <script type="text/javascript">
-    
-    parent.ajax._framedone({$ee13vars->ajax(0)}, [
+
+    parent.ajax._framedone({$ee13vars->ajax(0, '', ['newStatic' => implode(',', array_keys($cur['static'] ?? []))])}, [
         0, 
         {=json_encode(trim((string)$header), JSON_UNESCAPED_UNICODE)|noescape},
         {=json_encode((string)$ajaxHtml, JSON_UNESCAPED_UNICODE)|noescape}, 
@@ -167,6 +167,19 @@ var StaticFiles = {
 {foreach $cur['static'] as $sver => $stat}
   ,{$stat} : { v: 1 }
 {/foreach}
+}
+
+// эта хуйня нужна для тултипов, я хз почему её нигде, кроме как в рекламном жс не было
+function isAncestor(elem, ancestor) {
+  if (!elem || !ancestor) {
+    return false;
+  }
+  while (elem = elem.parentNode) {
+    if (elem === ancestor) {
+      return true;
+    }
+  }
+  return false;
 }
 </script>
 
