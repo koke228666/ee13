@@ -7,10 +7,21 @@ use openvk\Web\Models\Repositories\Photos as PhotosRepo;
 use openvk\Web\Models\Repositories\Notes as NotesRepo;
 
 if (!$thisUser) {
-    return $ee13vars->get_lang("user_reqiured");
+    return $ee13vars->ajax(8, [$ee13vars->get_lang("user_reqiured")]);
+}
+if (!$ee13vars->check_csrf()) {
+    return $ee13vars->ajax(8, [$ee13vars->get_lang("csrf_fail")]);
+}
+switch ($ee13vars->rate_limit()) {
+    case 18:
+        return $ee13vars->ajax(5, [$ee13vars->get_lang("ratelim_pizda")]);
+    case 29:
+        return $ee13vars->ajax(7, [$ee13vars->get_lang("ratelim_temp")]);
 }
 
-if ($_REQUEST['object']) {
+if ($_REQUEST["object"]) {
+    // сюда ещё передаётся $_REQUEST["object"], скорее всего в вк
+    // использовалось для статистики
     if (preg_match('/^([a-zA-Z_]+)([\d\-_]+)$/', $_REQUEST['object'], $out)) {
         $type = $out[1];
         $id = $out[2];
@@ -52,17 +63,26 @@ if ($_REQUEST['object']) {
             return $ee13vars->ajax(8, [$ee13vars->get_lang("access_denied")]);
         }
 
-        $likers = $postable->getLikers(1, 6);
-        $like_count = $postable->getLikesCount();
-        $render_template = "likes";
-        $likes_tpl_type = $type;
-        $liked_by_me = $postable->hasLikeFrom($thisUser);
-        $target_id = $id;
-
-        return;
+        $postable->setLike(true, $thisUser);
+        
+        if ($type === "wall") {
+            return $ee13vars->ajax(0, [[
+                'like_my'    => (int)$postable->hasLikeFrom($thisUser),
+                'like_num'   => $postable->getLikesCount(),
+                'like_title' => tr('liked_by_x_people', ($like_count === 0) ? 1 : $postable->getLikesCount()),
+                'share_my'    => 0,
+                'share_num'   => 0,
+                'share_title' => "поделилось 0 человек пиздец"
+            ]]);
+        } else {
+            return $ee13vars->ajax(0, [
+                $postable->getLikesCount(),
+                tr('liked_by_x_people', ($like_count === 0) ? 1 : $postable->getLikesCount())
+            ]);
+        }
     } else {
-        return $ee13vars->ajax(8, ["failed to split string" . htmlspecialchars($_REQUEST['object'])]);
+        return $ee13vars->ajax(8, [$ee13vars->get_lang("type_unknown")]);
     }
 } else {
-    return $ee13vars->ajax(8, ["не, это так не работает"]);
+    return $ee13vars->ajax(8, [$ee13vars->get_lang("type_unknown")]);
 }

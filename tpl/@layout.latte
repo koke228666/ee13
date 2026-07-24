@@ -4,7 +4,7 @@
 {include "ee13_vars.latte"}
 {php $ee13vars = $GLOBALS['ee13'];}
 
-{php $al = $GLOBALS["ee13"]->get_al();}
+{php $al = $ee13vars->get_al();}
 {php $isAjax = ($al == 1) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'); }
 
 {capture $ajaxJs}
@@ -119,7 +119,7 @@
 <script type="text/javascript">
 var vk = {
   ads_rotate_interval: 120000,
-  al: parseInt('{php echo $GLOBALS["ee13"]->get_al();}') || 4,
+  al: parseInt('{php echo $ee13vars->get_al();}') || 4,
   id: {ifset $thisUser}{$thisUser->getId()}{else}0{/ifset},
   intnat: '' ? true : false,
   host: location.host,

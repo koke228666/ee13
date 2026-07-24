@@ -1,4 +1,7 @@
 <?php
+if (!$thisUser) {
+    return $ee13vars->get_lang("user_reqiured");
+}
 if (!$ee13vars->check_csrf()) {
     return $GLOBALS['ee13']->get_lang("csrf_fail");
 }

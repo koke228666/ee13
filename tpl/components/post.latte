@@ -156,9 +156,9 @@
             
             <div class="post_full_like_wrap fl_r">
                 <div class="post_full_like">
-                    <div class="post_like fl_r" onmouseover="wall.postLikeOver('{$postId}')" onmouseout="wall.postLikeOut('{$postId}')" onclick="wall.like('{$postId}', '{rawurlencode($csrfToken)}'); event.cancelBubble = true;" n:if="!($forceNoLike ?? false)">
+                    <div class="post_like fl_r" onmouseover="wall.postLikeOver('{$postId|noescape}')" onmouseout="wall.postLikeOut('{$postId|noescape}')" onclick="wall.like('{$postId|noescape}', '{$csrfToken|noescape}'); event.cancelBubble = true;" n:if="!($forceNoLike ?? false)">
                         <span class="post_like_link fl_l" id="like_link{$postId}">{_mobile_like}</span>
-                        <i class="post_like_icon sp_main fl_l" id="like_icon{$postId}"></i>
+                        <i class="post_like_icon sp_main fl_l {if $post->hasLikeFrom($thisUser)}my_like{/if}" id="like_icon{$postId}"></i>
                         <span class="post_like_count fl_l" id="like_count{$postId}">
                             {if $likesCount > 0}{$likesCount}{/if}
                         </span>

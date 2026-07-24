@@ -16,7 +16,7 @@ $offset = 0;
 $data = [
     [
         'id'        => $_REQUEST['photo'],
-        'hash'      => '',
+        'hash'      => $csrfToken, // тут немного не тот хэш (вроде)
         'base'      => '',
         'x_'        => [$photo->getURLBySizeId('normal'), $photosizes['normal']->width ?? 0, $photosizes['normal']->height ?? 0],
         'y_'        => [$photo->getURLBySizeId('large'), $photosizes['large']->width ?? 0, $photosizes['large']->height ?? 0],

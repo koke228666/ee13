@@ -14,7 +14,7 @@ if (count) {
     if (tip.out) addEvent(tip.container, 'mouseout', tip.out);
     setTimeout(function () {
       if (!tip.likeInvalidated) {
-       {if $type === "wall"}Wall.likeUpdate('{$target_id|noescape}', 0, 1);{/if}
+       {if $type === "wall"}Wall.likeUpdate('{$target_id|noescape}', {(int)$liked_by_me}, {$like_count}, '{tr('liked_by_x_people', ($like_count === 0) ? 1 : $like_count)}');{/if}
       }
     }, 10);
     tip.inited = true;

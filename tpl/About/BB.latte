@@ -30,14 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $response = require $act_file; 
         echo $response;
     } else {
-        echo $ee13vars->ajax(7, [$GLOBALS['ee13']->get_lang("bd_unknown_act") . "!!!<br>target: <b>" . htmlspecialchars($target) . "</b><br>act: <b>" . htmlspecialchars($act) . "</b>"]);
+        echo $ee13vars->ajax(7, [$ee13vars->get_lang("bd_unknown_act") . "!!!<br>target: <b>" . htmlspecialchars($target) . "</b><br>act: <b>" . htmlspecialchars($act) . "</b>"]);
     }
     
 } else {
-    echo($GLOBALS['ee13']->get_lang("baddragon_php"));
+    echo($ee13vars->get_lang("baddragon_php"));
 }
 }
-
 {if $render_template === "likes"}
     {include "../components/like_tooltips.latte", type => $likes_tpl_type, target_id => $target_id, likers => $likers, like_count => $like_count, liked_by_me => $liked_by_me}
 {/if}

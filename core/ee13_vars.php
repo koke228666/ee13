@@ -1,4 +1,7 @@
 <?php
+use openvk\Web\Models\Entities\IP;
+use openvk\Web\Models\Repositories\IPs;
+
 // новейшая разработка моссада piska framework pro max
 if (!isset($GLOBALS['ee13'])) {
     $GLOBALS['ee13'] = new class {
@@ -90,6 +93,20 @@ if (!isset($GLOBALS['ee13'])) {
         
         public function cookie($name, $value) {
             setcookie($name, $value, time() + (365 * 24 * 60 * 60), '/');
+        }
+
+        public function rate_limit() {
+            $ip  = (new IPs())->get(CONNECTING_IP);
+            $res = $ip->rateLimit();
+
+            if (!($res === IP::RL_RESET || $res === IP::RL_CANEXEC)) {
+                if ($res === IP::RL_BANNED && OPENVK_ROOT_CONF["openvk"]["preferences"]["security"]["rateLimits"]["autoban"]) {
+                    $thisUser->ban("User account has been suspended for breaking API terms of service", false);
+                    return 18;
+                }
+
+                return 29;
+            }
         }
     };
 }
