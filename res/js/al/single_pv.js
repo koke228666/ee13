@@ -127,7 +127,7 @@ var SinglePhotoview = {
 
       addClass(layerWrap, 'spv_dark');
       addClass(layerBG, 'spv_dark');
-      vkImage().src = '/images/upload.gif';
+      vkImage().src = vk.st_base_path + '/images/upload.gif';
 
       layer.innerHTML = '\
 <div class="spv_cont">\

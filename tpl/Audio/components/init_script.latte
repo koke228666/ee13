@@ -1,0 +1,268 @@
+{contentType javascript}
+if (0) {
+    hide('support_link_td');
+}
+var ts_input = ge('ts_input'), oldFF = browser.mozilla && parseInt(browser.version) < 8;
+if (browser.mozilla && !oldFF) {
+    setStyle(ts_input, {
+        padding: (vk.rtl ? '3px 20px 6px 40px' : '3px 41px 6px 20px')
+    });
+}
+placeholderSetup(ts_input, {
+    back: false,
+    reload: true
+});
+if (browser.opera || browser.msie || browser.mozilla) {
+    setStyle(ts_input, {
+        padding: (vk.rtl ? '4px 20px 5px 40px' : '4px 41px 5px 20px')
+    });
+} else if (browser.chrome || browser.safari) {
+    setStyle(ts_input, {
+        padding: (vk.rtl ? '4px 21px 5px 40px' : '4px 40px 5px 21px')
+    });
+}
+TopSearch.init();
+if (browser.msie8 || browser.msie7) {
+    var st = {
+        border: '1px solid #a6b6c6'
+    };
+    if (hasClass(ge('ts_wrap'), 'vk')) {
+        if (vk.rtl)
+            st.left = '1px';
+        else
+            st.right = '0px';
+    } else {
+        if (vk.rtl)
+            st.right = '146px';
+        else
+            st.left = '146px';
+    }
+    setStyle(ge('ts_cont_wrap'), st);
+}
+window.tsHintsEnabled = 1;
+setTimeout(zNav.pbind({}, {
+        queue: 1
+    }), 0);
+
+    var searchTypes = [{
+            i: 0,
+            l: 'по композициям'
+        }, {
+            i: 1,
+            l: 'по исполнителям'
+        }
+    ], searchBtn = geByTag1('button', ge('audio_search'));
+    cur.searchTypeChanged = function (event, noFire) {
+        var i = event.target.index || 0;
+        if (!searchTypes[i] || !searchTypes[i].l) {
+            i = 0;
+        }
+        var text = searchTypes[i].l + '<span class="arrow"></span>';
+        cur.searchTypeMenu.header.innerHTML = '<div>' + text + '</div>';
+        searchBtn.innerHTML = text;
+        if (cur.searchStr && Audio.changeSearchFilters && !noFire) {
+            Audio.changeSearchFilters();
+        }
+    }
+cur.searchTypeMenu = new DropdownMenu(searchTypes, { target: searchBtn, value: 0, containerClass: 'dd_menu_stype_act', updateTarget: false, offsetLeft: 0, offsetTop: 0, showHover: false, fadeSpeed: 0, onSelect: cur.searchTypeChanged});
+Audio.init({
+    "id": {$thisUser->getId()},
+    "gid": 0,
+    "oid": {$owner->getId()},
+    "album_id": 0,
+    "has_more": 0,
+    "audiosPerPage": 50,
+    "shownAudios": 50,
+    "canEditGroup": 0,
+    "q": "",
+    "club": 0,
+    "canEdit": true,
+    "audio_id": 0,
+    "rowTpl": '<div class="audio %rowclass% fl_l" id="audio%audio_id%"'+
+     'onmouseover="addClass(this, \'over\')"'+
+     'onmouseout="removeClass(this, \'over\')">'+
+
+  '<a name="%audio_id%"></a>'+
+
+  '<div class="area clear_fix"'+
+       'onclick="if (cur.cancelClick) { cur.cancelClick = false; return; } %onclick%">'+
+
+   ' <div class="play_btn fl_l">'+
+      '<div class="play_btn_wrap">'+
+        '<div class="play_new" id="play%audio_id%"></div>'+
+      '</div>'+
+      '<input type="hidden" id="audio_info%audio_id%" value="%url%, %playtime%" />'+
+    '</div>'+
+
+    '<div class="info fl_l">'+
+      '<div class="title_wrap fl_l" onmouseover="setTitle(this)">'+
+        '<b><a %attr%>%performer%</a></b> &ndash;'+
+        '<span class="title">%title%</span>'+
+        '<span class="user" onclick="cur.cancelClick = true;">%author%</span>'+
+      '</div>'+
+      '<div class="actions">%actions%</div>'+
+      '<div class="duration fl_r">%duration%</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<div id="lyrics%audio_id%" class="lyrics" nosorthandle="1"></div>'+
+'</div>',
+	"deletedTpl": '<a name="%audio_id%"></a>'+
+'<div class="area deleted clear_fix" nosorthandle="1">'+
+ '<div class="play_btn fl_l" nosorthandle="1">'+
+ '<div class="play_btn_wrap" nosorthandle="1"><div class="play_new" id="play%audio_id%" nosorthandle="1"></div></div>'+
+ '</div>'+
+ '<div class="info fl_l" nosorthandle="1">'+
+ '<div class="title_wrap" nosorthandle="1"><b nosorthandle="1">%performer%</b> &ndash; <span class="title" nosorthandle="1">%title%</span></div>'+
+ '<div class="actions" nosorthandle="1">'+
+ '<div class="audio_add_wrap fl_r dn" id="audio_add%audio_id%" onmouseover="Audio.rowActive(this, \'Восстановить аудиозапись\', [9, 5, 0]);" onmouseout="Audio.rowInactive(this);" onclick="Audio.restoreAudio(\'%audio_id%\');" nosorthandle="1">'+
+ '<div class="audio_add" nosorthandle="1"></div>'+
+ '</div>'+
+ '%delete_all%'+
+ '</div>'+
+ '</div>'+
+'</div>',
+    "audioFriend": 0,
+    "isAudioFriend": false,
+    "shownFriends": [],
+    "section": "",
+    "allAudiosIndex": "all",
+    "defaultTrack": {
+        "0": "216480",
+        "1": "98455",
+        "2": "/demomusic/blackness.mp3",
+        "3": "118",
+        "4": "01:58",
+        "5": "MZNK",
+        "6": "BLACKNESS",
+        "7": "98436",
+        "8": "0",
+        "9": 0,
+        "10": "",
+        "11": 0,
+        "12": true,
+        "id": "216480_98455"
+    },
+    "lastHTitle": "Аудиозаписи",
+    "htitle": "Аудиозаписи",
+    "uploadBanned": false,
+    "lang": {
+        "audio_not_sorted": "Неотсортированные",
+        {syntax off}"audio_title_search": "Поиск по запросу {q}",{/syntax}
+        "audio_N_recs": ["", "%s аудиозапись", "%s аудиозаписи", "%s аудиозаписей"],
+        "audio_titles_search": "по композициям",
+        "audio_performers_only": "по исполнителям",
+        "audio_play_tip": "Начать воспроизведение",
+        "audio_pause_tip": "Приостановить воспроизведение",
+        "audio_prev_tip": "Предыдущая композиция",
+        "audio_repeat_tooltip": "Повторять эту композицию",
+        "audio_next_tip": "Следующая композиция",
+        "audio_add_to_audio": "Добавить в мои аудиозаписи",
+        "audio_export_tip": "Транслировать на мою страницу",
+        "audio_show_recommendations": "Показать похожие",
+        "audio_shuffle": "Перемешать",
+        "audio_claims_no_upload": "Вы больше не можете загружать новые аудиозаписи, поскольку на Вас поступило много жалоб от правообладателей.",
+        "audio_no_upload_title": "Загрузка невозможна"
+    }
+}, function (audio) {
+    var aid = audio[0] + '_' + audio[1];
+    var actions = '';
+    var add_hash = (cur.hashes) ? cur.hashes.add_hash : '';
+    var delete_hash = (cur.hashes) ? cur.hashes.delete_hash : '';
+    var claim = 0;
+    var claimed = false;
+    if (audio[11] && parseInt(audio[11])) {
+        claimed = true;
+        claim = (parseInt(audio[11]) != 0 ? parseInt(audio[11]) : 0);
+        if (claim == -2)
+            claim = 0;
+    }
+    if (audio[9] && parseInt(audio[9]) && !claimed) {
+        actions += '<div class="audio_add_wrap fl_r"'+
+ 'onmouseover="Audio.rowActive(this, \'Добавить в мои аудиозаписи\', [9,5,0]);"'+
+ 'onmouseout="Audio.rowInactive(this);"'+
+ 'onclick="Audio.addShareAudio(this,' + audio[1] + ', ' + audio[0] + ', ' + add_hash + '); return cancelEvent(event);">' +
+  '<div class="audio_add"></div>'+
+'</div>';
+    } else if (audio[12]) {
+        actions += '<div id="remove'+ aid +'" class="audio_remove_wrap fl_r"' +
+ 'onmouseover="Audio.rowActive(this, \'Удалить аудиозапись\', [9,5,0]);"' +
+ 'onmouseout="Audio.rowInactive(this);"' +
+ 'onclick="Audio.deleteAudio(' + aid + '); return cancelEvent(event)">' +
+  '<div class="audio_remove"></div>'+
+'</div>';
+        if (!claimed)
+            actions += '<div class="audio_edit_wrap fl_r" onmouseover="Audio.rowActive(this, \' Редактировать аудиозапись \', [9, 5, 0]);" onmouseout="Audio.rowInactive(this);" onclick="Audio.editAudio(' + aid + ', event);"> <div class="audio_edit"></div> </div>';
+    }
+    var performer = audio[5];
+    var author = audio[10] ? '(' + audio[10] + ')' : '';
+    var reason = (audio[13] && parseInt(audio[13])) ? 'crap' : '';
+    var lyricsLink = (audio[7] && parseInt(audio[7]))
+	  ? '<a href=""'+
+		   'onclick="Audio.showLyrics('+ aid +', ' + audio[7] +', 0); return cancelEvent(event);">'+
+		   audio[6] +
+		 '</a>'
+	  : audio[6];
+    var tt_lang = "Повторять эту композицию";
+    var rowclass = actions ? '' : 'no_actions';
+    if (claimed) {
+        rowclass += ' claimed';
+    }
+    return rs(cur.rowTpl, {
+        audio_id: aid,
+        performer: performer,
+        title: lyricsLink,
+        url: audio[2],
+        playtime: audio[3],
+        duration: audio[4],
+        attr: 'href="/search?c[q]=' +
+  performer.replace(/(<span>|<\/span>)/g, '') +
+  '&c[section]=audio&c[performer]=1" ' +
+  'onclick="if (checkEvent(event)) { event.cancelBubble = true; return }; ' +
+  'Audio.selectPerformer({ event: event, name: \' ' +
+  performer
+    .replace(/(<span>|<\/span>)/g, ' ')
+    .replace(/&#0*39;/g, '&#39;') +
+  ' \' }); return false"',
+        actions: actions,
+        author: author,
+		onclick: claimed && !cur.claim
+		  ? 'Audio.showAudioClaimWarning(' +
+			  aid + ', ' +
+			  claim + ', "' +
+			  performer + ' – ' + audio[6] + '", "' +
+			  reason + '"' +
+			')'
+		  : 'playAudioNew("' + aid + '")',
+        rowclass: rowclass
+    });
+});
+new Checkbox(ge('audio_top_type'), {
+    width: 135,
+    label: 'только зарубежные',
+    onChange: function (value) {
+        cur.topType = intval(value);
+        delete cur.preloadJSON;
+        delete cur.popularCount;
+        Audio.loadPopular({
+            update: true
+        });
+    }
+});
+var from_pad = '', __cur = from_pad ? window._pads && _pads.cur : window.cur;
+var sortTypes = [[0, "По популярности"], [1, "По длительности"]];
+__cur.searchSortFilter = new Dropdown(ge('audio_sort_filter'), sortTypes, {
+    width: 155,
+    selectedItems: '0',
+    onChange: Audio.changeSearchFilters.pbind('')
+});
+__cur.searchLyricsFilter = new Checkbox(ge('audio_lyrics_filter'), {
+    width: 155,
+    label: 'только с текстом',
+    onChange: Audio.changeSearchFilters.pbind('')
+});
+var dis = 0;
+if (dis) {
+    __cur.searchSortFilter.disable(true);
+    __cur.searchLyricsFilter.disable(true);
+}

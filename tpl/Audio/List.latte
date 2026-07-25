@@ -1,5 +1,23 @@
 {extends "../@layout.latte"}
 
+{php
+$cur['static'] = [
+    'audio.js' => 1,
+    'audio.css' => 1,
+    '../lib/ui_controls.js' => 1
+];
+}
+
+{block view_script}
+{if $jsTags}
+    <script>
+        {include "components/init_script.latte", profileShow => $profileShow, profileHide => $profileHide}
+    </script>
+{else}
+    {include "components/init_script.latte", profileShow => $profileShow, profileHide => $profileHide}
+{/if}
+{/block}
+
 {block title}
     {if $mode == 'list'}
         {if $ownerId > 0}
@@ -22,45 +40,6 @@
             {_playlists_group}
         {/if}
     {/if}
-{/block}
-
-{block header}
-    <div n:if="$mode == 'list'">
-        <div n:if="$isMy">{_my_audios_small}</div>
-        <div n:if="!$isMy">
-            <a href="{$owner->getURL()}">{$owner->getCanonicalName()}</a>
-            »
-            {_audios}
-        </div>
-    </div>
-
-    <div n:if="$mode == 'uploaded'">
-        {_my_audios_small}
-        »
-        {_my_audios_small_uploaded}
-    </div>
-
-    <div n:if="$mode == 'new'">
-        {_audios}
-        »
-        {_audio_new}
-    </div>
-
-    <div n:if="$mode == 'popular'">
-        {_audios}
-        »
-        {_audio_popular}
-    </div>
-
-    <div n:if="$mode == 'playlists'">
-        {_audios}
-        »
-        {if $isMy}{_my_playlists}{else}{_playlists}{/if}
-    </div>
-
-    <div n:if="$mode == 'alone_audio'">
-        {_my_audios_small}
-    </div>
 {/block}
 
 {block content}

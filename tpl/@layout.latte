@@ -50,7 +50,7 @@
       document.domain = locDomain;
     }
     </script>
-    {capture $header}{include header}{/capture}
+    {ifset header}{capture $header}{include header}{/capture}{/ifset}
     <script type="text/javascript">
 
     parent.ajax._framedone({$ee13vars->ajax(0, '', ['newStatic' => implode(',', array_keys($cur['static'] ?? []))])}, [
@@ -230,7 +230,7 @@ function isAncestor(elem, ancestor) {
                 <div id="header_wrap2">
                     <div id="header_wrap1">
                         <div id="header" style="{ifset header}{else}display:none;{/ifset}">
-                            <h1 id="title">{include header}</h1>
+                            <h1 id="title">{ifset header}{include header}{/ifset}</h1>
                         </div>
                     </div>
                 </div>

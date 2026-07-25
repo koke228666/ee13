@@ -14,7 +14,7 @@
     </a>
     <div class="module_body clear_fix">
         <div class="fl_l video_row" n:foreach="$videos as $video">
-            <a class="video fl_l" href="/video{$video->getPrettyId()}" onclick="return showVideo('{$video->getPrettyId()}', 'videos{$video->getPrettyId()}', { autoplay: 1 }, event);">
+            <a class="video fl_l" href="/video{$video->getPrettyId()}" onclick="return showVideo('{$video->getPrettyId()|noescape}', 'videos{$user->getId()}', { autoplay: 1 }, event);">
                 <div><span class="bg fl_r">{$video->getFormattedLength()}</span></div>
                 <div><span class="fl_r">{$video->getFormattedLength()}</span></div>
                 <div class="page_video_play_icon"></div>

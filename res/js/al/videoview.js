@@ -305,7 +305,7 @@ show: function(ev, videoRaw, listId, options) {
     */
     addClass(mvLayerWrap, colorClass);
     addClass(layerBG, colorClass);
-    vkImage().src = '/images/upload.gif';
+    vkImage().src = vk.st_base_path + '/images/upload.gif';
 
 
     if (options.hideInfo) {
@@ -857,7 +857,7 @@ comments: function(showcomm) {
     showProgress: function() {
       var commHeader = ge('mv_comments_header');
       mvcur.mvCommInfo = commHeader.innerHTML;
-      commHeader.innerHTML = '<img src="/images/upload.gif" />';
+      commHeader.innerHTML = '<img src="' + vk.st_base_path +  '/images/upload.gif" />';
     }, hideProgress: function() {
       ge('mv_comments_header').innerHTML = mvcur.mvCommInfo;
     }
@@ -1256,7 +1256,7 @@ showEditBox: function(vid, oid, ev) {
 restoreVideo: function(vid, oid, hash, from, ev) {
   var warning = ge('mv_warning');
   if (warning) {
-    warning.innerHTML = '<img style="margin-left: 100px;" src="/images/upload.gif" />';
+    warning.innerHTML = '<img style="margin-left: 100px;" src="' + vk.st_base_path +  '/images/upload.gif" />';
   }
   ajax.post('al_video.php', {
     act: 'restore_video',
@@ -1383,7 +1383,7 @@ recache: function(videoRaw) {
 
 deleteTag: function(tagId, usersTag) {
   var actionCont = ge('mv_action_info');
-  actionCont.innerHTML = '<img src="/images/upload.gif" />';
+  actionCont.innerHTML = '<img src="' + vk.st_base_path +  '/images/upload.gif" />';
   show(actionCont);
   mv = mvcur.mvData;
   ajax.post('al_video.php', {act: 'delete_tag', video: mv.videoRaw, tag_id: tagId, hash: mv.hash}, {onDone: function(info, tagsList) {
@@ -1400,7 +1400,7 @@ deleteTag: function(tagId, usersTag) {
 
 restoreTag: function(tagId) {
   var actionCont = ge('mv_action_info');
-  actionCont.innerHTML = '<img src="/images/upload.gif" />';
+  actionCont.innerHTML = '<img src="' + vk.st_base_path +  '/images/upload.gif" />';
   show(actionCont);
   mv = mvcur.mvData;
   ajax.post('al_video.php', {act: 'restore_tag', video: mv.videoRaw, tag_id: tagId, hash: mv.hash}, {onDone: function(info, tagsList) {
@@ -1414,7 +1414,7 @@ restoreTag: function(tagId) {
 
 addTags: function(ids) {
   var actionCont = ge('mv_action_info');
-  actionCont.innerHTML = '<img src="/images/upload.gif" />';
+  actionCont.innerHTML = '<img src="' + vk.st_base_path +  '/images/upload.gif" />';
   show(actionCont);
   mv = mvcur.mvData;
   ajax.post('al_video.php', {act: 'add_tags', video: mv.videoRaw, ids: ids.join(','), hash: mv.hash}, {onDone: function(info, tagsList) {
@@ -1503,7 +1503,7 @@ spamVideo: function(oid, vid, hash, obj, from, sure, callback) {
 
 licensed: function(obj, hash) {
   var actionCont = ge('mv_licensed_info');
-  actionCont.innerHTML = '<img src="/images/upload.gif" />';
+  actionCont.innerHTML = '<img src="' + vk.st_base_path +  '/images/upload.gif" />';
   show(actionCont);
 
   ajax.post('al_video.php', {act: 'change_licensed', video: mvcur.mvData.videoRaw, hash: hash}, {onDone: function(text, info) {
@@ -1513,7 +1513,7 @@ licensed: function(obj, hash) {
   }});
 },
 claimed: function(claim_id, action) {
-  ge('claim_link').innerHTML = '<img src="/images/upload.gif" />';
+  ge('claim_link').innerHTML = '<img src="' + vk.st_base_path +  '/images/upload.gif" />';
 
   ajax.post('al_claims.php', {act: 'a_' + action, type: 'video', id: mvcur.mvData.vid, owner_id: mvcur.mvData.oid, claim_id: claim_id}, {onDone: function() {
     if (action == 'claim') {
@@ -1526,7 +1526,7 @@ claimed: function(claim_id, action) {
 
 confirmTag: function(tagId) {
   var actionCont = ge('mv_action_info');
-  ge('mv_approve').innerHTML = '<div style="text-align: center; padding-top: 4px;"><img src="/images/upload.gif"></div>';
+  ge('mv_approve').innerHTML = '<div style="text-align: center; padding-top: 4px;"><img src="' + vk.st_base_path +  '/images/upload.gif"></div>';
   ajax.post('al_video.php', {act: 'confirm_tag', video: mvcur.mvData.videoRaw, tag_id: tagId, hash: mvcur.mvData.hash}, {onDone: function(info, tagsList, padres) {
     if (_pads.shown == 'vid') {
       Pads.vidDone(mvcur.mvData.videoRaw, false, padres);
@@ -1545,7 +1545,7 @@ confirmTag: function(tagId) {
 declineTag: function(tagId) {
   var appr = ge('mv_approve');
   var back = appr.innerHTML;
-  appr.innerHTML = '<div style="text-align: center; padding-top: 4px;"><img src="/images/upload.gif"></div>';
+  appr.innerHTML = '<div style="text-align: center; padding-top: 4px;"><img src="' + vk.st_base_path + '/images/upload.gif"></div>';
   ajax.post('al_video.php', {act: 'delete_tag', video: mvcur.mvData.videoRaw, tag_id: tagId, hash: mvcur.mvData.hash}, {
     onDone: function(info, tagsList, padres) {
       if (_pads.shown == 'vid') {
