@@ -481,7 +481,7 @@ table.login_blocked_reason_thumbs {
   font-size: 13px;
 }
 .login_mobile_head {
-  background: url(//m.vk.com../../images/mhead_bg.png) #4C6F97 repeat-x;
+  background: url(../../images/mhead_bg.png) #4C6F97 repeat-x;
   color: white;
   overflow: hidden;
   zoom: 1;
@@ -493,14 +493,14 @@ table.login_blocked_reason_thumbs {
 .login_mobile_logo1 {
   width: 124px;
   height: 44px;
-  background: url(//m.vk.com../../images/logo.png) no-repeat center;
+  background: url(../../images/logo.png) no-repeat center;
 }
 .login_mobile_logo1 {
   width: 39px;
-  background-image: url(//m.vk.com../../images/vkn_logo.png);
+  background-image: url(../../images/vkn_logo.png);
 }
 .login_mobile_top {
-  background: url(//m.vk.com../../images/notify.png) no-repeat center;
+  background: url(../../images/notify.png) no-repeat center;
   padding: 5px 9px;
 }
 .login_mobile_top_new {
@@ -536,10 +536,10 @@ table.login_blocked_reason_thumbs {
 }
 .login_mobile_lvi {
   padding: 0 2px 1px;
-  background: url(//m.vk.com../../images/online.png) no-repeat 1px center;
+  background: url(../../images/online.png) no-repeat 1px center;
 }
 .login_mobile_arr {
-  background: url(//m.vk.com../../images/profile_arrow.png) no-repeat center;
+  background: url(../../images/profile_arrow.png) no-repeat center;
   position: absolute;
   right: 0;
   width: 10px;

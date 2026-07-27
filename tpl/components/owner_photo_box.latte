@@ -1,0 +1,94 @@
+{capture $script}
+{syntax off}
+OwnerPhoto.init(box, {
+    "global_sorry_error": "К сожалению, произошла ошибка",
+    "profile_oph_error_server": "{sorry}.<br>Не удалось сохранить файл на сервере. Пожалуйста, обновите страницу и попробуйте еще раз.<br>Если ошибка продолжает возникать, попробуйте сохранить оригинал фотографии и загрузить её повторно.",
+    "profile_oph_err_unknown": "{sorry}.<br>Произошла непредвиденная ошибка. Пожалуйста, обновите страницу и попробуйте еще раз, сейчас или позже.<br>Если ошибка продолжает возникать регулярно, {link}обратитесь в поддержку »{/link}",
+    "profile_oph_err_size": "{sorry}.<br>Фотография должна иметь размер не меньше {min} точек и не больше {max} точек по каждой из сторон.<br>Кроме того, нельзя использовать фотографии, у которых одна из сторон в несколько раз превышает другую.",
+    "profile_oph_err_format": "{sorry}.<br>Данный формат файлов не поддерживается.<br>Вы можете загрузить любое изображение в формате JPG, GIF или PNG.",
+    "profile_oph_err_upload": "{sorry}.<br>Не удалось загрузить фотографию на сервер. Попробуйте использовать фотографию меньшего размера.<br>Если ошибка продолжает возникать регулярно, {link}обратитесь в поддержку »{/link}",
+    "profile_oph_camera_save": "Сохранить и продолжить",
+    "profile_oph_camera_back": "Вернуться назад",
+    "profile_no_camera": "Вебкамера не обнаружена",
+    "profile_no_camera_access": "Доступ к вебкамере не включен",
+    "profile_set_camera_access": "Открыть настройки доступа к вебкамере",
+    "profile_capture_image": "Сделать снимок",
+    "profile_to_video_mode": "Убрать снимок",
+    "profile_no_camera_back": "Вернуться к выбору файла",
+    "global_error_details": "Показать подробности »",
+    "global_error_hide_details": "Скрыть подробности"
+});
+{/syntax}
+OwnerPhoto.uploadInit({
+  "url":"/badbrowser.php?target=upload.php&act=owner_photo&oid=216946&square=&aid=409499&mid=216946&server=&_sig=15541cb286ef63031979c13b0a00b53ed767ee59&_origin=/",
+  "lang":{
+    "button_browse":"Выбрать файл",
+    "cannot_upload_title":"Ошибка",
+    "cannot_upload_text":"Загрузка изображений в данный момент недоступна. Попробуйте повторить операцию позже."
+  },
+  "check_url":"/badbrowser.php?target=upload.php&act=check&type=photo&role=photo&no_mid=&script=upload.php&media_proxy=1&mid=216946&server=&_sig=15541cb286ef63031979c13b0a00b53ed767ee59&_origin=/",
+  "base_url":"/",
+  "static_url":"/"
+});
+if (browser.flash >= 9 && !(browser.msie && browser.version < 8)) {
+  show('owner_photo_camera_link');
+}
+{/capture}
+{capture $owner_photo_box}
+<div id="owner_photo_upload" style="">
+  <a onclick="curBox().hide()" class="fl_r owner_photo_close">{_close}</a>
+  <div class="owner_photo_title">Загрузка новой фотографии</div>
+  <div class="owner_photo_desc">Друзьям будет проще узнать Вас, если Вы загрузите свою настоящую фотографию.<br>Вы можете загрузить изображение в формате JPG, GIF или PNG.</div>
+  <div class="msg" id="owner_photo_error"></div>
+  <div id="owner_photo_input"></div>
+  
+  <div class="owner_photo_additional">Если у Вас возникают проблемы с загрузкой, попробуйте выбрать фотографию меньшего размера.</div>
+  <div id="owner_photo_camera_link" class="owner_photo_additional" style="display: none;">Если Ваш компьютер оснащен веб-камерой, Вы можете <a onclick="return OwnerPhoto.cameraInit();">сделать моментальную фотографию »</a></div>
+</div>
+<div id="owner_dropbox" class="dropbox">
+  <div class="dropbox_wrap">
+    <div class="dropbox_area">
+      <div class="dropbox_label">Перетащите файлы сюда</div>
+    </div>
+  </div>
+</div>
+<div id="owner_photo_camera" style="display: none">
+  <a onclick="curBox().hide()" class="fl_r owner_photo_close">{_close}</a>
+  <div class="owner_photo_title">Фотография на Вашей странице</div>
+  <div class="owner_photo_desc">Снимок с веб-камеры будет показываться на Вашей странице.</div>
+  <div id="owner_photo_webcam_wrap">
+    <div id="owner_photo_webcam"></div>
+  </div>
+  <div id="owner_photo_cam_ctrls" class="owner_photo_controls">
+    <div class="button_blue button_big"><button id="camera_button_yes">Сделать снимок</button></div><div class="button_cancel inl_bl" id="owner_photo_camera_return"><div class="button" id="camera_button_no">Вернуться назад</div></div>
+  </div>
+</div><div id="owner_photo_edit" style="display: none">
+  <a onclick="curBox().hide()" class="fl_r owner_photo_close">{_close}</a>
+  <div class="owner_photo_title">Фотография на Вашей странице</div>
+  <div class="owner_photo_desc">Выбранная область будет показываться на Вашей странице.<br>Если изображение ориентировано неправильно, фотографию можно повернуть.</div>
+  <div id="owner_photo_thumb"></div>
+  <div class="owner_photo_controls">
+    <div class="button_blue button_big"><button id="owner_photo_done_edit" onclick="OwnerPhoto.editDone()">Сохранить и продолжить</button></div><div class="button_cancel unshown" id="owner_photo_upload_return"><div class="button" onclick="OwnerPhoto.uploadReturn()">Вернуться назад</div></div>
+  </div>
+</div>
+<div id="owner_photo_crop" style="display: none">
+  <a onclick="curBox().hide()" class="fl_r owner_photo_close">{_close}</a>
+  <div class="owner_photo_title">Выбор миниатюры</div>
+  <div class="owner_photo_desc">Осталось выбрать квадратную область для маленьких фотографий.<br>Выбранная миниатюра будет использоваться в новостях, личных сообщениях и комментариях.</div>
+  <div id="owner_photo_crop_thumb"></div>
+  <div class="owner_photo_controls">
+    <div class="button_blue button_big">
+      <button id="owner_photo_done" onclick="OwnerPhoto.cropDone()">Сохранить изменения</button>
+    </div><div class="button_cancel unshown" id="owner_photo_edit_return"><div class="button" onclick="OwnerPhoto.editReturn()">Вернуться назад</div></div>
+  </div>
+</div>
+{/capture}
+{php
+$payload = [
+    "",
+    (string) $owner_photo_box,
+    html_entity_decode((string)$script, ENT_QUOTES, 'UTF-8')
+];
+
+echo $ee13vars->ajax(0, $payload, ['newStatic' => 'upload.js,owner_photo.js,owner_photo.css']);
+}

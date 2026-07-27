@@ -713,7 +713,7 @@ var photos = {
     if (!ge('photos_upload_area')) return;
     window.filesToUpload = files;
     var back = ge('photos_upload_area').innerHTML;
-    ge('photos_upload_area').innerHTML = '<img src="/images/upload.gif">';
+    ge('photos_upload_area').innerHTML = '<img src="' + vk.st_base_path + '/images/upload.gif">';
     nav.go(ge('photos_upload_area').href + '&html5=1', false, {
       onFail: function(text) {
         ge('photos_upload_area').innerHTML = back;

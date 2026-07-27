@@ -15,7 +15,7 @@ if (!isset($GLOBALS['ee13'])) {
         
         public function get_lang(string $key)
         {
-            return $this->locale[getLanguage()][$key] ?? $this->locale['en'][$key] ?? str_replace("_", " ", $key);
+            return $this->locale[getLanguage()][$key] ?? str_replace("_", " ", $key);
         }
 
         public function enable_bully_bob()
