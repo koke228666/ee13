@@ -182,7 +182,7 @@
                     </small>
                     <span id="reply_link{$postId}" class="reply_link" n:if="!($forceNoCommentsLink ?? false) && ($commentSection ?? true) && isset($thisUser)">
                         <span class="divide">|</span>
-                        <a class="reply_link" onclick="wall.showEditReply('{$postId}')">{_comment}</a>
+                        <a class="reply_link" onclick="wall.showEditReply('{$postId|noescape}')">{_comment}</a>
                     </span>
                 </div>
 
@@ -206,7 +206,7 @@
                     <div id="post_replies{$postId}"></div>
                     
                     {if !($forceNoCommentsLink ?? false) && ($commentSection ?? true) && isset($thisUser)}
-                        <div class="reply_fakebox_wrap" id="reply_fakebox{$postId}" onclick="wall.showEditReply('{$postId}')" n:attr="style => ($commentsCount == 0 ? 'display: none;' : '')">
+                        <div class="reply_fakebox_wrap" id="reply_fakebox{$postId}" onclick="wall.showEditReply('{$postId|noescape}')" n:attr="style => ($commentsCount == 0 ? 'display: none;' : '')">
                             <div class="reply_fakebox">{_comment}..</div>
                         </div>
                         

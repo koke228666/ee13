@@ -1,0 +1,6 @@
+https://web.archive.org/web/20130604020106id_/vk.com/swf/photo_uploader_lite.swf
+https://web.archive.org/web/20160316205921id_/http://st3.vk.me/swf/audio_lite.swf
+https://web.archive.org/web/20160318215110id_/http://st1.vk.me/swf/CaptureImg.swf
+существует более старая версия CaptureImg.swf, которая рендерит в себе диалоговое окно:
+https://web.archive.org/web/20110119230547id_/http://vkontakte.ru/swf/CaptureImg.swf?4
+но она не подходит, т.к. у нас уже есть окошко
