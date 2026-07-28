@@ -1,43 +1,71 @@
-<div class='verticalGrayTabsWrapper'>
-    <div class="verticalGrayTabs">
-        <div class='with_padding'>
-            <a n:if="isset($thisUser)" n:attr="id => $mode === 'list' && $isMy ? 'used' : 'ki'" href="/audios{$thisUser->getId()}">{_my_music}</a>
-            <a n:attr="id => $mode === 'uploaded' ? 'used' : 'ki'" href="/audios/uploaded">{_my_audios_small_uploaded}</a>
-            {* TODO: show upload link as and plusick (little plus) in button up*}
-            <a n:if="isset($thisUser)" href="/player/upload{if $isMyClub}?gid={abs($ownerId)}{/if}">{_upload_audio}</a>
-            <a n:if="isset($thisUser)" n:attr="id => $mode === 'new' ? 'used' : 'ki'" href="/search?section=audios">{_audio_new}</a>
-            <a n:if="isset($thisUser)" n:attr="id => $mode === 'popular' ? 'used' : 'ki'" href="/search?section=audios&order=listens">{_audio_popular}</a>
-
-            <hr n:if="isset($thisUser)">
-
-            <a n:attr="id => $mode === 'playlists' && $ownerId == $thisUser->getId() ? 'used' : 'ki'" href="/playlists{$thisUser->getId()}" n:if="isset($thisUser)">{_my_playlists}</a>
-
-            <a n:if="isset($thisUser)" href="/audios/newPlaylist">{_new_playlist}</a>
-
-            {if !$isMy && $mode !== 'popular' && $mode !== 'new' && $mode != 'alone_audio' && $mode != 'uploaded'}
-                <hr>
-                
-                <a n:if="!$isMy" n:attr="id => $mode === 'list' ? 'used' : 'ki'" href="/audios{$ownerId}">{if $ownerId > 0}{_music_user}{else}{_music_club}{/if}</a>
-                <a href="/player/upload?gid={abs($ownerId)}" n:if="isset($thisUser) && isset($club) && $club->canUploadAudio($thisUser)">{_upload_audio}</a>
-                <a n:attr="id => $mode === 'playlists' && $ownerId != $thisUser->getId() ? 'used' : 'ki'" class='noOverflow' href="/playlists{$ownerId}"  n:if="isset($thisUser) && isset($ownerId) && !$isMy">{if $ownerId > 0}{_playlists_user}{else}{_playlists_club}{/if}</a>
-                <a href="/audios/newPlaylist{if $isMyClub}?gid={abs($ownerId)}{/if}" n:if="isset($thisUser) && $isMyClub">{_new_playlist}</a>
-            {/if}
-        </div>
-
-        {ifset $friendsAudios}
-            <div class="friendsAudiosList">
-                <a href="/audios{$friend->getRealId()}" n:foreach="$friendsAudios as $friend">
-                    <div class="elem">
-                        <img src="{$friend->getAvatarURL()}" />
-
-                        <div class="additionalInfo">
-                            {var $audioStatus = $audioStatus ?? null}
-                            <span class="name noOverflow">{$friend->getCanonicalName()}</span>
-                            <span class="desc">{$audioStatus ? $audioStatus->getName() : tr("audios_count", $friend->getAudiosCollectionSize())}</span>
-                        </div>
-                    </div>
-                </a>
+<div id="side_filters">
+    <div id="album_filters">
+        <div id="album0" class="audio_filter selected"
+        onmouseover="if (Audio.listOver) Audio.listOver(this)" onmouseout="if (Audio.listOut) Audio.listOut(this)"
+        onclick="Audio.loadAlbum(0)">
+            <div class="label">{_my_music}</div>
+            <div class="icon_wrap shown" onclick="return Audio.addAudio({}, event);" onmouseover="addClass(this, 'over'); showTooltip(this, { text: '{_upload_audio|noescape}', black: 1, shift: [7, 2, 0] })" onmouseout="removeClass(this, 'over')">
+                <div class="icon add"/>
             </div>
-        {/ifset}
+        </div>
+        <div id="recommendations"
+             class="audio_filter"
+             onmouseover="if (Audio.listOver) Audio.listOver(this)"
+             onmouseout="if (Audio.listOut) Audio.listOut(this)"
+             onclick="Audio.loadRecommendations({ from_pad: '', update: true })">
+            <div class="label">{_audio_popular}</div>
+        </div>
+        <div>
+            <div style="position:relative;"></div>
+        </div>
+        <div id="album_filtered"
+             class="audio_search_album audio_filter"
+             onmouseover="if (Audio.listOver) Audio.listOver(this)"
+             onmouseout="if (Audio.listOut) Audio.listOut(this)"
+             onclick="Audio.backToSearch('');">
+            <div class="label">{_search_results}</div>
+        </div>
     </div>
+    <div id="audio_friends">
+    </div>
+    <div class="audio_search_filters" id="audio_search_filters">
+        <div class="audio_search_filter" id="audio_popular_filters">
+            <div class="selector_container" style="/*background-color:rgb(255, 255, 255);width:155px;*/">
+                <table class="selector_table" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td class="selector">
+                                <span class="selected_items"></span>
+                                <input class="selector_input selected" readonly="readonly" style="width:131px;" type="text" value="By popularity">
+                                <input class="resultField" id="selectedItems" name="selectedItems" type="hidden" value="0">
+                                <input class="customField" id="selectedItems_custom" name="selectedItems_custom" type="hidden" value="">
+                            </td>
+                            <td class="selector_dropdown">&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="results_container">
+                    <div class="result_list" style="display:none;opacity:1;width:155px;">
+                        <ul style="background-color:rgb(255, 255, 255);"></ul>
+                    </div>
+                    <div class="result_list_shadow" style="width:155px;">
+                        <div class="shadow1"></div>
+                        <div class="shadow2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="audio_search_filters" id="audio_search_filters" style="">
+            <div class="audio_search_filter">
+                <input type="hidden" id="audio_sort_filter" value="2"/>
+            </div>
+            <div class="audio_search_filter lyrics_filter">
+                <input type="hidden" id="audio_lyrics_filter" value="0" />
+            </div>
+        </div>
+    </div>
+    <div id="audio_albums_wrap" style="display:none;">
+        <div id="audio_albums"></div>
+    </div>
+    <div id="audio_search_info"></div>
 </div>

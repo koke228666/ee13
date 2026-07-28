@@ -1,12 +1,12 @@
 {capture $pageTitle}{ifset title}{include title}{/ifset}{/capture}
 {if !isset($parentModule) || substr($parentModule, 0, 21) === 'libchandler:absolute.'}
-
 {include "ee13_vars.latte"}
+{include "nav.latte"}
+{php $navmap = $GLOBALS['navmap'];}
 {php $ee13vars = $GLOBALS['ee13'];}
-
 {php $al = $ee13vars->get_al();}
 {php $isAjax = ($al == 1) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'); }
-
+{ifset header}{capture $header}{include header}{/capture}{/ifset}
 {capture $ajaxJs}
     {if $al == -1}
         setTimeout(function() { 
@@ -16,10 +16,8 @@
     {ifset view_script}{include view_script}{/ifset}
 {/capture}
 {php $cleanJs = html_entity_decode((string)$ajaxJs, ENT_QUOTES, 'UTF-8'); }
-
 {if $al == -1}
     {php $ee13vars->enable_bully_bob()}
-
     {capture $ajaxHtml}
         {ifset wrap}
             <div class="msg msg_{$flashMessage->type}" n:ifset="$flashMessage">
@@ -39,73 +37,58 @@
             {/ifset}
         {/ifset}
     {/capture}
-
     {php $cleanJs = html_entity_decode((string)$ajaxJs, ENT_QUOTES, 'UTF-8'); }
+<html><head>
+<script type="text/javascript">
+var _ua = navigator.userAgent;
+var locDomain = location.host;
+if (/opera/i.test(_ua) || !/msie 6/i.test(_ua) || document.domain != locDomain) {
+  document.domain = locDomain;
+}
+</script>
 
-    <html><head>
-    <script type="text/javascript">
-    var _ua = navigator.userAgent;
-    var locDomain = location.host;
-    if (/opera/i.test(_ua) || !/msie 6/i.test(_ua) || document.domain != locDomain) {
-      document.domain = locDomain;
-    }
-    </script>
-    {ifset header}{capture $header}{include header}{/capture}{/ifset}
-    <script type="text/javascript">
+<script type="text/javascript">
+parent.ajax._framedone({$ee13vars->ajax(0, '', ['newStatic' => implode(',', $cur['static'] ?? [])])}, [
+    0, 
+    {=json_encode(trim((string)$header), JSON_UNESCAPED_UNICODE)|noescape},
+    {=json_encode((string)$ajaxHtml, JSON_UNESCAPED_UNICODE)|noescape}, 
+    "", 
+    {"id": {ifset $thisUser}{$thisUser->getId()}{else}0{/ifset}, "loc": {=json_encode($_REQUEST['__query'] ?? '', JSON_UNESCAPED_UNICODE)|noescape}, "pads": 1, "width": 791, "width_dec": 160, "width_dec_footer": 130}
+]);
+</script>
 
-    parent.ajax._framedone({$ee13vars->ajax(0, '', ['newStatic' => implode(',', array_keys($cur['static'] ?? []))])}, [
-        0, 
-        {=json_encode(trim((string)$header), JSON_UNESCAPED_UNICODE)|noescape},
-        {=json_encode((string)$ajaxHtml, JSON_UNESCAPED_UNICODE)|noescape}, 
-        "", 
-        {
-            "id": {ifset $thisUser}{$thisUser->getId()}{else}0{/ifset},
-            "loc": {=json_encode($_REQUEST['__query'] ?? '', JSON_UNESCAPED_UNICODE)|noescape},
-            "pads": 1,
-            "width": 791,
-            "width_dec": 160,
-            "width_dec_footer": 130
-        }
-    ]);
-    </script>
-    
-    <script type="text/javascript">
-    parent.ajax._frameover({=json_encode($cleanJs, JSON_UNESCAPED_UNICODE)|noescape}, {"leftads":"","ads_can_show":"1","ads_section":"profile"});
-    </script>
-    </head><body></body></html>
-
+<script type="text/javascript">
+parent.ajax._frameover({=json_encode($cleanJs, JSON_UNESCAPED_UNICODE)|noescape}, {"leftads":"","ads_can_show":"1","ads_section":"profile"});
+</script>
+</head><body></body></html>
 {elseif $isAjax}
     {php $ee13vars->enable_bully_bob()}
-    
-    {capture $ajaxHtml}
+        {capture $ajaxHtml}
         {ifset wrap}
-            <div class="msg msg_{$flashMessage->type}" n:ifset="$flashMessage">
-                <b>{$flashMessage->title}</b><br/>
-                {$flashMessage->msg|noescape}
-            </div>
+<div class="msg msg_{$flashMessage->type}" n:ifset="$flashMessage">
+    <b>{$flashMessage->title}</b><br/>
+    {$flashMessage->msg|noescape}
+</div>
             {include wrap}
         {else}
             {ifset content}
-                <div id="wrap2">
-                  <div id="wrap1">
-                    <div id="content">
-                        {include content}
-                    </div>
-                  </div>
-                </div>
+<div id="wrap2">
+  <div id="wrap1">
+    <div id="content">
+        {include content}
+    </div>
+  </div>
+</div>
             {/ifset}
         {/ifset}
     {/capture}
-
     {php echo $ee13vars->ajax(0, [
         trim((string) $pageTitle),
         (string) $ajaxHtml,
         (string) $cleanJs,
         ["id" => isset($thisUser) ? $thisUser->getId() : 0]
     ]);}
-
 {else}
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{php echo getLanguage()}" lang="{php echo getLanguage()}">
 <head>
@@ -140,8 +123,7 @@ var vk = {
   pd: 0,
   pads: 1,
   time: [2013, 6, 5, 17, 48, 52],
-  st_base_path: "{php echo $ee13vars->get_resource($theme, '');}",
-  pvdark: {(int)$_COOKIE['pv_dark']}
+  st_base_path: "{php echo $ee13vars->get_resource($theme, '');}"
 }
 
 //window.locDomain = vk.host.match(/[a-zA-Z]+\.[a-zA-Z]+\.?$/)[0];
@@ -164,8 +146,8 @@ var StaticFiles = {
   'ie6.css'   : { v: 26 },
   'ie7.css'   : { v: 18 }
 
-{foreach $cur['static'] as $sver => $stat}
-  ,{$stat} : { v: 1 }
+{foreach $cur['static'] as $stat}
+  ,{$stat} : { v: {$navmap->st_versions[$stat]} }
 {/foreach}
 }
 
@@ -191,11 +173,14 @@ function isAncestor(elem, ancestor) {
 <script type="text/javascript" src="{php echo $ee13vars->get_resource($theme, '/js/al/common.js');}"></script>
 <script type="text/javascript" src="{php echo $ee13vars->get_resource($theme, '/js/loader_nav13322_0.js');}"></script>
 <script type="text/javascript" src="{php echo $ee13vars->get_resource($theme, '/js/lang0_0.js');}"></script>
-{foreach $cur['static'] as $stat => $sver}
+{foreach $cur['static'] as $stat}
+    {php $sver = $navmap->st_versions[$stat]}
+    {php $from_lib = $navmap->st_types['fromLib'][$stat]}
+    {php $from_root = $navmap->st_types['fromRoot'][$stat]}
     {if strpos($stat, 'css') !== false}
-        <link rel="stylesheet" href="{php echo $ee13vars->get_resource($theme, '/css/al/' . $stat . '?v=' . $sver);}">
+        <link rel="stylesheet" href="{php echo $ee13vars->get_resource($theme, ($from_lib ? '/css/lib/' : ($from_root ? '/css/' : '/css/al/')) . $stat . '?v=' . $sver);}">
     {else}
-        <script src="{php echo $ee13vars->get_resource($theme, '/js/al/' . $stat . '?v=' . $sver);}"></script>
+        <script src="{php echo $ee13vars->get_resource($theme, ($from_lib ? '/js/lib/' : ($from_root ? '/js/' : '/js/al/')) . $stat . '?v=' . $sver);}"></script>
     {/if}
 {/foreach}
 </head>
@@ -285,7 +270,8 @@ function isAncestor(elem, ancestor) {
       document.getElementsByTagName('body')[0].innerHTML = '';
     } else {
       domReady();
-      //updateMoney(0);
+      updateMoney(0);
+      {include "components/master_js.latte"}
       {ifset view_script}{$cleanJs|noescape}{/ifset}
     }
   </script>

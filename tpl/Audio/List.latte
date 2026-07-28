@@ -2,9 +2,10 @@
 
 {php
 $cur['static'] = [
-    'audio.js' => 1,
-    'audio.css' => 1,
-    '../lib/ui_controls.js' => 1
+    'audio.js',
+    'audio.css',
+    'ui_controls.js',
+    'ui_controls.css'
 ];
 }
 
@@ -43,99 +44,21 @@ $cur['static'] = [
 {/block}
 
 {block content}
-    {* Taken from: https://archive.li/P32em *}
-
-    {* Must be moved from latte to js *}
-    {include "bigplayer.latte", buttonsShow_summary => $audiosCount > 10}
-
-    <script>
-        window.__current_page_audio_context = null
-        {if $mode == 'list'}
-            window.__current_page_audio_context = {
-                name: 'entity_audios',
-                entity_id: {$ownerId},
-                page: {$page}
-            }
-        {elseif $mode == 'uploaded'}
-            window.__current_page_audio_context = {
-                name: 'uploaded',
-                entity_id: 0,
-                page: {$page}
-            }
-        {elseif $mode == 'alone_audio'}
-            window.__current_page_audio_context = {
-                name: 'alone_audio',
-                entity_id: {$alone_audio->getId()},
-                page: 1
-            }
-        {/if}
-    </script>
-
-    <div n:if="isset($audios)" class='summaryBarHideable summaryBar summaryBarFlex padding' style="margin: 0px -10px;width: 99.5%;display: none;">
-        <div class='summary'>
-            <b>{tr("is_x_audio", $audiosCount)}</b>
-        </div>
-
-        {include "../components/paginator.latte", conf => (object) [
-            "page"     => $page,
-            "count"    => $audiosCount,
-            "amount"   => sizeof($audios),
-            "perPage"  => $perPage ?? \OPENVK_DEFAULT_PER_PAGE,
-            "atTop"    => true,
-            "space"    => 6,
-            "tidy"     => true,
-        ]}
+<div id="audio" class="new" style="padding-top: 46px;">
+{include "bigplayer.latte"}
+    <div class="audio_wrap" id="audio_wrap">
+        <table class="audio_table" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <tbody>
+                <tr>
+                    <td class="main_panel">
+                        {include "trax.latte"}
+                    </td>
+                    <td class="side_panel">
+                        {include "tabs.latte"}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
-    <div class="audiosDiv">
-        <div class="audiosContainer audiosSideContainer audiosPaddingContainer" n:if="$mode != 'playlists'">
-            <div n:if="$audiosCount <= 0" style='height: 100%;'>
-                {include "../components/content_error.latte", description => $ownerId > 0 ? ($ownerId == $thisUser->getId() ? tr("no_audios_thisuser") : tr("no_audios_user")) : tr("no_audios_club")}
-            </div>
-            <div n:if="$audiosCount > 0" class="scroll_container">
-                <div class="scroll_node" n:foreach="$audios as $audio">
-                    {include "player.latte", audio => $audio, club => $club}
-                </div>
-            </div>
-
-            {* new and popular modes are unavailable now *}
-            <div n:if="$mode != 'new' && $mode != 'popular'">
-                {include "../components/paginator.latte", conf => (object) [
-                    "page"     => $page,
-                    "count"    => $audiosCount,
-                    "amount"   => sizeof($audios),
-                    "perPage"  => $perPage ?? \OPENVK_DEFAULT_PER_PAGE,
-                    "atBottom" => true,
-                    "atTop"   => false,
-                    "tidy"    => false
-                ]}
-            </div>
-        </div>
-
-        {* For some reason, there is a playlists page in Audio List template *}
-        <div class="audiosPaddingContainer audiosSideContainer audiosPaddingContainer" style="width: 72.2%;" n:if="$mode == 'playlists'">
-            <div n:if="$playlistsCount <= 0" style='height: 100%;'>
-                {include "../components/content_error.latte", description => $ownerId > 0 ? ($ownerId == $thisUser->getId() ? tr("no_playlists_thisuser") : tr("no_playlists_user")) : tr("no_playlists_club")}
-            </div>
-
-            <div class="scroll_container playlistContainer" n:if="$playlistsCount > 0">
-                <div class='scroll_node' n:foreach='$playlists as $playlist'>
-                    {include 'playlistListView.latte', playlist => $playlist}
-                </div>
-            </div>
-
-            <div>
-                {include "../components/paginator.latte", conf => (object) [
-                    "page"     => $page,
-                    "count"    => $playlistsCount,
-                    "amount"   => sizeof($playlists),
-                    "perPage"  => $perPage ?? \OPENVK_DEFAULT_PER_PAGE,
-                    "atBottom" => true,
-                    "atTop"   => false,
-                    "tidy"    => false
-                ]}
-            </div>
-        </div>
-        {include "tabs.latte"}
-    </div>
+</div>
 {/block}

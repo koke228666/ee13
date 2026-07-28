@@ -10,7 +10,7 @@
     }
 
     
-    <h4><b>{_contact_information}</b></h4>
+    <h4><a n:if="$user->getId() == $thisUser->getId()" class="fl_r" href="/edit">{_edit}</a><b>{_contact_information}</b></h4>
     <div class="profile_info">
             {if $hasContacts}
             {var $firstBlockRendered = false}
@@ -83,7 +83,7 @@
     }
 
 
-    <h4><b>{_personal_information}</b></h4>
+    <h4><a n:if="$user->getId() == $thisUser->getId()" class="fl_r" href="/edit">{_edit}</a><b>{_personal_information}</b></h4>
     <div class="profile_info">
         {if $hasInterests}
         {var $firstBlockRendered = false}

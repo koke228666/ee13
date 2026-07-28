@@ -1,0 +1,118 @@
+{contentType javascript}
+gSearch.init();
+if (window.qArr && qArr[5]) qArr[5] = [5, "по товарам", "", "goods", 0x00000100];
+if (browser.iphone || browser.ipad || browser.ipod) {
+  setStyle(bodyNode, { webkitTextSizeAdjust: 'none' });
+}
+{*
+var qf = ge('quick_login_form'), ql = ge('quick_login'), qe = ge('quick_email'), qp = ge('quick_pass');
+var qlb = ge('quick_login_button'), prgBtn = qlb;
+
+var qinit = function() {
+  setTimeout(function() {
+    ql.insertBefore(ce('div', { innerHTML: '<iframe class="upload_frame" id="quick_login_frame" name="quick_login_frame"></iframe>' }), qf);
+    qf.target = 'quick_login_frame';
+  }, 1);
+}
+
+if (window.top && window.top != window) {
+  window.onload = qinit;
+} else {
+  setTimeout(qinit, 0);
+}
+
+qf.onsubmit = function() {
+  if (!ge('quick_login_frame')) return false;
+  if (!trim(qe.value)) {
+    notaBene(qe);
+    return false;
+  } else if (!trim(qp.value)) {
+    notaBene(qp);
+    return false;
+  }
+  lockButton(window.__qfBtn = prgBtn);
+  prgBtn = qlb;
+  clearTimeout(__qlTimer);
+  __qlTimer = setTimeout(loginSubmitError, 30000);
+  domFC(domPS(qf)).onload = function() {
+    clearTimeout(__qlTimer);
+    __qlTimer = setTimeout(loginSubmitError, 2500);
+  }
+  return true;
+}
+
+window.loginSubmitError = function() {
+  showFastBox('Предупреждениe', 'Не удается пройти авторизацию по защищенному соединению. Чаще всего это происходит, когда на Вашем компьютере установлена неправильная текущая дата и время. Пожалуйста, проверьте настройки даты и времени в системе и перезапустите браузер.');
+}
+window.focusLoginInput = function() {
+  scrollToTop(0);
+  notaBene('quick_email');
+}
+window.changeQuickRegButton = function(noShow) {
+  if (noShow) {
+    hide('top_reg_link', 'quick_reg_button');
+    show('top_search_link');
+  } else {
+    hide('top_search_link');
+    show('top_reg_link', 'quick_reg_button');
+  }
+  toggle('top_switch_lang', noShow && window.langConfig && window.langConfig.id != 3);
+}
+window.submitQuickLoginForm = function(email, pass, opts) {
+  setQuickLoginData(email, pass, opts);
+  if (opts && opts.prg) prgBtn = opts.prg;
+  if (qf.onsubmit()) qf.submit();
+}
+window.setQuickLoginData = function(email, pass, opts) {
+  if (email !== undefined) ge('quick_email').value = email;
+  if (pass !== undefined) ge('quick_pass').value = pass;
+  var params = opts && opts.params || {};
+  for (var i in params) {
+    var el = ge('quick_login_' + i);
+    if (el) {
+      val(el, params[i]);
+    } else {
+      qf.appendChild(ce('input', { type: 'hidden', name: i, id: 'quick_login_' + i, value: params[i] }));
+    }
+  }
+}
+
+if (qlb) {
+  qlb.onclick = function() { if (qf.onsubmit()) qf.submit(); };
+}
+var __oldOnLoginDone = onLoginDone;
+cur.destroy.push(function() {
+  onLoginDone = __oldOnLoginDone;
+});
+onLoginDone = nav.go.pbind('/feed', undefined, { params:{ _ref:'login' } });
+// для неавторизованных лошков *}
+
+if (0) {
+  hide('support_link_td');
+}
+var ts_input = ge('ts_input'), oldFF = browser.mozilla && parseInt(browser.version) < 8;
+if (browser.mozilla && !oldFF) {
+  setStyle(ts_input, { padding: (vk.rtl ? '3px 22px 4px 40px' : '3px 41px 4px 22px') });
+}
+placeholderSetup(ts_input, { back: false, reload: true });
+if (browser.opera || browser.msie || oldFF) {
+  setStyle(ts_input, { padding: (vk.rtl ? '3px 22px 4px 40px' : '3px 41px 4px 22px') });
+}
+if (browser.chrome) {
+  setStyle(ts_input, { padding: (vk.rtl ? '4px 23px 3px 39px' : '4px 40px 3px 23px') });
+}
+TopSearch.init();
+if (browser.msie8 || browser.msie7) {
+  var st = { border: '1px solid #a6b6c6' };
+  if (hasClass(ge('ts_wrap'), 'vk')) {
+    if (vk.rtl) st.left = '1px';
+    else st.right = '0px';
+  } else {
+    if (vk.rtl) st.right = '146px';
+    else st.left = '146px';
+  }
+  setStyle(ge('ts_cont_wrap'), st);
+}
+window.tsHintsEnabled = 1;
+// handlePageParams({ fullPage: 1, pvdark: {(int)$_COOKIE['pv_dark']} }); // тут надо правильно раскидать
+addEvent(document, 'click', onDocumentClick);
