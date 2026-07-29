@@ -1,0 +1,207 @@
+{contentType javascript}
+
+{var $isMain      = $mode === 'main'}
+{var $isContacts  = $mode === 'contacts'}
+{var $isInterests = $mode === 'interests'}
+{var $isAdditional = $mode === 'additional'}
+{var $isAvatar    = $mode === 'avatar'}
+{var $isBackDrop  = $mode === 'backdrop'}
+{php if ($isAvatar || $isBackDrop) $isMain = true;}
+
+stManager.add(['../ee13/out_of_order.css']);
+
+cur.options = {
+    hash: '{$csrfToken|noescape}',
+
+    first_name: {$user->getFirstName(true)},
+    last_name: {(string)$user->getLastName(true)},
+    middle_name: {(string)$user->getPseudo()},
+    maiden_name: '',
+    home_town: {(string)$user->getHometown()},
+    {* приводим к строкам тому шо пустота возвращает null, а нам этого не надо *}
+
+    sex: {$user->getPronouns()},
+    sexes: [[0, {_male}], [1, {_female}], [2, {_neutral}]],
+
+    status: {$user->getMaritalStatus()},
+    statuses: {
+        0: [
+            [0, {_relationship_0}],
+            [1, {_relationship_1}],
+            [2, {_relationship_2}],
+            [3, {_relationship_3}],
+            [4, {_relationship_4}],
+            [5, {_relationship_5}],
+            [6, {_relationship_6}],
+            [7, {_relationship_7}]
+        ],
+        1: [
+            [0, {_relationship_0}],
+            [1, {_relationship_1_fem}],
+            [2, {_relationship_2}],
+            [3, {_relationship_3_fem}],
+            [4, {_relationship_4_fem}],
+            [5, {_relationship_5}],
+            [6, {_relationship_6_fem}],
+            [7, {_relationship_7}]
+        ],
+        2: [
+            [0, {_relationship_0}],
+            [1, {_relationship_1}],
+            [2, {_relationship_2}],
+            [3, {_relationship_3}],
+            [4, {_relationship_4}],
+            [5, {_relationship_5}],
+            [6, {_relationship_6}],
+            [7, {_relationship_7}]
+        ]
+    },
+
+    partner: {$user->getMaritalStatus()},
+    partners: [[13, 'федя сраця']],
+    ptitles: {
+        1: 'п___',
+        2: 'п___',
+        3: 'п___'
+    },
+    status_helps: {
+        1: '2',
+        2: '1',
+        3: '0'
+    },
+
+    {var $birthday = $user->getBirthday()}
+    bday: {$birthday ? (int) $birthday->format('%d') : 0},
+    bmonth: {$birthday ? (int) $birthday->format('%m') : 0},
+    {if $birthday}
+    byear: {(int) $birthday->format('%Y') < 1970 ? 1970 : (int) $birthday->format('%Y')},
+    {else}
+    byear: 0,
+    {/if}
+    bmonths: [
+        [0, "Месяц:"],
+        [1, "Января"],
+        [2, "Февраля"],
+        [3, "Марта"],
+        [4, "Апреля"],
+        [5, "Мая"],
+        [6, "Июня"],
+        [7, "Июля"],
+        [8, "Августа"],
+        [9, "Сентября"],
+        [10, "Октября"],
+        [11, "Ноября"],
+        [12, "Декабря"]
+    ],
+
+    byears: [
+        [0, "Год:"]
+        {for $year = date('Y'); $year >= 1970; $year--}
+            , [{$year}, {$year}]
+        {/for}
+    ],
+
+    bday_visibility: 0,
+    bday_visibilities: [[0, {_"show_my_birthday"}], [1, {_show_only_month_and_day}]],
+
+    lang: [0, 1, 2, 3],
+    langs: [[0, "Русский"], [1, "Українська"], [2, "Беларуская"], [3, "English"]],
+    family: [],
+
+    email: '',
+    mobile: '',
+    home: '',
+    website: '',
+    skype: '',
+
+    political: 0,
+    political_views: [],
+
+    // мне ваще   пофик ..   меня ничё не интересует .......
+    // стабы, такого нет в овк
+
+    religion_id: 0,
+    religion: '',
+    religions: [],
+
+    life_priority: 0,
+    life_priorities: [],
+
+    people_priority: 0,
+    people_priorities: [],
+
+    smoking: 0,
+    smoking_types: [],
+
+    alcohol: 0,
+    alcohol_types: [],
+
+    measure: 1,
+    weights: {},
+    heights: {}
+};
+
+function cleanName() {
+{syntax off}
+    var result = [];
+    for (var i = 0; i < arguments.length; i++) {
+        var name = arguments[i];
+        if (name == null) {
+            result.push('');
+            continue;
+        }
+        name = String(name)
+            .replace(/<[^>]*>/g, ' ')
+            .replace(/\u00A0/g, ' ')
+            .replace(/[\u2018\u2019\u02BC\u0060]/g, "'")
+            .replace(/[\u2010-\u2015\u2212]/g, '-')
+            .replace(
+                /[^A-Za-z\u00C0-\u024F\u0300-\u036F\u0370-\u052F\u0530-\u058F\u0590-\u06FF\u10A0-\u10FF '\-]/g,
+                '')
+            .replace(/\s+/g, ' ')
+            .replace(/-{2,}/g, '-')
+            .replace(/'{2,}/g, "'")
+            .replace(/\s*-\s*/g, '-')
+            .replace(/\s*'\s*/g, "'")
+            .replace(/^[\s'\-]+|[\s'\-]+$/g, '')
+            .toLowerCase();
+        var normalized = '';
+        var upperNext = true;
+        for (var j = 0; j < name.length; j++) {
+            var character = name.charAt(j);
+
+            if (
+                character == ' ' ||
+                character == '-' ||
+                character == "'") {
+                normalized += character;
+                upperNext = true;
+            } else {
+                normalized += upperNext
+                 ? character.toUpperCase()
+                 : character;
+
+                upperNext = false;
+            }
+        }
+        result.push(normalized);
+    }
+    return result;
+{/syntax}
+}
+
+cur.lang = {
+    "profileEdit_main_sel_bday": "День",
+    "profileEdit_name_be_patient": "ой блин ой ой капец <br>",
+    "general_changed": "чёто поменялось"
+};
+
+{if $isMain}
+ProfileEditor.initGeneral();
+{elseif $isContacts}
+ProfileEditor.initContacts();
+{elseif $isAdditional}
+showFastBox(getLang('global_warning'), "не реализовано, сори");
+{/if}
+
+cur.module = 'profile_edit';

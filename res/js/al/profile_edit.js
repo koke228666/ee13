@@ -83,13 +83,14 @@ var ProfileEditor = {
       onChange: function(value) {
         hide('pedit_status_ptitle', 'pedit_status_partner', 'pedit_status_detail');
         toggle('pedit_maiden_row', intval(value) == 1);
-        cur.uiPartner.clear();
+          // cur.uiPartner.clear();
         cur.uiStatus.clear();
         if (intval(value)) {
           show('pedit_status_row');
           cur.uiStatus.setData(peditData.statuses[intval(value)]);
         } else {
-          hide('pedit_status_row');
+          // hide('pedit_status_row');
+          // чтобы партнёр не прятался када меняется пол на 0 (в овк нет "не выбрано" и есть только три гендера)
         }
       }
     });
@@ -139,14 +140,14 @@ var ProfileEditor = {
           onPartnerChangeCb(0);
         }
       }
-      if (intval(value) && statusVal > 1 && cur.uiStatus.val() < 6) {
+      if (/*intval(value) && statusVal > 1 &&*/ cur.uiStatus.val() < 6) {
         if (intval(value) == peditData.partner) {
           if (ge('pedit_status_detail_content').innerHTML) show('pedit_status_detail');
         } else {
           hide('pedit_status_detail');
         }
       } else {
-        if (!intval(value)) {
+         if (!intval(value)) {
           cur.uiPartner.clear();
         }
         hide('pedit_status_detail');
@@ -796,10 +797,10 @@ var ProfileEditor = {
       cur.uiPartner.options.onChange();
       return;
     }
-    if (!intval(cur.uiSex.val())) {
+    /*if (!intval(cur.uiSex.val())) {
       cur.uiSex.showDefaultList();
       return;
-    }
+    }*/ // в овк нет не указано
 
     var params = {
       act: 'a_save_general',
@@ -969,7 +970,7 @@ var ProfileEditor = {
       return;
     }
     cur.nameChangeCancelText = obj.innerHTML;
-    obj.innerHTML = '<div style="padding-top: 3px;"><img src="/images/upload.gif" /></div>';
+    obj.innerHTML = '<div style="padding-top: 3px;"><img src="' + vk.st_base_path + '/images/upload.gif" /></div>';
     ajax.post('al_settings.php', {act: 'a_change_cancel', hash: hash}, {
       onDone: function() {
         obj.innerHTML = cur.nameChangeCancelText;
@@ -1035,7 +1036,7 @@ var ProfileEditor = {
       win.focus();
     } catch(e) { }
     window.socialCallback = function(data) {
-      ge('export_service_3').innerHTML = '<img src="/images/upload.gif" />';
+      ge('export_service_3').innerHTML = '<img src="' + vk.st_base_path + '/images/upload.gif" />';
       ProfileEditor.fetchFacebookName();
     }
     return;

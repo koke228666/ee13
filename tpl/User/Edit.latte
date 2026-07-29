@@ -1,12 +1,23 @@
 {extends "../@layout.latte"}
-{if $mode === 'backdrop'}
-    {var $backdrops = $user->getBackDropPictureURLs()}
-{/if}
+
+{php $cur['static'] = [
+    'profile_edit.js',
+    'profile_edit.css',
+    'ui_controls.js',
+    'ui_controls.css'
+    ];
+}
 
 {block title}{_edit_page}{/block}
 
-{block header}
-    {_edit_page}
+{block view_script}
+{if $jsTags}
+    <script>
+        {include "components/edit_init_script.latte"}
+    </script>
+{else}
+    {include "components/edit_init_script.latte"}
+{/if}
 {/block}
 
 {block content}
@@ -16,178 +27,180 @@
     {var $isAdditional = $mode === 'additional'}
     {var $isAvatar    = $mode === 'avatar'}
     {var $isBackDrop  = $mode === 'backdrop'}
+    {php if ($isAvatar || $isBackDrop) $isMain = true;}
 
     <div n:if="$user->hasPendingNumberChange()" class="msg">
         <b>Подтверждение номера телефона</b><br/>
         Введите код для подтверждения смены номера: <a href="/edit/verify_phone">ввести код</a>.
     </div>
 
-    <div class="tabs">
-        <div n:attr="id => ($isMain ? 'activetabs' : 'ki')" class="tab">
-            <a n:attr="id => ($isMain ? 'act_tab_a' : 'ki')" href="/edit">{_main}</a>
-        </div>
-        <div n:attr="id => ($isContacts ? 'activetabs' : 'ki')" class="tab">
-            <a n:attr="id => ($isContacts ? 'act_tab_a' : 'ki')" href="/edit?act=contacts">{_contacts}</a>
-        </div>
-        <div n:attr="id => ($isInterests ? 'activetabs' : 'ki')" class="tab">
-            <a n:attr="id => ($isInterests ? 'act_tab_a' : 'ki')" href="/edit?act=interests">{_interests}</a>
-        </div>
-        <div n:attr="id => ($isAdditional ? 'activetabs' : 'ki')" class="tab">
-            <a n:attr="id => ($isAdditional ? 'act_tab_a' : 'ki')" href="/edit?act=additional">{_additional}</a>
-        </div>
-        <div n:attr="id => ($isAvatar ? 'activetabs' : 'ki')" class="tab">
-            <a n:attr="id => ($isAvatar ? 'act_tab_a' : 'ki')" href="/edit?act=avatar">{_avatar}</a>
-        </div>
-        <div n:attr="id => ($isBackDrop ? 'activetabs' : 'ki')" class="tab">
-            <a n:attr="id => ($isBackDrop ? 'act_tab_a' : 'ki')" href="/edit?act=backdrop">{_backdrop_short}</a>
-        </div>
+    <div class="tabs t_bar clear_fix">
+        <ul id="pedit_filters" class="t0">
+            <li id="feedtab_news" class="{($isMain ? 'active_link' : '')}">
+                <a href="/edit">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_main}</b>
+                </a>
+            </li>
+            <li id="feedtab_news" class="{($isContacts ? 'active_link' : '')}">
+                <a href="/edit?act=contacts">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_contacts}</b>
+                </a>
+            </li>
+            <li id="feedtab_news" class="{($isInterests ? 'active_link' : '')}">
+                <a href="/edit?act=interests">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_interests}</b>
+                </a>
+            </li>
+            <li id="feedtab_news" class="{($isAdditional ? 'active_link' : '')}">
+                <a href="/edit?act=additional">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_additional}</b>
+                </a>
+            </li>
+        </ul>
     </div>
 
-    <div class="container_gray">
+    <div id="pedit_result"></div>
+
+    <div id="profile_editor">
         {if $isMain}
+        <div id="pedit_general">
+            <div id="pedit_name_request" style="display:none;"></div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_name}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_first_name" value="{$user->getFirstName(true)}" type="text">
+                </div>
+                <span id="pedit_name_tt_place" class="fl_l"></span>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_surname}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_last_name" value="{$user->getLastName(true)}" type="text">
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix"><div class="pedit_general_label fl_l ta_r">{_nickname}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_middle_name" value="{$user->getPseudo()}" type="text">
+                </div>
+            </div>
+            <div style="display: none;">
+                <div class="pedit_general_row clear_fix" id="pedit_maiden_row">
+                    <div class="pedit_general_label fl_l ta_r">Это вообще чЁ:</div>
+                    <div class="fl_l">
+                        <input class="text" id="pedit_maiden_name" name="pedit_maiden_name" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_pronouns}:</div>
+                <div class="fl_l">
+                    <input id="pedit_sex" name="pedit_sex">
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix" id="pedit_status_row">
+                <div class="pedit_general_label fl_l ta_r">{_relationship}:</div>
+                <div class="fl_l">
+                    <input id="pedit_status" name="pedit_status">
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix" id="pedit_status_partner">
+                <div class="pedit_general_label fl_l ta_r" id="pedit_status_ptitle"></div>
+                <div class="fl_l">
+                    <input id="pedit_partner" name="pedit_partner">
+                    <span class="progress" id="pedit_status_progress"></span>
+                    <span id="pedit_partner_tt_place" class="fl_l"></span>
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix" id="pedit_status_detail">
+                <div class="pedit_general_label fl_l"></div>
+                <div class="fl_l" id="pedit_status_detail_content"></div>
+                <span id="pedit_partner_tt_place1" class="fl_l"></span>
+            </div>
+            <div class="pedit_general_row clear_fix"><div class="pedit_general_label fl_l ta_r">{_birth_date}:</div>
+                <div class="fl_l">
+                    <span class="pedit_bday fl_l">
+                        <input id="pedit_bday" name="pedit_bday">
+                    </span>
+                    <span class="pedit_bmonth fl_l">
+                        <input id="pedit_bmonth" name="pedit_bmonth">
+                    </span>
+                    <span class="fl_l">
+                        <input id="pedit_byear" name="pedit_byear">
+                    </span>
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r"></div>
+                <div class="fl_l">
+                    <input id="pedit_bday_visibility" name="pedit_bday_visibility">
+                </div>
+                <div class="fl_l" id="pedit_bday_vis_detail">на моей странице.</div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_hometown}:</div>
+                    <div class="fl_l">
+                        <input class="text" id="pedit_home_town" name="pedit_home_town" type="text">
+                </div>
+            </div>
+            <div class="out_of_order">
+                <div class="pedit_general_row clear_fix"><div class="pedit_general_label fl_l ta_r">Языки:</div>
+                    <div class="fl_l">
+                        <input id="pedit_langs" name="pedit_langs">
+                    </div>
+                </div>
 
-        <h4>{_main_information}</h4>
-        <form action="/edit?act=main" method="POST" enctype="multipart/form-data">
-            <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
-                <tbody>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_name}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="first_name" value="{$user->getFirstName(true)}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_surname}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="last_name" value="{$user->getLastName(true)}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_nickname}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="pseudo" value="{$user->getPseudo()}" />
-                        </td>
-                    </tr>
-                    {if \OPENVK_ROOT_CONF['openvk']['credentials']['smsc']['enable']}
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_phone}: </span>
-                        </td>
-                        <td>
-                            <input type="phone" name="phone" value="{$user->getPhone()}" />
-                        </td>
-                    </tr>
-                    {/if}
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_status}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="status" value="{$user->getStatus()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_hometown}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="hometown" value="{$user->getHometown()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_relationship}: </span>
-                        </td>
-                        <td>
-                            <select name="marialstatus" onChange="toggleMaritalStatus(this)">
-                                <option n:foreach="range(0, 8) as $i" n:attr="selected => ($user->getMaritalStatus() == $i)" value="{$i}">
-                                    {if $user->isFemale()}
-                                        {var $str = "relationship_$i"}
-                                        {if tr($str . "_fem") == ("@$str" . "_fem")}
-                                            {_$str}
-                                        {else}
-                                            {tr($str . "_fem")}
-                                        {/if}
-                                    {else}
-                                        {_"relationship_$i"}
-                                    {/if}
-                                </option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr id="maritalstatus-user"
-                        n:attr="style => $user->getMaritalStatusUser() || ($user->getMaritalStatus() && !in_array($user->getMaritalStatus(), [0, 1, 8])) ? '' : 'display: none;'">
-                        <td width="120" valign="top"></td>
-                        <td>
-                            <input type="text" placeholder="{_marital_status_user_id}" name="maritalstatus-user"
-                                   n:attr="value => $user->getMaritalStatusUser() ? $user->getMaritalStatusUser()->getURL(true) : ''" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_politViews}: </span>
-                        </td>
-                        <td>
-                            <select name="politViews">
-                                <option n:foreach="range(0, 9) as $i" n:attr="selected => ($user->getPoliticalViews() == $i)" value="{$i}">
-                                    {tr("politViews_" . $i)}
-                                </option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_pronouns}: </span>
-                        </td>
-                        <td>
-                            <select name="pronouns">
-                                <option value="0" {if $user->getPronouns() == 0}selected{/if}>{_male}</option>
-                                <option value="1" {if $user->getPronouns() == 1}selected{/if}>{_female}</option>
-                                <option value="2" {if $user->getPronouns() == 2}selected{/if}>{_neutral}</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                             <span class="nobold">{_birth_date}: </span>
-                        </td>
-                        <td>
-                            <input max={date('Y-m-d')} name="birthday" value={is_null($user->getBirthday()) ? NULL : $user->getBirthday()->format('%Y-%m-%d')} type="date" style="margin-bottom: 7px;" />
-                            <select name="birthday_privacy">
-                                <option value="0" {if $user->getBirthdayPrivacy() == 0}selected{/if}>{_show_my_birthday}</option>
-                                <option value="1" {if $user->getBirthdayPrivacy() == 1}selected{/if}>{_show_only_month_and_day}</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                        </td>
-                        <td>
-                            <label><input type="checkbox" name="broadcast_music" n:attr="checked => $user->isBroadcastEnabled()">{_broadcast_audio}</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
+            
+                <div class="pedit_general_family_row clear_fix">
+                    <div class="pedit_general_label fl_l ta_r">Дедушки, бабушки:</div>
+                    <div class="fl_l">
+                        <div class="pedit_wrap_relation" id="pedit_grandparents"/>
+                        <a id="pedit_add_grandparent_link">Добавить</a>
+                    </div>
+                </div>
+                <div class="pedit_general_family_row clear_fix">
+                    <div class="pedit_general_label fl_l ta_r">Родители:</div>
+                    <div class="fl_l">
+                        <div class="pedit_wrap_relation" id="pedit_parents"></div>
+                        <a id="pedit_add_parent_link">Добавить</a>
+                    </div>
+                </div>
+                <div class="pedit_general_family_row clear_fix">
+                    <div class="pedit_general_label fl_l ta_r">Братья, сёстры:</div>
+                    <div class="fl_l">
+                        <div class="pedit_wrap_relation" id="pedit_siblings"></div>
+                        <a id="pedit_add_sibling_link">Добавить</a>
+                    </div>
+                </div>
+                <div class="pedit_general_family_row clear_fix">
+                    <div class="pedit_general_label fl_l ta_r">Дети:</div>
+                    <div class="fl_l">
+                        <div class="pedit_wrap_relation" id="pedit_children"></div>
+                        <a id="pedit_add_child_link">Добавить</a>
+                    </div>
+                </div>
+                <div class="pedit_general_family_row clear_fix">
+                    <div class="pedit_general_label fl_l ta_r">Внуки:</div>
+                    <div class="fl_l">
+                        <div class="pedit_wrap_relation" id="pedit_grandchildren"></div>
+                        <a id="pedit_add_grandchild_link">Добавить</a>
+                    </div>
+                </div>
+            </div>
 
-                        </td>
-                        <td>
-                            <input type="hidden" name="hash" value="{$csrfToken}" />
-                            <input type="submit" value="{_save}" class="button" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+            <div class="pedit_controls">
+                <span class="button_blue">
+                    <button onclick="ProfileEditor.saveGeneral(this);" type="button">{_save}</button>
+                </span>
+            </div>
+        </div>
+        
 
         {elseif $isContacts}
 
-        <h4>{_contact_information}</h4>
         <form action="/edit?act=contacts" method="POST" enctype="multipart/form-data">
             <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
                 <tbody>
@@ -246,7 +259,6 @@
 
         {elseif $isInterests}
 
-        <h4>{_personal_information}</h4>
         <form action="/edit?act=interests" method="POST" enctype="multipart/form-data">
             <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
                 <tbody>
@@ -329,7 +341,6 @@
 
         {elseif $isAvatar}
 
-        <h4>{_profile_picture}</h4>
         <form action="/al_avatars" method="POST" enctype="multipart/form-data">
             <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
                 <tbody>
@@ -356,89 +367,6 @@
                 </tbody>
             </table>
         </form>
-
-        {elseif $isBackDrop}
-
-        <h4>{_backdrop}</h4>
-        <p>{_backdrop_desc}</p>
-        <form method="POST" enctype="multipart/form-data">
-            <div id="backdropEditor">
-                <div id="backdropFilePicker">
-                    <label class="button" style="">{_browse}<input type="file" accept="image/*" name="backdrop1" style="display: none;"></label>
-                    <div id="spacer" style="width: 366px;"></div>
-                    <label class="button" style="">{_browse}<input type="file" accept="image/*" name="backdrop2" style="display: none;"></label>
-                    <div id="spacer" style="width: 366px;"></div>
-                </div>
-            </div>
-
-            <p>
-                <span class="nobold">{_backdrop_warn}</span>
-            </p>
-            <p>
-                <span class="nobold">{_backdrop_about_adding}</span>
-            </p>
-            <p><br/></p>
-
-            <input type="hidden" name="hash" value="{$csrfToken}" />
-            <div>
-                <center>
-                    <button name="subact" value="save" class="button">{_backdrop_save}</button>
-                    <button name="subact" value="remove" class="button">{_backdrop_remove}</button>
-                </center>
-            </div>
-        </form>
-        {elseif $isAdditional}
-            {var $f_iterator = 0}
-            <h4>{_additional_information}</h4>
-            <p>{tr("additional_fields_description", ovkGetQuirk("users.max-fields"))}</p>
-            <form id="additional_fields_form" method="POST" enctype="multipart/form-data">
-                <div class="edit_field_container_inserts">
-                    <table data-iterator="{$f_iterator}" class="flexible_table outline_table edit_field_container_item" width="80%" border="0" align="center" n:foreach="$thisUser->getAdditionalFields() as $field">
-                        <tbody>
-                            <tr>
-                                <td width="150">
-                                    {_additional_field_name}
-                                </td>
-                                <td>
-                                    <input name="name_{$f_iterator}" maxlength="50" type="text" value="{$field->getName(false)}">
-                                </td>
-                                <td>
-                                    <div id="small_remove_button"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td valign="top">
-                                    {_additional_field_text}
-                                </td>
-                                <td>
-                                    <textarea name="text_{$f_iterator}" maxlength="1000">{$field->getContent()}</textarea>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {_additional_field_place}
-                                </td>
-                                <td>
-                                    <select name="place_{$f_iterator}">
-                                        <option value="0" n:attr="selected => $field->isContact()">{_additional_field_place_contacts}</option>
-                                        <option value="1" n:attr="selected => !$field->isContact()">{_additional_field_place_interests}</option>
-                                    </select>
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-
-                        {php $f_iterator += 1}
-                    </table>
-                </div>
-
-                <div class="flex_column_center_gap5px">
-                    <input type="button" id="additional_field_append" value="{_add}" class="button" />
-                    <input type="hidden" name="hash" value="{$csrfToken}" />
-                    <input type="submit" value="{_save}" class="button" />
-                </div>
-            </form>
         {/if}
     </div>
 

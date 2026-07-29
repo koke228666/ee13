@@ -1,29 +1,25 @@
 {php $default_audio = $audios[0]}
 {contentType javascript}
-setTimeout(zNav.pbind({}, {
-        queue: 1
-    }), 0);
-
-    var searchTypes = [{
-            i: 0,
-            l: 'по композициям'
-        }, {
-            i: 1,
-            l: 'по исполнителям'
-        }
-    ], searchBtn = geByTag1('button', ge('audio_search'));
-    cur.searchTypeChanged = function (event, noFire) {
-        var i = event.target.index || 0;
-        if (!searchTypes[i] || !searchTypes[i].l) {
-            i = 0;
-        }
-        var text = searchTypes[i].l + '<span class="arrow"></span>';
-        cur.searchTypeMenu.header.innerHTML = '<div>' + text + '</div>';
-        searchBtn.innerHTML = text;
-        if (cur.searchStr && Audio.changeSearchFilters && !noFire) {
-            Audio.changeSearchFilters();
-        }
+var searchTypes = [{
+        i: 0,
+        l: 'по композициям'
+    }, {
+        i: 1,
+        l: 'по исполнителям'
     }
+], searchBtn = geByTag1('button', ge('audio_search'));
+cur.searchTypeChanged = function (event, noFire) {
+    var i = event.target.index || 0;
+    if (!searchTypes[i] || !searchTypes[i].l) {
+        i = 0;
+    }
+    var text = searchTypes[i].l + '<span class="arrow"></span>';
+    cur.searchTypeMenu.header.innerHTML = '<div>' + text + '</div>';
+    searchBtn.innerHTML = text;
+    if (cur.searchStr && Audio.changeSearchFilters && !noFire) {
+        Audio.changeSearchFilters();
+    }
+}
 cur.searchTypeMenu = new DropdownMenu(searchTypes, { target: searchBtn, value: 0, containerClass: 'dd_menu_stype_act', updateTarget: false, offsetLeft: 0, offsetTop: 0, showHover: false, fadeSpeed: 0, onSelect: cur.searchTypeChanged});
 Audio.init({ // TODO ПЕРЕДЕЛАТЬ ПОД ДРУГОЙ ФОРМАТ !!!!
     "id": {$thisUser->getId()},
@@ -226,3 +222,5 @@ if (dis) {
     __cur.searchSortFilter.disable(true);
     __cur.searchLyricsFilter.disable(true);
 }
+
+cur.module = 'audio';

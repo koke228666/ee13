@@ -116,3 +116,6 @@ if (browser.msie8 || browser.msie7) {
 window.tsHintsEnabled = 1;
 // handlePageParams({ fullPage: 1, pvdark: {(int)$_COOKIE['pv_dark']} }); // тут надо правильно раскидать
 addEvent(document, 'click', onDocumentClick);
+setTimeout(zNav.pbind({}, {
+    queue: 1
+}), 0);
