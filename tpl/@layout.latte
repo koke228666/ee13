@@ -271,7 +271,7 @@ function isAncestor(elem, ancestor) {
     } else {
       domReady();
       {if OPENVK_ROOT_CONF['openvk']['preferences']['commerce']}
-      updateMoney({$thisUser()->getCoins()});
+      updateMoney({$thisUser->getCoins()});
       {else}
       updateMoney(0);
       {/if}
