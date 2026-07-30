@@ -3,24 +3,32 @@
 {php $cur['static'] = [
     'profile_edit.js',
     'profile_edit.css',
+    'privacy.js',
+    'privacy.css',
     'ui_controls.js',
-    'ui_controls.css'
+    'ui_controls.css',
+    'selects.js'
     ];
 }
 
 {block title}{_edit_page}{/block}
 
 {block view_script}
+{include "../ee13_vars.latte"}
+{php $ee13vars = $GLOBALS['ee13'];}
 {if $jsTags}
     <script>
-        {include "components/edit_init_script.latte"}
+        {include "components/edit_init_script.latte", ee13vars => $ee13vars}
     </script>
 {else}
-    {include "components/edit_init_script.latte"}
+    {include "components/edit_init_script.latte", ee13vars => $ee13vars}
 {/if}
 {/block}
 
 {block content}
+    {include "../ee13_vars.latte"}
+    {php $ee13vars = $GLOBALS['ee13'];}
+
     {var $isMain      = $mode === 'main'}
     {var $isContacts  = $mode === 'contacts'}
     {var $isInterests = $mode === 'interests'}
@@ -29,32 +37,27 @@
     {var $isBackDrop  = $mode === 'backdrop'}
     {php if ($isAvatar || $isBackDrop) $isMain = true;}
 
-    <div n:if="$user->hasPendingNumberChange()" class="msg">
-        <b>Подтверждение номера телефона</b><br/>
-        Введите код для подтверждения смены номера: <a href="/edit/verify_phone">ввести код</a>.
-    </div>
-
     <div class="tabs t_bar clear_fix">
         <ul id="pedit_filters" class="t0">
-            <li id="feedtab_news" class="{($isMain ? 'active_link' : '')}">
+            <li class="{($isMain ? 'active_link' : '')}">
                 <a href="/edit">
                     <b class="tl1"><b></b></b><b class="tl2"></b>
                     <b class="tab_word">{_main}</b>
                 </a>
             </li>
-            <li id="feedtab_news" class="{($isContacts ? 'active_link' : '')}">
+            <li class="{($isContacts ? 'active_link' : '')}">
                 <a href="/edit?act=contacts">
                     <b class="tl1"><b></b></b><b class="tl2"></b>
                     <b class="tab_word">{_contacts}</b>
                 </a>
             </li>
-            <li id="feedtab_news" class="{($isInterests ? 'active_link' : '')}">
+            <li class="{($isInterests ? 'active_link' : '')}">
                 <a href="/edit?act=interests">
                     <b class="tl1"><b></b></b><b class="tl2"></b>
                     <b class="tab_word">{_interests}</b>
                 </a>
             </li>
-            <li id="feedtab_news" class="{($isAdditional ? 'active_link' : '')}">
+            <li class="{($isAdditional ? 'active_link' : '')}">
                 <a href="/edit?act=additional">
                     <b class="tl1"><b></b></b><b class="tl2"></b>
                     <b class="tab_word">{_additional}</b>
@@ -63,28 +66,28 @@
         </ul>
     </div>
 
+    <div id="profile_editor">
     <div id="pedit_result"></div>
 
-    <div id="profile_editor">
         {if $isMain}
         <div id="pedit_general">
             <div id="pedit_name_request" style="display:none;"></div>
             <div class="pedit_general_row clear_fix">
                 <div class="pedit_general_label fl_l ta_r">{_name}:</div>
                 <div class="fl_l">
-                    <input class="text" id="pedit_first_name" value="{$user->getFirstName(true)}" type="text">
+                    <input class="text" id="pedit_first_name" value="{$thisUser->getFirstName(true)}" type="text">
                 </div>
-                <span id="pedit_name_tt_place" class="fl_l"></span>
             </div>
             <div class="pedit_general_row clear_fix">
                 <div class="pedit_general_label fl_l ta_r">{_surname}:</div>
                 <div class="fl_l">
-                    <input class="text" id="pedit_last_name" value="{$user->getLastName(true)}" type="text">
+                    <input class="text" id="pedit_last_name" value="{$thisUser->getLastName(true)}" type="text">
                 </div>
+                <span id="pedit_name_tt_place" class="fl_l"></span>
             </div>
             <div class="pedit_general_row clear_fix"><div class="pedit_general_label fl_l ta_r">{_nickname}:</div>
                 <div class="fl_l">
-                    <input class="text" id="pedit_middle_name" value="{$user->getPseudo()}" type="text">
+                    <input class="text" id="pedit_middle_name" value="{$thisUser->getPseudo()}" type="text">
                 </div>
             </div>
             <div style="display: none;">
@@ -98,22 +101,22 @@
             <div class="pedit_general_row clear_fix">
                 <div class="pedit_general_label fl_l ta_r">{_pronouns}:</div>
                 <div class="fl_l">
-                    <input id="pedit_sex" name="pedit_sex">
+                    <input id="pedit_sex" name="pedit_sex" style="display:none;">
                 </div>
             </div>
             <div class="pedit_general_row clear_fix" id="pedit_status_row">
                 <div class="pedit_general_label fl_l ta_r">{_relationship}:</div>
                 <div class="fl_l">
-                    <input id="pedit_status" name="pedit_status">
+                    <input id="pedit_status" name="pedit_status" style="display:none;">
                 </div>
             </div>
             <div class="pedit_general_row clear_fix" id="pedit_status_partner">
                 <div class="pedit_general_label fl_l ta_r" id="pedit_status_ptitle"></div>
                 <div class="fl_l">
-                    <input id="pedit_partner" name="pedit_partner">
+                    <input id="pedit_partner" name="pedit_partner" style="display:none;">
                     <span class="progress" id="pedit_status_progress"></span>
-                    <span id="pedit_partner_tt_place" class="fl_l"></span>
                 </div>
+                <span id="pedit_partner_tt_place" class="fl_l"></span>
             </div>
             <div class="pedit_general_row clear_fix" id="pedit_status_detail">
                 <div class="pedit_general_label fl_l"></div>
@@ -123,13 +126,13 @@
             <div class="pedit_general_row clear_fix"><div class="pedit_general_label fl_l ta_r">{_birth_date}:</div>
                 <div class="fl_l">
                     <span class="pedit_bday fl_l">
-                        <input id="pedit_bday" name="pedit_bday">
+                        <input id="pedit_bday" name="pedit_bday" style="display:none;">
                     </span>
                     <span class="pedit_bmonth fl_l">
-                        <input id="pedit_bmonth" name="pedit_bmonth">
+                        <input id="pedit_bmonth" name="pedit_bmonth" style="display:none;">
                     </span>
                     <span class="fl_l">
-                        <input id="pedit_byear" name="pedit_byear">
+                        <input id="pedit_byear" name="pedit_byear" style="display:none;">
                     </span>
                 </div>
             </div>
@@ -138,7 +141,7 @@
                 <div class="fl_l">
                     <input id="pedit_bday_visibility" name="pedit_bday_visibility">
                 </div>
-                <div class="fl_l" id="pedit_bday_vis_detail">на моей странице.</div>
+                <div class="fl_l" id="pedit_bday_vis_detail">{$ee13vars->get_lang("on_my_profile")}.</div>
             </div>
             <div class="pedit_general_row clear_fix">
                 <div class="pedit_general_label fl_l ta_r">{_hometown}:</div>
@@ -149,7 +152,7 @@
             <div class="out_of_order">
                 <div class="pedit_general_row clear_fix"><div class="pedit_general_label fl_l ta_r">Языки:</div>
                     <div class="fl_l">
-                        <input id="pedit_langs" name="pedit_langs">
+                        <input id="pedit_langs" name="pedit_langs" style="display:none;">
                     </div>
                 </div>
 
@@ -158,38 +161,40 @@
                     <div class="pedit_general_label fl_l ta_r">Дедушки, бабушки:</div>
                     <div class="fl_l">
                         <div class="pedit_wrap_relation" id="pedit_grandparents"/>
-                        <a id="pedit_add_grandparent_link">Добавить</a>
+                        <a id="pedit_add_grandparent_link">{_add}</a>
                     </div>
                 </div>
                 <div class="pedit_general_family_row clear_fix">
                     <div class="pedit_general_label fl_l ta_r">Родители:</div>
                     <div class="fl_l">
                         <div class="pedit_wrap_relation" id="pedit_parents"></div>
-                        <a id="pedit_add_parent_link">Добавить</a>
+                        <a id="pedit_add_parent_link">{_add}</a>
                     </div>
                 </div>
                 <div class="pedit_general_family_row clear_fix">
                     <div class="pedit_general_label fl_l ta_r">Братья, сёстры:</div>
                     <div class="fl_l">
                         <div class="pedit_wrap_relation" id="pedit_siblings"></div>
-                        <a id="pedit_add_sibling_link">Добавить</a>
+                        <a id="pedit_add_sibling_link">{_add}</a>
                     </div>
                 </div>
                 <div class="pedit_general_family_row clear_fix">
                     <div class="pedit_general_label fl_l ta_r">Дети:</div>
                     <div class="fl_l">
                         <div class="pedit_wrap_relation" id="pedit_children"></div>
-                        <a id="pedit_add_child_link">Добавить</a>
+                        <a id="pedit_add_child_link">{_add}</a>
                     </div>
                 </div>
                 <div class="pedit_general_family_row clear_fix">
                     <div class="pedit_general_label fl_l ta_r">Внуки:</div>
                     <div class="fl_l">
                         <div class="pedit_wrap_relation" id="pedit_grandchildren"></div>
-                        <a id="pedit_add_grandchild_link">Добавить</a>
+                        <a id="pedit_add_grandchild_link">{_add}</a>
                     </div>
                 </div>
             </div>
+
+            <div class="pedit_controls_separator"></div>
 
             <div class="pedit_controls">
                 <span class="button_blue">
@@ -197,176 +202,153 @@
                 </span>
             </div>
         </div>
-        
 
         {elseif $isContacts}
 
-        <form action="/edit?act=contacts" method="POST" enctype="multipart/form-data">
-            <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
-                <tbody>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_email}: </span>
-                        </td>
-                        <td>
-                            <input type="email" name="email_contact" value="{$user->getContactEmail()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_telegram}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="telegram" value="{$user->getTelegram()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_personal_website}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="website" value="{$user->getWebsite()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_city}: </span>
-                        </td>
-                        <td>
-                            <input type="text" name="city" value="{$user->getCity()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_address}: </span>
-                        </td>
-                        <td>
-                                <input type="text" name="address" value="{$user->getPhysicalAddress()}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
+        <div id="pedit_contacts">
+            <div style="display:none;">
+                <div id="pedit_country_row" class="pedit_general_row clear_fix">
+                    <div class="pedit_general_label fl_l ta_r">{_country}:</div>
+                    <div class="fl_l">
+                        <input class="text" id="pedit_country" name="pedit_country" type="text">
+                    </div>
+                </div>
+            </div>
+            <div id="pedit_city_row" class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_city}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_city" name="pedit_city" type="text">
+                </div>
+            </div>
 
-                        </td>
-                        <td>
-                            <input type="hidden" name="hash" value="{$csrfToken}" />
-                            <input type="submit" value="{_save}" class="button" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+            <div class="pedit_controls_separator pedit_separator_bottom"></div>
+
+            <div style="display:none;" class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_bobile}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_mobile">
+                </div>
+                <div class="pedit_privacy_control">
+                    <a id="privacy_edit_mobile" onclick="return Privacy.show(this, event, 'mobile');"></a>
+                    <span></span>
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_email}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_email" value="{$thisUser->getContactEmail()}" type="text">
+                </div>
+                <div style="display:none" class="pedit_privacy_control">
+                    <a id="privacy_edit_email" onclick="return Privacy.show(this, event, 'email');">Все юзвери</a>
+                    <span></span>
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_telegram}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_skype" value="{$thisUser->getTelegram()}" type="text">
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_website}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_website" value="{$thisUser->getWebsite()}" type="text">
+                </div>
+            </div>
+            <div class="pedit_general_row clear_fix">
+                <div class="pedit_general_label fl_l ta_r">{_address}:</div>
+                <div class="fl_l">
+                    <input class="text" id="pedit_home" value="{$thisUser->getPhysicalAddress()}" type="text">
+                </div>
+                <div style="display:none" class="pedit_privacy_control">
+                    <a id="privacy_edit_home" onclick="return Privacy.show(this, event, 'home');">Только юзвери-друзяшки</a>
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="pedit_controls_separator"></div>
+
+            <div class="pedit_controls">
+                <span class="button_blue">
+                    <button onclick="ProfileEditor.saveContacts(this);" type="button">{_save}</button>
+                </span>
+            </div>
+        </div>
 
         {elseif $isInterests}
 
-        <form action="/edit?act=interests" method="POST" enctype="multipart/form-data">
-            <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
-                <tbody>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_interests}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="interests">{$user->getInterests()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_favorite_music}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="fav_music">{$user->getFavoriteMusic()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_favorite_films}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="fav_films">{$user->getFavoriteFilms()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_favorite_shows}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="fav_shows">{$user->getFavoriteShows()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_favorite_books}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="fav_books">{$user->getFavoriteBooks()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_favorite_quotes}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="fav_quote">{$user->getFavoriteQuote()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_favorite_games}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="fav_games">{$user->getFavoriteGames()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_information_about}: </span>
-                        </td>
-                        <td>
-                            <textarea type="text" name="about">{$user->getDescription()}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
+        <div id="pedit_interests">
+            <div style="display:none;" class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{$ee13vars->get_lang("profileEdit_activities")}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_activities"></textarea>
+                </div>
+                <div class="pedit_interests_details fl_l">{$ee13vars->get_lang("profileEdit_activities_details")}</div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_interests}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_interests">{$thisUser->getInterests()}</textarea>
+                </div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_favorite_music}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_music">{$thisUser->getFavoriteMusic()}</textarea>
+                </div>
+                <div class="pedit_interests_details fl_l">{$ee13vars->get_lang("profileEdit_music_details")}</div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_favorite_films}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_movies">{$thisUser->getFavoriteFilms()}</textarea>
+                </div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_favorite_shows}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_tv">{$thisUser->getFavoriteShows()}</textarea>
+                </div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_favorite_books}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_books">{$thisUser->getFavoriteBooks()}</textarea>
+                </div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_favorite_games}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_games">{$thisUser->getFavoriteGames()}</textarea>
+                </div>
+            </div>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_favorite_quotes}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_quotes">{$thisUser->getFavoriteQuote()}</textarea>
+                </div>
+            </div>
 
-                        </td>
-                        <td>
-                            <input type="hidden" name="hash" value="{$csrfToken}" />
-                            <input type="submit" value="{_save}" class="button" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+            <div class="pedit_interests_row clear_fix">
+                <div class="pedit_interests_label fl_l ta_r">{_information_about}:</div>
+                <div class="pedit_interests_labeled fl_l">
+                    <textarea class="text" id="pedit_interests_about">{$thisUser->getDescription()}</textarea>
+                </div>
+            </div>
 
-        {elseif $isAvatar}
+            <div class="pedit_controls_separator"></div>
 
-        <form action="/al_avatars" method="POST" enctype="multipart/form-data">
-            <table class="flexible_table" cellspacing="7" cellpadding="0" width="60%" border="0" align="center">
-                <tbody>
-                    <tr>
-                        <td width="120" valign="top">
-                            <span class="nobold">{_picture}: </span>
-                        </td>
-                        <td>
-                            <label class="button" style="">{_browse}
-                                <input type="file" id="blob" name="blob" style="display: none;" onchange="filename.innerHTML=blob.files[0].name" />
-                            </label>
-                            <div id="filename" style="margin-top: 10px;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-
-                        </td>
-                        <td>
-                            <input type="hidden" name="hash" value="{$csrfToken}" />
-                            <input type="submit" value="{_save}" class="button" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+            <div class="pedit_controls">
+                <span class="button_blue">
+                    <button type="button"
+                            onclick="return ProfileEditor.saveInterests(this);">
+                        {_save}
+                    </button>
+                </span>
+            </div>
+        </div>
+        {else}
+        <div class="out_of_order" style="width: 617px; height: 250px; margin: 5px 0px 5px 5px;"></div>
         {/if}
     </div>
 

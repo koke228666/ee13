@@ -1,19 +1,6 @@
-{*{extends "../@layout.latte"}
-{block title}{_deprecated_browser}{/block}
-
-{block header}
-    {_deprecated_browser}
-{/block}
-
-{block content}
-    {_deprecated_browser_description}
-{/block} *}
-
 {include "../ee13_vars.latte"}
 {php $ee13vars = $GLOBALS['ee13'];}
-
 {* здесь мы поставим роутер для веб вк апи *}
-
 {php
 // фотовьюер выёбывался, ПРИШЛОСЬ ...
 error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);

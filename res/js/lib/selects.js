@@ -30,7 +30,7 @@ function PlaceSelect(input, container, options) {
   options.city = intval(options.city);
 
   function getURL() {
-    return '/select_ajax.php?act=a_get_places&' + (options.street ? ('streets=' + options.street) : ('city=' + options.city));
+    return '/badbrowser.php?target=/select_ajax.php&act=a_get_places&' + (options.street ? ('streets=' + options.street) : ('city=' + options.city));
   }
 
   var selector = new Selector(input, getURL(), options);
@@ -133,7 +133,7 @@ function HouseSelect(input, container, options) {
   // extend default options with user defined
   options = extend(defaults, options);
   options.enableCustom = (options.forceEnableCustom >= 0);
-  var selector = new Selector(input, '/select_ajax.php?act=a_get_houses&streets=' + options.street, options);
+  var selector = new Selector(input, '/badbrowser.php?target=/select_ajax.php&act=a_get_houses&streets=' + options.street, options);
 
   function updateOnChange() {
     selector.old_setOptions({onChange: function(value) {
@@ -156,7 +156,7 @@ function HouseSelect(input, container, options) {
   }
 
   function streetUpdated() {
-    selector.setURL('/select_ajax.php?act=a_get_houses&streets=' + options.street);
+    selector.setURL('/badbrowser.php?target=/select_ajax.php&act=a_get_houses&streets=' + options.street);
     if (intval(options.house)) {
       if (!intval(selector.val())) {
         var to_select = options.multiselect ? options.house : [options.house];
@@ -232,7 +232,7 @@ function StreetSelect(input, container, options) {
   options.city = intval(options.city);
   options.enableCustom = (options.forceEnableCustom > 0);
   options.realNoResult = options.noResult;
-  var selector = new Selector(input, '/select_ajax.php?act=a_get_streets&city=' + options.city, options);
+  var selector = new Selector(input, '/badbrowser.php?target=/select_ajax.php&act=a_get_streets&city=' + options.city, options);
 
   function realEnableCustom(value) {
     return (options.forceEnableCustom == 0) ? value : (options.forceEnableCustom > 0);
@@ -275,7 +275,7 @@ function StreetSelect(input, container, options) {
 
   function cityUpdated(ignoreChildren) {
     selector.clear();
-    selector.setURL('/select_ajax.php?act=a_get_streets&city=' + options.city);
+    selector.setURL('/badbrowser.php?target=/select_ajax.php&act=a_get_streets&city=' + options.city);
     if (!ignoreChildren) {
       zeroChildren();
     }
@@ -746,7 +746,7 @@ function SchoolHintSelect(input, container, options) {
   options.city = intval(options.city);
   options.school = intval(options.school);
   options.enableCustom = (options.forceEnableCustom > 0);
-  var selector = new Selector(input, '/select_ajax.php?act=a_get_schools&city=' + options.city, options);
+  var selector = new Selector(input, '/badbrowser.php?target=/select_ajax.php&act=a_get_schools&city=' + options.city, options);
 
   function realEnableCustom(value) {
     return (options.forceEnableCustom == 0) ? value : (options.forceEnableCustom > 0);
@@ -795,7 +795,7 @@ function SchoolHintSelect(input, container, options) {
 
   function cityUpdated() {
     selector.clear();
-    selector.setURL('/select_ajax.php?act=a_get_schools&city=' + options.city);
+    selector.setURL('/badbrowser.php?target=/select_ajax.php&act=a_get_schools&city=' + options.city);
     if (options.city) {
       selectsData.getCityInfo(options.city, 4, function(cityInfo) {
         options.items_count = cityInfo.schools.length;
@@ -1424,7 +1424,7 @@ function UniversityHintSelect(input, container, options) {
   options.country = intval(options.country);
   options.city = intval(options.city);
   options.enableCustom = (options.forceEnableCustom > 0);
-  var selector = new Selector(input, '/select_ajax.php?act=a_get_universities&country=' + options.country + '&city=' + options.city, options);
+  var selector = new Selector(input, '/badbrowser.php?target=/select_ajax.php&act=a_get_universities&country=' + options.country + '&city=' + options.city, options);
 
   function realEnableCustom(value) {
     return (options.forceEnableCustom == 0) ? value : (options.forceEnableCustom > 0);
@@ -1479,7 +1479,7 @@ function UniversityHintSelect(input, container, options) {
 
   function countryUpdated(ignoreChildren) {
     selector.clear();
-    selector.setURL('/select_ajax.php?act=a_get_universities&country=' + options.country);
+    selector.setURL('/badbrowser.php?target=/select_ajax.php&act=a_get_universities&country=' + options.country);
     if (!ignoreChildren) {
       zeroChildren();
     }
@@ -1490,7 +1490,7 @@ function UniversityHintSelect(input, container, options) {
 
   function cityUpdated(ignoreChildren) {
     selector.clear();
-    selector.setURL('/select_ajax.php?act=a_get_universities&country=' + options.country + '&city=' + options.city);
+    selector.setURL('/badbrowser.php?target=/select_ajax.php&act=a_get_universities&country=' + options.country + '&city=' + options.city);
     if (!ignoreChildren) {
       zeroChildren();
     }
@@ -1584,7 +1584,7 @@ function CitySelect(input, container, options) {
   options = extend(defaults, options);
   options.defaultItems = [[0, options.placeholder]];
   options.country = intval(options.country);
-  var selector = new Selector(input, '/select_ajax.php?act=a_get_cities&country=' + options.country, options);
+  var selector = new Selector(input, '/badbrowser.php?target=/select_ajax.php&act=a_get_cities&country=' + options.country, options);
 
   function updateChildren(new_value) {
     var opts = selector.options;
@@ -1631,7 +1631,14 @@ function CitySelect(input, container, options) {
 
   function updateOnChange() {
     selector.old_setOptions({onChange: function(value) {
-      value = intval(value);
+      //value = intval(value);
+      // ee13
+      if (value === null || value === undefined || value === '0') {
+        value = '';
+      } else {
+        value = String(value);
+      }
+      // ee13
       options.city = value;
       zeroChildren();
       if (!value) {
@@ -1677,7 +1684,7 @@ function CitySelect(input, container, options) {
 
   function countryUpdated(ignoreChildren) {
     selector.clear();
-    selector.setURL('/select_ajax.php?act=a_get_cities&country=' + options.country);
+    selector.setURL('/badbrowser.php?target=/select_ajax.php&act=a_get_cities&country=' + options.country);
     if (!ignoreChildren) {
       zeroChildren();
     }
@@ -1937,8 +1944,10 @@ function _SelectsData() {
           setCountries(parent)(response.countries);
           handler(response.countries);
         }
-        var url = '/select_ajax.php';
+        //var url = '/select_ajax.php';
         var query = {'act': 'a_get_countries', 'basic': (parent >= 0) ? 1 : 0 };
+        query.target = '/select_ajax.php';
+        var url = '/badbrowser.php';
         if (vk.al) {
           ajax.plainpost(url, query, done);
         } else {
@@ -2017,7 +2026,9 @@ function _SelectsData() {
       hide(progress);
       done(eval('(' + text + ')'));
     }
-    var url = '/select_ajax.php';
+    // var url = '/select_ajax.php';
+    query.target = '/select_ajax.php';
+    var url = '/badbrowser.php';
     if (vk.al) {
       ajax.plainpost(url, query, d);
     } else {

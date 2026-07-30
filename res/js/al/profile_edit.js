@@ -358,7 +358,8 @@ var ProfileEditor = {
             || ge('pedit_website').value != peditData.website
             || ge('pedit_skype').value != (peditData.skype || '')
             || (parseInt(ge('pedit_country').value) || '') != (cur.selectData['country_val'][0] || '')
-            || (parseInt(ge('pedit_city').value) || '') != (cur.selectData['city_val'][0] || '')
+            //|| (parseInt(ge('pedit_city').value) || '') != (cur.selectData['city_val'][0] || '')
+            || (ge('pedit_city').value || '') != (cur.selectData['city_val'][0] || '')
         return false;
 
       case 'interests':
@@ -556,7 +557,12 @@ var ProfileEditor = {
   },
   doUpdateFriendsList: function () {
     var status = cur.uiStatus.val(), sex = cur.uiSex.val();
-    if (status < 2 || status == 6 || !sex) return;
+    if (status < 2 || status == 6/* || !sex*/) return;
+
+    if (sex == 0) {
+    sex = 2;
+    }
+
     var data = cur.friendsFull[sex].Nom, gs = (status == 2 || status == 7 || status == 5) ? 2 : 0, p = cur.uiPartner.val(), found = false;
 
     for (var i in data[gs]) {
@@ -1004,7 +1010,8 @@ var ProfileEditor = {
             ge('pedit_'+i).value = data[i] || '';
           }
           cur.selectData['country_val'][0] = parseInt(data['country']);
-          cur.selectData['city_val'][0] = parseInt(data['city']);
+          //cur.selectData['city_val'][0] = parseInt(data['city']);
+          cur.selectData['city_val'][0] = data['city'] || '';
         }
         if (text) {
           ProfileEditor.showMsg(text);

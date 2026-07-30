@@ -207,7 +207,7 @@ createChildClass('Selector', UiControl, {
     placeholderColor: '#afb8c2',
     introText: 'Start typing',
     noResult: getLang('search_nothing_found'),
-    noImageSrc: 'http://vk.com/images/question_s.gif',
+    noImageSrc: vk.st_base_path + '/images/question_s.gif',
     formatResult: function(data) {
       return data[1] + (typeof(data[2]) == 'string' ? ' <span>' + data[2] + '</span>' : '');
     },
@@ -1010,7 +1010,8 @@ createChildClass('Selector', UiControl, {
     return false;
   },
   onChange: function() {
-    var term = trim(this.input.value.toLowerCase()),
+    //var term = trim(this.input.value.toLowerCase()), // ee13 - это чтоб было хайпово
+    var term = trim(this.input.value),
       self = this;
     if (!this.options.multiselect) {
       if (this._selectedItems.length) {
@@ -1188,7 +1189,8 @@ createChildClass('Selector', UiControl, {
   },
   request: function(success, failure) {
     if (!this.dataURL) return;
-    var term = trim(this.input.value.toLowerCase()), self = this;
+    //var term = trim(this.input.value.toLowerCase()), self = this;
+    var term = trim(this.input.value), self = this;
     if (term.length == 0) return;
     var sep = this.dataURL.indexOf('?') == -1 ? '?' : '&';
     var url = this.dataURL + sep + 'str=' + encodeURIComponent(term);
