@@ -32,7 +32,8 @@
                         <td class="info">
                             <div class="title_wrap fl_l" onmouseover="setTitle(this)">
                                 <b onclick="event.cancelBubble = true;">
-                                    <a href="/search?section=audios&order=listens&only_performers=on&q={$performer}" onclick="return cur.chooseAudioPerformerSearch('{$performer}')">{$performer}</a>{if $performer != end($performers)}, {/if}
+                                    <a n:foreach='$performers as $performer' href="/search?section=audios&order=listens&only_performers=on&q={$performer}"
+                                       onclick="return cur.chooseAudioPerformerSearch('{$performer}')">{$performer}</a>{if $performer != end($performers)}, {/if}
                                 </b> &ndash; 
                                 <span class="title" id="title{$audioId|noescape}">
                                     {if $hasLyrics}

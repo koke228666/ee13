@@ -18,7 +18,7 @@
             
             <div class="fl_r post_actions_wrap">
                 <div class="post_actions" n:if="$canBeDeleted && !($forceNoDeleteLink ?? false)">
-                    <div id="post_delete{$postId}" class="post_delete_button fl_r" onclick="wall.markAsSpam('{$postId}', '{rawurlencode($csrfToken)}');" onmouseover="wall.activeDeletePost('{$postId}', '{_delete}', 'post_delete')" onmouseout="wall.deactiveDeletePost('{$postId}', 'post_delete')"></div>
+                    <div id="post_delete{$postId}" class="post_delete_button fl_r" onclick="wall.markAsSpam('{$postId|noescape}', '{$csrfToken|noescape}');" onmouseover="wall.activeDeletePost('{$postId|noescape}', {_delete}, 'post_delete')" onmouseout="wall.deactiveDeletePost('{$postId|noescape}', 'post_delete')"></div>
                 </div>
             </div>
             
@@ -206,7 +206,7 @@
                     <div id="post_replies{$postId}"></div>
                     
                     {if !($forceNoCommentsLink ?? false) && ($commentSection ?? true) && isset($thisUser)}
-                        <div class="reply_fakebox_wrap" id="reply_fakebox{$postId}" onclick="wall.showEditReply('{$postId|noescape}')" n:attr="style => ($commentsCount == 0 ? 'display: none;' : '')">
+                        <div class="reply_fakebox_wrap" id="reply_fakebox{$postId|noescape}" onclick="wall.showEditReply('{$postId|noescape}')" n:attr="style => ($commentsCount == 0 ? 'display: none;' : '')">
                             <div class="reply_fakebox">{_comment}..</div>
                         </div>
                         
