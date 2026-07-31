@@ -22,11 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
 } else {
-    echo($ee13vars->get_lang("baddragon_php"));
+    $render_template = "badbrowser";
 }
 }
 {if $render_template === "likes"}
     {include "../components/like_tooltips.latte", type => $likes_tpl_type, target_id => $target_id, likers => $likers, like_count => $like_count, liked_by_me => $liked_by_me}
 {elseif $render_template === "owner_photo_box"}
     {include "../components/owner_photo_box.latte", ee13vars => $ee13vars}
+{elseif $render_template === "badbrowser"}
+    {include "real_BB.latte", ee13vars => $ee13vars}
 {/if}

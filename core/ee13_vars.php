@@ -28,6 +28,24 @@ if (!isset($GLOBALS['ee13'])) {
             return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource" . $resource;
         }
 
+        public function get_favicon($theme, $lang)
+        {
+            if ($lang === 'ru' || $lang === 'be' || $lang === 'uk') {
+                return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/faviconnew.ico";
+            } else {
+                return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/favicon_vk.ico";
+            }
+        }
+
+        public function get_header($lang)
+        {
+            if ($lang === 'ru' || $lang === 'be' || $lang === 'uk') {
+                return "p_head p_head_l0";
+            } else {
+                return "p_head1 p_head_l1";
+            }
+        }
+
         public function get_al()
         {
             $al = $_REQUEST['al'] ?? 3;

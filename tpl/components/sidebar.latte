@@ -1,65 +1,68 @@
 {ifset $thisUser}
+{var $notificationsCount = $thisUser->getNotificationsCount()}
+{var $unreadMessagesCount = $thisUser->getUnreadMessagesCount()}
+{var $friendRequestsCount = $thisUser->getRequestsCount()}
 <ol>
   <li>
   <table id="myprofile_table" cellspacing="0" cellpadding="0"><tr>
     <td id="myprofile_wrap">
       <a href="{$thisUser->getURL()}" onclick="return nav.go(this, event, { noback: true })" id="myprofile" class="left_row">
-      	<span class="left_label inl_bl">Моя Страница</span>
+      	<span class="left_label inl_bl">{_my_page}</span>
       </a>
     </td>
     <td id="myprofile_edit_wrap">
       
-      <a href="/edit" onclick="return nav.go(this, event);" id="myprofile_edit" class="left_row"><span class="left_label inl_bl">ред.</span></a>
+      <a href="/edit" onclick="return nav.go(this, event);" id="myprofile_edit" class="left_row"><span class="left_label inl_bl">{_edit_button}</span></a>
     </td>
   	</tr>
 	</table>
 	</li>
 	<li id="l_fr">
-		<a href="/friends{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('fr')" onmousedown="return Pads.show('fr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Друзья</span></a>
+		<a href="/friends{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('fr')" onmousedown="return Pads.show('fr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap {if $friendRequestsCount < 1}left_void{/if} fl_r"><span class="inl_bl left_plus">+{if $friendRequestsCount > 0}{$friendRequestsCount}{/if}</span></span></span><span class="left_label inl_bl">{_my_friends}</span></a>
 	</li>
 	<li id="l_ph">
-		<a href="/albums{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('ph')" onmousedown="return Pads.show('ph', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Фотографии</span></a>
+		<a href="/albums{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('ph')" onmousedown="return Pads.show('ph', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">{_my_photos}</span></a>
 	</li>
 	<li id="l_vid">
-		<a href="/videos{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('vid')" onmousedown="return Pads.show('vid', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Видеозаписи</span></a>
+		<a href="/videos{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('vid')" onmousedown="return Pads.show('vid', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">{_my_videos}</span></a>
 	</li>
 	<li>
-		<a href="/audios{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Аудиозаписи</span></a>
+		<a href="/audios{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">{_my_audios}</span></a>
 	</li>
 	<li id="l_msg">
-		<a href="/im" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmousedown="return Pads.show('msg', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Сообщения</span></a>
+		<a href="/im" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmousedown="return Pads.show('msg', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap {if $unreadMessagesCount < 1}left_void{/if} fl_r"><span class="inl_bl left_plus">+{if $unreadMessagesCount > 0}{$unreadMessagesCount}{/if}</span></span></span><span class="left_label inl_bl">{_my_messages}</span></a>
 	</li>
 	<li id="l_nts">
-		<a href="/notes{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Заметки</span></a>
+		<a href="/notes{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">{_my_notes}</span></a>
 	</li>
 	<li id="l_gr">
-		<a href="/groups{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('gr')" onmousedown="return Pads.show('gr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Группы</span></a>
+		<a href="/groups{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad" onmouseover="Pads.preload('gr')" onmousedown="return Pads.show('gr', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">{_my_groups}</span></a>
 	</li>
-	<!--<li id="l_ev">
-		<a href="/events{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Встречи</span></a>
-	</li>-->
+	<li id="l_ev">
+		<a href="/events{$thisUser->getId()}" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">{_my_events}</span></a>
+	</li>
 	<li id="l_nws">
-		<a href="/feed" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('nws')" onmousedown="return Pads.show('nws', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Мои Новости</span></a>
+		<a href="/feed" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('nws')" onmousedown="return Pads.show('nws', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">{_my_feed}</span></a>
 	</li>
-	<li>
-		<a href="/fave" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Закладки</span></a>
+	<li id="l_nts">
+		<a href="/feed?section=notifications" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap {if $notificationsCount < 1}left_void{/if} fl_r"><span class="inl_bl left_plus">+{if $notificationsCount > 0}{$notificationsCount}{/if}</span></span></span><span class="left_label inl_bl">{_my_feedback}</span></a>
 	</li>
 	<li id="l_set">
-		<a href="/settings" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Мои Настройки</span></a>
+		<a href="/settings" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">{_my_settings}</span></a>
 	</li>
 	<div class="more_div"></div>
 	<li id="l_ap">
-		<a href="/apps" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('ap')" onmousedown="return Pads.show('ap', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">Приложения</span></a>
+		<a href="/apps" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_pad left_count_persist" onmouseover="Pads.preload('ap')" onmousedown="return Pads.show('ap', event)" onclick="return (checkEvent(event) || browser.msie6) ? true : cancelEvent(event)"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span></span><span class="left_label inl_bl">{_apps}</span></a>
 	</li>
 	<li>
-		<a href="/docs" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Документы</span></a>
+		<a href="/fave" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">{_bookmarks_tab}</span></a>
+	</li>
+	<li>
+		<a href="/docs" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">{_my_documents}</span></a>
 	</li>
 	<!--<li id="l_ads">
 		<a href="/ads?act=office" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Реклама</span></a>
 	</li>-->
-	<li id="l_spr">
-		<a href="/support" onclick="return nav.go(this, event, { noback: true, params: { _ref: 'left_nav' } });" class="left_row"><span class="left_count_wrap  left_void fl_r"><span class="inl_bl left_plus">+</span></span><span class="left_label inl_bl">Поддержка</span></a>
-	</li>
 </ol>
 {else}
 <ol>

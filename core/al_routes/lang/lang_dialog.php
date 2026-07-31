@@ -35,7 +35,7 @@ if ($_REQUEST['act']) {
 
 <?php
     $langbox_small = ob_get_clean();
-            return $ee13vars->ajax(0, ["", $langbox_small, "stManager.add(['uncommon.css'])"]);
+            return $ee13vars->ajax(0, ["", $langbox_small, ""], ['newStatic' => 'uncommon.css']);
         }
     }
 }

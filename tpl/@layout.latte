@@ -10,7 +10,7 @@
 {capture $ajaxJs}
     {if $al == -1}
         setTimeout(function() { 
-          document.title = replaceEntities(stripHTML({=json_encode(trim((string)$pageTitle), JSON_UNESCAPED_UNICODE)|noescape})); 
+          document.title = replaceEntities(stripHTML({=json_encode(trim((string)$pageTitle . " | " . $instance_name), JSON_UNESCAPED_UNICODE)|noescape})); 
         }, browser.chrome ? 50 : 100);
     {/if}
     {ifset view_script}{include view_script}{/ifset}
@@ -93,7 +93,7 @@ parent.ajax._frameover({=json_encode($cleanJs, JSON_UNESCAPED_UNICODE)|noescape}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{php echo getLanguage()}" lang="{php echo getLanguage()}">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link rel="shortcut icon" href="{php echo $ee13vars->get_resource($theme, '/images/faviconnew.ico');}" />
+<link rel="shortcut icon" href="{php echo $ee13vars->get_favicon($theme, getLanguage())}" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="description" content="{php echo $_SERVER['HTTP_HOST'];}" />
 <title>{ifset title}{$pageTitle} | {/ifset}{$instance_name}</title>
@@ -197,12 +197,12 @@ function isAncestor(elem, ancestor) {
 
     <div class="scroll_fix">
         <div id="page_layout" style="width: 791px;">
-            <div id="page_header" class="p_head p_head_l0">
+            <div id="page_header" class="p_head {php echo $ee13vars->get_header(getLanguage())}">
                 <div class="back"/>
                 <div class="left"/>
                 <div class="right"/>
                 <div class="content">
-                {include "components/header.latte"}
+                {include "components/header.latte", ee13vars => $ee13vars}
                     <div id="ts_cont_wrap" ontouchstart="event.cancelBubble = true;" onmousedown="event.cancelBubble = true;"/>
                 </div>
             </div>

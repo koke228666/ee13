@@ -10,25 +10,25 @@
         <a class="top_nav_link fl_l" href="" id="top_back_link" onclick="if (nav.go(this, event, { back: true }) === false) {  showBackLink(); return false; }"></a>
       </td>
       <td style=""><nobr>
-        <a class="top_nav_link" id="head_people" href="/search?section=users" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">люди</a>
+        <a class="top_nav_link" id="head_people" href="/search?section=users" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">{_header_people}</a>
       </nobr></td>
       <td style=""><nobr>
-        <a class="top_nav_link" id="head_groups" href="/search?section=groups" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">сообщества</a>
+        <a class="top_nav_link" id="head_groups" href="/search?section=groups" onclick="return nav.go(this, event, { search: true });" onmouseover="gSearch.preload();">{_header_groups}</a>
       </nobr></td>
       <td style=""><nobr>
-        <a class="top_nav_link" onclick="return nav.go(this, event, { noback: true });" id="head_games" href="/apps">игры</a>
+        <a class="top_nav_link" onclick="return nav.go(this, event, { noback: true });" id="head_games" href="/apps">{php echo $ee13vars->get_lang("header_apps")}</a>
       </nobr></td>
       <td style=""><nobr>
         <a class="top_nav_link" id="head_music" href="/audios{$thisUser->getId()}" onclick="return Pads.show('mus', event);">
-          <span id="head_music_text">музыка</span>
+          <span id="head_music_text">{php echo $ee13vars->get_lang("header_music")}</span>
           <div id="head_play_btn" onmouseover="addClass(this, 'over');" onmouseout="removeClass(this, 'over'); removeClass(this, 'down')" onmousedown="addClass(this, 'down')" onmouseup="removeClass(this, 'down')" onclick="headPlayPause(event)"></div>
         </a>
       </nobr></td>
       <td id="support_link_td" style=""><nobr>
-        <a class="top_nav_link" id="top_support_link" href="/support?act=new" onclick="return nav.go(this, event, { noback: true });">помощь</a>
+        <a class="top_nav_link" id="top_support_link" href="/support?act=new" onclick="return nav.go(this, event, { noback: true });">{_header_help}{if $ticketAnsweredCount > 0} <span>+{$ticketAnsweredCount}</span>{/if}</a>
       </nobr></td>
       <td id="logout_link_td"><nobr>
-        <a class="top_nav_link" id="logout_link" href="/login.php?act=logout" onclick="if (checkEvent(event) === false) {  location.href = this.href; return cancelEvent(event); }">выйти</a>
+        <a class="top_nav_link" id="logout_link" href="/login.php?act=logout" onclick="if (checkEvent(event) === false) {  location.href = this.href; return cancelEvent(event); }">{_header_log_out}</a>
       </nobr></td>
     </tr>
   </table>
@@ -36,7 +36,7 @@
     <div id="ts_input_wrap" class="ts_input_wrap fl_r" onmouseover="TopSearch.highlightInput(true); TopSearch.initFriendsList();" onmouseout="TopSearch.highlightInput(false)">
       <div class="ts" onmousedown="event.cancelBubble = true;">
         <div class="ts_input_wrap2"><div>
-          <input type="text" onmousedown="event.cancelBubble = true;" ontouchstart="event.cancelBubble = true;" class="text" id="ts_input" autocomplete="off" placeholder="Поиск" />
+          <input type="text" onmousedown="event.cancelBubble = true;" ontouchstart="event.cancelBubble = true;" class="text" id="ts_input" autocomplete="off" placeholder="{_header_search}" />
         </div></div>
       </div>
     </div>
@@ -50,8 +50,8 @@
   <a id="top_home_link" class="top_home_link fl_l" href="/" onmousedown="addClass('top_logo_down','tld_d');"  onmouseup="removeClass('top_logo_down','tld_d');"></a>
   <div id="top_links">
     <div class="fl_r" id="top_menu_wrap" style="">
-      <a id="top_reg_link" class="fl_r top_nav_link" href="/join" style="" onclick="return !showBox('join.php', { act: 'box', from: nav.strLoc}, { }, event)">регистрация</a>
-      <a id="top_switch_lang" class="fl_r top_nav_link" style="display: none;" onclick="ajax.post('al_index.php', { act: 'change_lang', lang_id: 3, hash: '' });">Switch to English</a>
+      <a id="top_reg_link" class="fl_r top_nav_link" href="/join" style="" onclick="return !showBox('join.php', { act: 'box', from: nav.strLoc}, { }, event)">{_header_registration}</a>
+      <!--<a id="top_switch_lang" class="fl_r top_nav_link" style="display: none;" onclick="ajax.post('al_index.php', { act: 'change_lang', lang_id: 3, hash: '' });">Switch to English</a>-->
     </div>
     <a class="fl_l top_nav_link" href="" id="top_back_link" onclick="return nav.go(this, event, { back: true })" style="max-width: 748px;"></a>
   </div>

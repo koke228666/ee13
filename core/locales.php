@@ -28,7 +28,13 @@ return [
         "mth9" => "Сентября",
         "mth10" => "Октября",
         "mth11" => "Ноября",
-        "mth12" => "Декабря"
+        "mth12" => "Декабря",
+        "badbrowser_title" => "Вы используете устаревший браузер.",
+        "badbrowser_top" => "Для работы с сайтом необходима поддержка Javascript и Cookies.",
+        "badbrowser_mid" => "Чтобы использовать все возможности сайта, загрузите и установите один из этих браузеров:",
+        "badbrowser_mvkcom" => 'Или Вы можете воспользоваться <a href="https://m.vk.com/">версией сайта для мобильных устройств</a>.',
+        "header_music" => "музыка",
+        "header_apps" => "игры"
     ],
     "en" => [
         "baddragon_php" => "baddragon.php",
@@ -58,6 +64,12 @@ return [
         "mth9" => "September",
         "mth10" => "October",
         "mth11" => "November",
-        "mth12" => "December"
+        "mth12" => "December",
+        "badbrowser_title" => "You are using an outdated browser.",
+        "badbrowser_top" => "JavaScript and Cookies need to be supported in order to use the site.",
+        "badbrowser_mid" => "To be able to use all of the site's functions, download and install one of the following browsers:",
+        "badbrowser_mvkcom" => 'Alternatively, you can use <a href="https://m.vk.com/">the mobile version of the site</a>.',
+        "header_music" => "music",
+        "header_apps" => "games"
     ]
 ];
