@@ -277,7 +277,7 @@ var Audio = {
     var lyrics_div = ge('lyrics'+id);
     if (!isVisible(lyrics_div)) {
       show(lyrics_div);
-      lyrics_div.innerHTML = "<div style='text-align: center; height: 50px; padding: 30px 10px 10px 10px'><img valign='middle' src='/images/progress7.gif'></div>";
+      lyrics_div.innerHTML = "<div style='text-align: center; height: 50px; padding: 30px 10px 10px 10px'><img valign='middle' src='" + vk.st_base_path + "/images/progress7.gif'></div>";
       Audio.updateSorterRows(ge('audio'+id));
       ajax.post(Audio.address, {act: 'get_lyrics', lid: lid, aid: id, top: top ? 1 : 0}, {cache: 1, onDone: (function(responseText) {
           lyrics_div.innerHTML = responseText;

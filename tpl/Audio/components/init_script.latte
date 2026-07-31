@@ -1,5 +1,38 @@
-{php $default_audio = $audios[0]}
+{php
+$audio_itms = isset($audios) ? array_values($audios) : [];
+$initial_audios = [];
+
+foreach ($audio_itms as $audio) {
+    $pretty_id = explode('_', $audio->getPrettyId(), 2);
+    $audio_oid = (int)($pretty_id[0] ?? 0);
+    $audio_id      = (int)($pretty_id[1] ?? $audio->getId());
+
+    $initial_audios[] = [
+        $audio_oid,
+        $audio_id,
+        $audio->getOriginalURL(),
+        $audio->getLength(),
+        $audio->getFormattedLength(),
+        $audio->getPerformer(),
+        $audio->getTitle(),
+        $audio_id,
+        $audio->getAlbumId(),
+        (int)(isset($thisUser) && $audio->isInLibraryOf($thisUser)),
+        '',
+        0,
+        $audio->canBeModifiedBy($thisUser),
+    ];
+}
+}
 {contentType javascript}
+
+var initial_audios = {=json_encode($initial_audios, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)|noescape};
+
+var defaultTrack = initial_audios.length ? initial_audios[0] : null;
+
+if (defaultTrack) {
+    defaultTrack.id = defaultTrack[0] + '_' + defaultTrack[1];
+}
 var searchTypes = [{
         i: 0,
         l: 'по композициям'
@@ -21,19 +54,19 @@ cur.searchTypeChanged = function (event, noFire) {
     }
 }
 cur.searchTypeMenu = new DropdownMenu(searchTypes, { target: searchBtn, value: 0, containerClass: 'dd_menu_stype_act', updateTarget: false, offsetLeft: 0, offsetTop: 0, showHover: false, fadeSpeed: 0, onSelect: cur.searchTypeChanged});
-Audio.init({ // TODO ПЕРЕДЕЛАТЬ ПОД ДРУГОЙ ФОРМАТ !!!!
-    "id": {$thisUser->getId()},
-    "gid": 0,
-    "oid": {$owner->getId()},
+Audio.init({
+    "id": {$ownerId > 0 ? $ownerId : 0},
+    "gid": {$ownerId < 0 ? -$ownerId : 0},
+    "oid": {$ownerId},
     "album_id": 0,
-    "has_more": 0,
+    "has_more": {$audiosCount > count($audioItems) ? 1 : 0},
     "audiosPerPage": 50,
-    "shownAudios": 50,
-    "canEditGroup": 0,
+    "shownAudios": {$audiosCount},
     "q": "",
-    "club": 0,
-    "canEdit": true,
+    "club": {$ownerId < 0 ? -$ownerId : 0},
+    "canEdit": {(int)($ownerId == $thisUser->getId())},
     "audio_id": 0,
+    "defaultTrack": defaultTrack,
     "rowTpl": '<div class="audio %rowclass% fl_l" id="audio%audio_id%"'+
      'onmouseover="addClass(this, \'over\')"'+
      'onmouseout="removeClass(this, \'over\')">'+
@@ -83,22 +116,6 @@ Audio.init({ // TODO ПЕРЕДЕЛАТЬ ПОД ДРУГОЙ ФОРМАТ !!!!
     "shownFriends": [],
     "section": "",
     "allAudiosIndex": "all",
-    "defaultTrack": {
-        "0": {$owner->getId()},
-        "1": {$default_audio->getId()},
-        "2": {$default_audio->getOriginalURL()},
-        "3": {$default_audio->getLength()},
-        "4": {$default_audio->getFormattedLength()},
-        "5": {$default_audio->getTitle()},
-        "6": {$default_audio->getPerformer()},
-        "7": "98436",
-        "8": "0",
-        "9": 0,
-        "10": "",
-        "11": 0,
-        "12": true,
-        "id": {$default_audio->getPrettyId()}
-    },
     "lastHTitle": "Аудиозаписи",
     "htitle": "Аудиозаписи",
     "uploadBanned": false,

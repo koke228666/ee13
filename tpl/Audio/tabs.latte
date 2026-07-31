@@ -1,28 +1,19 @@
+{var $thatIsThisUser = isset($thisUser) && $owner->getId() == $thisUser->getId()}
 <div id="side_filters">
     <div id="album_filters">
-        <div id="album0" class="audio_filter selected"
-        onmouseover="if (Audio.listOver) Audio.listOver(this)" onmouseout="if (Audio.listOut) Audio.listOut(this)"
-        onclick="Audio.loadAlbum(0)">
+        <div id="album0" class="audio_filter {if $thatIsThisUser}selected{/if}" onmouseover="if (Audio.listOver) Audio.listOver(this)" onmouseout="if (Audio.listOut) Audio.listOut(this)" onclick="Audio.loadAlbum(0)">
             <div class="label">{_my_music}</div>
             <div class="icon_wrap shown" onclick="return Audio.addAudio({}, event);" onmouseover="addClass(this, 'over'); showTooltip(this, { text: '{_upload_audio|noescape}', black: 1, shift: [7, 2, 0] })" onmouseout="removeClass(this, 'over')">
                 <div class="icon add"/>
             </div>
         </div>
-        <div id="recommendations"
-             class="audio_filter"
-             onmouseover="if (Audio.listOver) Audio.listOver(this)"
-             onmouseout="if (Audio.listOut) Audio.listOut(this)"
-             onclick="Audio.loadRecommendations({ from_pad: '', update: true })">
+        <div id="recommendations" class="audio_filter" onmouseover="if (Audio.listOver) Audio.listOver(this)" onmouseout="if (Audio.listOut) Audio.listOut(this)" onclick="Audio.loadRecommendations({ from_pad: '', update: true })">
             <div class="label">{_audio_popular}</div>
         </div>
         <div>
             <div style="position:relative;"></div>
         </div>
-        <div id="album_filtered"
-             class="audio_search_album audio_filter"
-             onmouseover="if (Audio.listOver) Audio.listOver(this)"
-             onmouseout="if (Audio.listOut) Audio.listOut(this)"
-             onclick="Audio.backToSearch('');">
+        <div id="album_filtered" class="audio_search_album audio_filter" onmouseover="if (Audio.listOver) Audio.listOver(this)" onmouseout="if (Audio.listOut) Audio.listOut(this)" onclick="Audio.backToSearch('');">
             <div class="label">{_search_results}</div>
         </div>
     </div>
