@@ -1,4 +1,14 @@
 {extends "../@layout.latte"}
+
+{php
+    $cur['static'] = [
+        'about.css',
+        'page.css',
+        'page_fixed.css',
+        'public.css'
+    ];
+}
+
 {block title}{_about_this_instance}{/block}
 
 {block header}
@@ -6,74 +16,128 @@
 {/block}
 
 {block content}
-    <table class="flexible_table" width="100%" cellspacing="0" cellpadding="0">
-        <tbody>
-            <tr valign="top">
-                <td width="250"{if sizeof($admins) > 0} style="padding-right: 10px;"{/if}>
-                    <h4>{_statistics}</h4>
-                    <div style="margin-top: 5px;">
-                        {_on_this_instance_are}
-                        <ul>
-                            <li><span>{tr("about_users", $usersStats->all)|noescape}</span></li>
-                            <li><span>{tr("about_online_users", $usersStats->online)|noescape}</span></li>
-                            <li><span>{tr("about_active_users", $usersStats->active)|noescape}</span></li>
-                            <li><span>{tr("about_groups", $clubsCount)|noescape}</span></li>
-                            <li><span>{tr("about_wall_posts", $postsCount)|noescape}</span></li>
-                        </ul>
-                    </div>
-                    {if \OPENVK_ROOT_CONF['openvk']['preferences']['about']['links']}
-                        <h4>{_about_links}</h4>
-                        <div style="margin-top: 5px;">
-                            {_instance_links}
-                            <ul>
-                                <li n:foreach="\OPENVK_ROOT_CONF['openvk']['preferences']['about']['links'] as $aboutLink"><a href="{$aboutLink['url']}" target="_blank" class="link">{$aboutLink["name"]}</a></li>
-                            </ul>
+{include "../ee13_vars.latte"}
+{php $ee13vars = $GLOBALS['ee13'];}
+    <div id="public" class="clear_fix about_cont">
+        <div class="wide_column fl_l" id="group_wide">
+            <div class="info_tab">
+                <div class="wall_fixed" id="wall_fixed">
+                    <div class="wall_module">
+                        <div class="wall_posts own">
+                            <div id="post0_0" class="post all own post_fixed">
+                                <div class="post_table">
+                                    <div class="post_info">
+                                        <div class="wall_text">
+                                            <div id="wpt0_0">
+                                                <div class="wall_post_text">
+                                                    <h2>{_on_this_instance_are}</h2>
+                                                    <ul class="listing">
+                                                        <li><span>{tr("about_users", $usersStats->all)|noescape}</span></li>
+                                                        <li><span>{tr("about_online_users", $usersStats->online)|noescape}</span></li>
+                                                        <li><span>{tr("about_active_users", $usersStats->active)|noescape}</span></li>
+                                                        <li><span>{tr("about_groups", $clubsCount)|noescape}</span></li>
+                                                        <li><span>{tr("about_wall_posts", $postsCount)|noescape}</span></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    {/if}
-                </td>
-                <td n:if="sizeof($admins) > 0">
-                    <h4>{_administrators}</h4>
-                    <div style="margin-left: 5px; margin-top: 5px;">
-                        <div n:foreach="$admins as $admin" class="avatar-list-item">
-                            <div class="avatar">
-                                <a href="{$admin->getURL()}">
-                                    <img class="ava" src="{$admin->getAvatarUrl()}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="narrow_column fl_r" id="group_narrow">
+            <div id="page_avatar">
+                <img src="{php echo $ee13vars->get_resource($theme, '/images/deactivated_thanos_200.png')}" alt="ee13">
+            </div>
+
+            <div class="module clear page_list_module" id="public_links">
+                <a class="module_header">
+                    <div class="header_top clear_fix">
+                        Мобильные приложения
+                    </div>
+                </a>
+                <div class="module_body clear_fix">
+                    <div class="line_cell clear_fix">
+                        <div class="fl_l thumb">
+                            <img src="{php echo $ee13vars->get_resource($theme, '/ee13/vk_mp3_mod.png')}">
+                        </div>
+                        <div class="fl_l extra_info" style="padding-top:3px;">
+                            <div class="people_desc">VK mp3 mod</div>
+                            <div class="people_extra">
+                                <a class="people_extra_lnk" href="https://t.me/vkmp3mod" target="_blank">
+                                    https://t.me/vkmp3mod
                                 </a>
                             </div>
-                            {* Это наверное костыль, ну да ладно *}
-                            <div n:class="info, mb_strlen($admin->getCanonicalName()) < 22 ? info-centered">
-                                <a href="{$admin->getURL()}" class="title">{$admin->getCanonicalName()}</a>
+                        </div>
+                        <div class="fl_l thumb">
+                            <img src="{php echo $ee13vars->get_resource($theme, '/ee13/kate_mobile_old.png')}">
+                        </div>
+                        <div class="fl_l extra_info" style="padding-top:3px;">
+                            <div class="people_desc">Kate Bobile</div>
+                            <div class="people_extra">
+                                <a class="people_extra_lnk" href="https://t.me/openvkmobile/23490/23699" target="_blank">
+                                    Kate Bobile 61
+                                </a>
                             </div>
                         </div>
                     </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </div>
+            </div>
 
-    {if sizeof($popularClubs) !== 0}
-        <h4>{_most_popular_groups}</h4>
-        {var $entries = array_chunk($popularClubs, 10, true)}
-        <table width="100%" cellspacing="0" cellpadding="0">
-            <tbody>
-                <tr valign="top">
-                    <td n:foreach="$entries as $chunk">
-                        <ol>
-                            <li value="{$num+1}" style="margin-top: 5px;" n:foreach="$chunk as $num => $club">
-                                <a href="{$club->club->getURL()}">{$club->club->getName()}</a>
-                                <div>
-                                    {tr("participants", $club->subscriptions)}
-                                </div>
-                            </li>
-                        </ol>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    {/if}
+            <div class="module clear groups_list_module empty" id="public_help">
+                <a href="" onclick="if (!checkEvent(event)) { nav.go('/support?act=new');return false; }" class="module_header">
+                    <div class="header_top clear_fix">
+                        Помощь
+                    </div>
+                </a>
+                <div class="module_body clear_fix">
+                    Наша <b>команда поддержки</b> поможет с любыми проблемами<br>
+                    <a class="button_blue" style="margin-top: 10px" onclick="return nav.go('/support?act=new')"><button>Задать вопрос</button></a>
+                </div>
+            </div>
 
-    <h4>{_rules}</h4>
-    <div style="margin-top: 16px;">
-        {tr("about_watch_rules", "/terms")|noescape}
+            <div n:if="sizeof($admins) > 0" class="module clear page_list_module" id="public_contacts">
+                <a href="" class="module_header">
+                    <div class="header_top clear_fix">
+                        {_administrators}
+                    </div>
+                </a>
+                <div class="module_body clear_fix">
+                    <div n:foreach="$admins as $admin" class="line_cell clear_fix">
+                        <div class="fl_l thumb">
+                            <a href="{$admin->getURL()}">
+                                <img src="{$admin->getAvatarUrl()}">
+                            </a>
+                        </div>
+                        <div class="fl_l desc_info">
+                            <div class="people_name">
+                                <a href="{$admin->getURL()}">{$admin->getCanonicalName()}</a>
+                            </div>
+                            <div class="people_extra"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div n:if="\OPENVK_ROOT_CONF['openvk']['preferences']['about']['links']" class="module clear page_list_module" id="public_links">
+                <a href="" class="module_header">
+                    <div class="header_top clear_fix">
+                        {_instance_links}
+                    </div>
+                </a>
+                <div class="module_body clear_fix">
+                    <div n:foreach="\OPENVK_ROOT_CONF['openvk']['preferences']['about']['links'] as $aboutLink" class="line_cell clear_fix">
+                        <div class="fl_l desc_info">
+                            <a href="{$aboutLink['url']}">{$aboutLink['name']}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {/block}

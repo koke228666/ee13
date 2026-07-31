@@ -1,13 +1,17 @@
 {extends "../@layout.latte"}
 
+{php
+    $cur['static'] = [
+        'help.css'
+    ];
+}
+
 {block title}{$heading}{/block}
 
-{block header}
-    {$heading}
-{/block}
-
 {block content}
-	<div class="knowledgeBaseArticle">
+	<div id="terms_box_content">
 		{$content|noescape}
 	</div>
 {/block}
+
+{* сорямбик, я мб чёнить придумаю (например, js патчи, или же кааастомные странички, но вряд ли). *}
