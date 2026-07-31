@@ -1,14 +1,31 @@
 {extends "../@layout.latte"}
+
+{php
+$cur['static'] = [
+    'uncommon.css'
+];
+}
+
 {block title}{_information}{/block}
 
 {block header}
     {_information}
 {/block}
 
+{block view_script}
+ge('msg_back_button').onclick = function() {
+  history.go(-1);
+};
+{/block}
+
 {block content}
-    <center style="background: white;border: #DEDEDE solid 1px;">
-        <span style="color: #707070;margin: 60px 0;display: block;">
+<div class="message_page">
+    <div class="title">{_information}</div>
+        <div class="body">
             {_profile_not_found_text}
-        </span>
-    </center>
+        <div class="button_blue">
+            <button id="msg_back_button">{_paginator_back}</button>
+        </div>
+    </div>
+</div>
 {/block}
