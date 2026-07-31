@@ -64,7 +64,9 @@
                 <div class="module_body clear_fix">
                     <div class="line_cell clear_fix">
                         <div class="fl_l thumb">
-                            <img src="{php echo $ee13vars->get_resource($theme, '/ee13/vk_mp3_mod.png')}">
+                            <a href="https://t.me/vkmp3mod" target="_blank">
+                                <img src="{php echo $ee13vars->get_resource($theme, '/ee13/vk_mp3_mod.png')}">
+                            </a>
                         </div>
                         <div class="fl_l extra_info" style="padding-top:3px;">
                             <div class="people_desc">VK mp3 mod</div>
@@ -75,7 +77,9 @@
                             </div>
                         </div>
                         <div class="fl_l thumb">
-                            <img src="{php echo $ee13vars->get_resource($theme, '/ee13/kate_mobile_old.png')}">
+                            <a href="https://t.me/openvkmobile/23490/23699" target="_blank">
+                                <img src="{php echo $ee13vars->get_resource($theme, '/ee13/kate_mobile_old.png')}">
+                            </a>
                         </div>
                         <div class="fl_l extra_info" style="padding-top:3px;">
                             <div class="people_desc">Kate Bobile</div>
@@ -127,7 +131,8 @@
             <div n:if="\OPENVK_ROOT_CONF['openvk']['preferences']['about']['links']" class="module clear page_list_module" id="public_links">
                 <a href="" class="module_header">
                     <div class="header_top clear_fix">
-                        {_instance_links}
+                        {capture $instance_links}{_instance_links}{/capture}
+                        {str_replace(':', '', (string)$instance_links)}
                     </div>
                 </a>
                 <div class="module_body clear_fix">
