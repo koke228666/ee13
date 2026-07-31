@@ -30,7 +30,7 @@ if (!isset($GLOBALS['ee13'])) {
 
         public function get_favicon($theme, $lang)
         {
-            if ($lang === 'ru' || $lang === 'be' || $lang === 'uk') {
+            if ($lang === 'ru' || $lang === 'by' || $lang === 'uk' || $lang === 'kk') {
                 return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/faviconnew.ico";
             } else {
                 return "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/favicon_vk.ico";

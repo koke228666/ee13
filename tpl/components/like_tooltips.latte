@@ -23,7 +23,7 @@ if (count) {
 return count > 0;{/capture}
 
 {capture $tt}
-<div class="header">
+<div class="header" {if $type === "wall"}onclick="showWiki({ w: 'likes/{$target_id|noescape}' }, false, false, { queue: 1 });"{/if}>
     <div class="like_head_wrap">
         <span id="like_title_{$target_id|noescape}">{tr('liked_by_x_people', ($like_count === 0) ? 1 : $like_count)}</span>
     </div>

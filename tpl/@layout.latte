@@ -242,15 +242,15 @@ function isAncestor(elem, ancestor) {
             </div>
             <div id="footer_wrap" class="fl_r" style="width: 661px;">
                 <div id="bottom_nav">
-                    <a class="bnav_a" href="/about">о сайте</a>
-                    <a class="bnav_a" href="/support?act=new" onclick="return nav.go(this, event);" style="">помощь</a>
-                    <a class="bnav_a" href="/terms">правила</a>
+                    <a class="bnav_a" href="/about">{_footer_about_instance}</a>
+                    <a class="bnav_a" href="/support?act=new" onclick="return nav.go(this, event);">{_footer_help}</a>
+                    <a class="bnav_a" href="/terms">{_footer_rules}</a>
                     <!--<a class="bnav_a" href="/ads">реклама</a>-->
-                    <a class="bnav_a" href="/dev">разработчикам</a>
+                    <a class="bnav_a" target="_blank" href="/dev">{_footer_developers}</a>
                     <!--<a class="bnav_a" href="/jobs.php" style="">вакансии</a>-->
                 </div>
                 <div id="footer" class="clear">
-                    <div class="copy_lang">ВКонтакте &copy; 2013 <a class="bnav_lang" onclick="showBox('lang.php', { act: 'lang_dialog' }, { noreload: true} )">Русский</a>
+                    <div class="copy_lang">ВКонтакте &copy; 2013 <a class="bnav_lang" onclick="showBox('lang.php', { act: 'lang_dialog' }, { noreload: true} )">{php echo array_values(array_filter(getLanguages(), fn($l) => $l['code'] === getLanguage()))[0]['native_name']}</a>
                     </div>
                     <div>
                         <small>

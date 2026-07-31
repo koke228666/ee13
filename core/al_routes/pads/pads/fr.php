@@ -17,11 +17,13 @@ foreach ($requests as $request) {
     $id = $request->getId();
     $url = htmlspecialchars($request->getURL());
     $name = htmlspecialchars($request->getFullName());
+    $ava_miniscule = $request->getAvatarUrl('miniscule');
+    $ava = (!str_contains($ava_miniscule, "/assets/packages/static/openvk/img/camera_200.png")) ? $ava_miniscule : $ee13vars->get_resource($theme, "/images/camera_200.png");
 
     $html .= '<div id="pad_fr' . $id . '" class="pad_fr clear_fix">
     <div class="pad_fr_phwrap fl_l">
         <a href="' . $url . '">
-            <img class="pad_fr_img" src="' . $request->getAvatarUrl('miniscule') . '" alt="' . $name . '">
+            <img class="pad_fr_img" src="' . $ava . '" alt="' . $name . '">
         </a>
     </div>
 
