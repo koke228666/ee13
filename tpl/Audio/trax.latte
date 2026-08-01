@@ -1,38 +1,31 @@
 <div id="audio_search" class="audio_search top_search_wrap clear_fix">
     <div class="fl_l">
-        <input placeholder="Поиск" onpaste="Audio.updateList({ event: event });" onkeyup="Audio.updateList({ event: event });" id="s_search" type="text" class="s_search top_search_inp text" value="" />
+        <input placeholder="{_audio_search}" onpaste="Audio.updateList(event, this);" onkeyup="Audio.updateList(event, this);" id="s_search" type="text" class="s_search top_search_inp text" value="" />
     </div>
     <div class="search_progress fl_l"></div>
-    <div id="audio_query_reset" class="search_reset fl_l" onmouseover="if (isVisible(this)) animate(this, { opacity: 1 }, 100)" onmouseout="if (isVisible(this)) animate(this, { opacity: .6 }, 100)" onclick="Audio.clearSearch({ el: this, event: event })"></div>
+    <div id="audio_query_reset" class="search_reset fl_l" onmouseover="if (isVisible(this)) animate(this, { opacity: 1 }, 100)" onmouseout="if (isVisible(this)) animate(this, { opacity: .6 }, 100)" onclick="Audio.clearSearch(this, event); return false;"></div>
     <div class="abutton_wrap fl_l">
-        <div class="button_blue"><button>по композициям<span class="arrow"></span></button></div>
+        <div class="button_blue"><button>{_by_name}<span class="arrow"></span></button></div>
     </div>
 </div>
 <div id="audios_list" class="audio_list clear_fix">
-    <div id="initial_list">
-    {if $audiosCount <= 0}
-        <div id="not_found" class="info_msg">
-            {$ownerId > 0 ? ($ownerId == $thisUser->getId() ? tr("no_audios_thisuser") : tr("no_audios_user")) : tr("no_audios_club")} {*<a onclick="return Audio.addAudio({}, event);">нажмите здесь</a>*}
+    <div id="initial_list">{if $audiosCount <= 0}<div id="not_found" class="info_msg">{$ownerId > 0 ? ($ownerId == $thisUser->getId() ? tr("no_audios_thisuser") : tr("no_audios_user")) : tr("no_audios_club")}</div>{else}{foreach $audios as $audio}{php ob_start()}{include "../Audio/player.latte", audio => $audio, compactMode => false}{php $audioRow = trim(ob_get_clean())}{$audioRow|noescape}{/foreach}{/if}</div>
+
+    <a id="more_link" onclick="Audio.showRows()" class="more fl_l" {if $audiosCount <= count($audios)}style="display: none;"{/if}>
+        <div id="show_more_progress" class="progress"></div>
+        <div id="show_more" class="show_more"> {_show_more_audios} </div>
+    </a>
+
+    <div class="audio_search_results">
+        <div id="audio_search_wrap" class="summary_wrap">
+            <div id="audio_search_summary" class="summary"></div>
         </div>
-    {else}
-        {foreach $audios as $audio}
-            {include "../Audio/player.latte", audio => $audio, $compactMode => true}
-        {/foreach}
-    {/if}
-        <a id="more_link" onclick="Audio.showRows()" class="more fl_l" style="display: none;">
-            <div id="show_more_progress" class="progress"></div>
-            <div id="show_more" class="show_more"> Показать больше аудиозаписей </div>
-        </a>
-        <div class="audio_search_results">
-            <div id="audio_search_wrap" class="summary_wrap">
-                <div id="audio_search_summary" class="summary"></div>
-            </div>
-            <div id="search_list" class="search_list" style="display: none;"></div>
-        </div>
-        <div id="search_preload" class="audio_preload"></div>
-        <a id="s_more_link" onclick="Audio.loadRows()" class="search more fl_l" style="display: none;">
-            <div id="s_show_more_progress" class="progress"></div>
-            <div id="s_show_more" class="show_more"> Показать больше аудиозаписей </div>
-        </a>
+        <div id="search_list" class="search_list" style="display: none;"></div>
     </div>
+    <div id="search_preload" class="audio_preload"></div>
+
+    <a id="s_more_link" onclick="Audio.loadRows()" class="search more fl_l" style="display: none;">
+        <div id="s_show_more_progress" class="progress"></div>
+        <div id="s_show_more" class="show_more"> {_show_more_audios} </div>
+    </a>
 </div>

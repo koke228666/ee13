@@ -1,32 +1,34 @@
 {php
-$audio_itms = isset($audios) ? array_values($audios) : [];
 $initial_audios = [];
+$added_ids = [];
 
-foreach ($audio_itms as $audio) {
-    $pretty_id = explode('_', $audio->getPrettyId(), 2);
-    $audio_oid = (int)($pretty_id[0] ?? 0);
-    $audio_id      = (int)($pretty_id[1] ?? $audio->getId());
+foreach ($audios as $audio) {
+    if ($audio->isInLibraryOf($thisUser)) {
+        $added_ids[$audio->getPrettyId()] = 1;
+    }
 
     $initial_audios[] = [
-        $audio_oid,
-        $audio_id,
+        $audio->getOwner()->getId(),
+        $audio->getVirtualId(),
         $audio->getOriginalURL(),
         $audio->getLength(),
         $audio->getFormattedLength(),
-        $audio->getPerformer(),
-        $audio->getTitle(),
-        $audio_id,
-        $audio->getAlbumId(),
-        (int)(isset($thisUser) && $audio->isInLibraryOf($thisUser)),
+        htmlspecialchars($audio->getPerformer()),
+        htmlspecialchars($audio->getTitle()),
+        !empty($audio->getLyrics()) ? $audio->getId() : 0,
+        $audio->getAlbumId() ?: 0,
+        (int)(!$audio->isInLibraryOf($thisUser) && !$audio->isWithdrawn()),
         '',
         0,
-        $audio->canBeModifiedBy($thisUser),
+        (int)$audio->isInLibraryOf($thisUser),
+        0,
+        (int)$audio->canBeModifiedBy($thisUser)
     ];
 }
 }
 {contentType javascript}
 
-var initial_audios = {=json_encode($initial_audios, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)|noescape};
+var initial_audios = {php echo json_encode($initial_audios, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 
 var defaultTrack = initial_audios.length ? initial_audios[0] : null;
 
@@ -35,10 +37,10 @@ if (defaultTrack) {
 }
 var searchTypes = [{
         i: 0,
-        l: 'по композициям'
+        l: {_by_name}
     }, {
         i: 1,
-        l: 'по исполнителям'
+        l: {_by_performer}
     }
 ], searchBtn = geByTag1('button', ge('audio_search'));
 cur.searchTypeChanged = function (event, noFire) {
@@ -55,20 +57,23 @@ cur.searchTypeChanged = function (event, noFire) {
 }
 cur.searchTypeMenu = new DropdownMenu(searchTypes, { target: searchBtn, value: 0, containerClass: 'dd_menu_stype_act', updateTarget: false, offsetLeft: 0, offsetTop: 0, showHover: false, fadeSpeed: 0, onSelect: cur.searchTypeChanged});
 Audio.init({
-    "id": {$ownerId > 0 ? $ownerId : 0},
+    "id": {$thisUser->getId()},
     "gid": {$ownerId < 0 ? -$ownerId : 0},
     "oid": {$ownerId},
     "album_id": 0,
-    "has_more": {$audiosCount > count($audioItems) ? 1 : 0},
-    "audiosPerPage": 50,
-    "shownAudios": {$audiosCount},
+    "has_more": {$audiosCount > count($audios) ? 1 : 0},
+    "audiosPerPage": 10,
+    "shownAudios": {count($audios)},
     "q": "",
     "club": {$ownerId < 0 ? -$ownerId : 0},
     "canEdit": {(int)($ownerId == $thisUser->getId())},
     "audio_id": 0,
     "defaultTrack": defaultTrack,
-    "rowTpl": '<div class="audio %rowclass% fl_l" id="audio%audio_id%"'+
-     'onmouseover="addClass(this, \'over\')"'+
+    "audioFriend": {$ownerId > 0 && $ownerId != $thisUser->getId() ? $ownerId : (!empty($friendsAudios) ? $friendsAudios[0]->getRealId() : 0)},
+    "isAudioFriend": {(int)($ownerId > 0 && $ownerId != $thisUser->getId())},
+    "addedIds": {php echo json_encode($added_ids, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    "rowTpl": '<div class="audio %rowclass% fl_l" id="audio%audio_id%" '+
+     'onmouseover="addClass(this, \'over\')" '+
      'onmouseout="removeClass(this, \'over\')">'+
 
   '<a name="%audio_id%"></a>'+
@@ -85,7 +90,7 @@ Audio.init({
 
     '<div class="info fl_l">'+
       '<div class="title_wrap fl_l" onmouseover="setTitle(this)">'+
-        '<b><a %attr%>%performer%</a></b> &ndash;'+
+        '<b><a %attr%>%performer%</a></b> &ndash; '+
         '<span class="title">%title%</span>'+
         '<span class="user" onclick="cur.cancelClick = true;">%author%</span>'+
       '</div>'+
@@ -104,18 +109,19 @@ Audio.init({
  '<div class="info fl_l" nosorthandle="1">'+
  '<div class="title_wrap" nosorthandle="1"><b nosorthandle="1">%performer%</b> &ndash; <span class="title" nosorthandle="1">%title%</span></div>'+
  '<div class="actions" nosorthandle="1">'+
- '<div class="audio_add_wrap fl_r dn" id="audio_add%audio_id%" onmouseover="Audio.rowActive(this, \'Восстановить аудиозапись\', [9, 5, 0]);" onmouseout="Audio.rowInactive(this);" onclick="Audio.restoreAudio(\'%audio_id%\');" nosorthandle="1">'+
+ '<div class="audio_add_wrap fl_r" id="audio_add%audio_id%" onmouseover="Audio.rowActive(this, \'Восстановить аудиозапись\', [9, 5, 0]);" onmouseout="Audio.rowInactive(this);" onclick="Audio.restoreAudio(\'%audio_id%\');" nosorthandle="1">'+
  '<div class="audio_add" nosorthandle="1"></div>'+
  '</div>'+
  '%delete_all%'+
  '</div>'+
  '</div>'+
 '</div>',
-    "audioFriend": 0,
-    "isAudioFriend": false,
-    "shownFriends": [],
+    "audioFriend": {$ownerId > 0 && $ownerId != $thisUser->getId() ? $ownerId : (!empty($friendsAudios) ? $friendsAudios[0]->getRealId() : 0)},
+    "isAudioFriend": {if $ownerId > 0 && $ownerId != $thisUser->getId()}true{else}false{/if},
+    "shownFriends": {php echo json_encode(array_values(array_unique(array_merge($ownerId > 0 && $ownerId != $thisUser->getId() ? [$ownerId] : [],
+                     array_map(fn($friend) => $friend->getRealId(), $friendsAudios ?? [])))))},
     "section": "",
-    "allAudiosIndex": "all",
+    "allAudiosIndex": {php echo json_encode( $ownerId > 0 && $ownerId != $thisUser->getId() ? "friend" . $ownerId: "all")},
     "lastHTitle": "Аудиозаписи",
     "htitle": "Аудиозаписи",
     "uploadBanned": false,
@@ -123,17 +129,17 @@ Audio.init({
         "audio_not_sorted": "Неотсортированные",
         {syntax off}"audio_title_search": "Поиск по запросу {q}",{/syntax}
         "audio_N_recs": ["", "%s аудиозапись", "%s аудиозаписи", "%s аудиозаписей"],
-        "audio_titles_search": "по композициям",
-        "audio_performers_only": "по исполнителям",
+        "audio_titles_search": {_by_name},
+        "audio_performers_only": {_by_performer},
         "audio_play_tip": "Начать воспроизведение",
         "audio_pause_tip": "Приостановить воспроизведение",
         "audio_prev_tip": "Предыдущая композиция",
-        "audio_repeat_tooltip": "Повторять эту композицию",
+        "audio_repeat_tooltip": {_repeat_tip},
         "audio_next_tip": "Следующая композиция",
         "audio_add_to_audio": "Добавить в мои аудиозаписи",
         "audio_export_tip": "Транслировать на мою страницу",
         "audio_show_recommendations": "Показать похожие",
-        "audio_shuffle": "Перемешать",
+        "audio_shuffle": {_shuffle_tip},
         "audio_claims_no_upload": "Вы больше не можете загружать новые аудиозаписи, поскольку на Вас поступило много жалоб от правообладателей.",
         "audio_no_upload_title": "Загрузка невозможна"
     }
@@ -152,27 +158,28 @@ Audio.init({
     }
     if (audio[9] && parseInt(audio[9]) && !claimed) {
         actions += '<div class="audio_add_wrap fl_r"'+
- 'onmouseover="Audio.rowActive(this, \'Добавить в мои аудиозаписи\', [9,5,0]);"'+
- 'onmouseout="Audio.rowInactive(this);"'+
- 'onclick="Audio.addShareAudio(this,' + audio[1] + ', ' + audio[0] + ', ' + add_hash + '); return cancelEvent(event);">' +
+ 'onmouseover="Audio.rowActive(this, \'Добавить в мои аудиозаписи\', [9,5,0]);" '+
+ 'onmouseout="Audio.rowInactive(this);" '+
+ 'onclick="Audio.addShareAudio(this,' + audio[1] + ', ' + audio[0] + ', \'' + add_hash + '\'); return cancelEvent(event);">' +
   '<div class="audio_add"></div>'+
 '</div>';
     } else if (audio[12]) {
         actions += '<div id="remove'+ aid +'" class="audio_remove_wrap fl_r"' +
  'onmouseover="Audio.rowActive(this, \'Удалить аудиозапись\', [9,5,0]);"' +
  'onmouseout="Audio.rowInactive(this);"' +
- 'onclick="Audio.deleteAudio(' + aid + '); return cancelEvent(event)">' +
+ 'onclick="Audio.deleteAudio(\'' + aid + '\'); return cancelEvent(event)">' +
   '<div class="audio_remove"></div>'+
 '</div>';
-        if (!claimed)
-            actions += '<div class="audio_edit_wrap fl_r" onmouseover="Audio.rowActive(this, \' Редактировать аудиозапись \', [9, 5, 0]);" onmouseout="Audio.rowInactive(this);" onclick="Audio.editAudio(' + aid + ', event);"> <div class="audio_edit"></div> </div>';
+        if (!claimed && audio[14]) {
+            actions += '<div class="audio_edit_wrap fl_r" onmouseover="Audio.rowActive(this, \' Редактировать аудиозапись \', [9, 5, 0]);" onmouseout="Audio.rowInactive(this);" onclick="Audio.editAudio(\'' + aid + '\', event);"> <div class="audio_edit"></div> </div>';
+    }
     }
     var performer = audio[5];
     var author = audio[10] ? '(' + audio[10] + ')' : '';
     var reason = (audio[13] && parseInt(audio[13])) ? 'crap' : '';
     var lyricsLink = (audio[7] && parseInt(audio[7]))
 	  ? '<a href=""'+
-		   'onclick="Audio.showLyrics('+ aid +', ' + audio[7] +', 0); return cancelEvent(event);">'+
+		   'onclick="Audio.showLyrics(\''+ aid +'\', ' + audio[7] +', 0); return cancelEvent(event);">'+
 		   audio[6] +
 		 '</a>'
 	  : audio[6];
@@ -200,13 +207,13 @@ Audio.init({
         actions: actions,
         author: author,
 		onclick: claimed && !cur.claim
-		  ? 'Audio.showAudioClaimWarning(' +
-			  aid + ', ' +
+		  ? 'Audio.showAudioClaimWarning(\'' +
+			  aid + '\', ' +
 			  claim + ', "' +
 			  performer + ' – ' + audio[6] + '", "' +
 			  reason + '"' +
 			')'
-		  : 'playAudioNew("' + aid + '")',
+		  : 'playAudioNew(\'' + aid + '\')',
         rowclass: rowclass
     });
 });
@@ -239,5 +246,10 @@ if (dis) {
     __cur.searchSortFilter.disable(true);
     __cur.searchLyricsFilter.disable(true);
 }
+
+{if $ownerId > 0 && $ownerId != $thisUser->getId()}
+show(cur.audioFriends);
+hide(cur.audioAlbums);
+{/if}
 
 cur.module = 'audio';
