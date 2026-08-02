@@ -41,11 +41,17 @@ if ($owner_id && $audio_id && $broadcast) {
 }
 
 $audio_status = $thisUser->getCurrentAudioStatus();
-$current_status = htmlspecialchars($thisUser->getStatus());
+$raw_status = '';
+if (!empty($thisUser->getStatus())) {
+    $raw_status = htmlspecialchars($thisUser->getStatus());
+}
+
 if ($audio_status && $broadcast) {
     $audio_name = htmlspecialchars($audio_status->getName());
-    return $ee13vars->ajax(0, ['<span style="display: none;" class="my_current_info"><span class="current_text">' . $current_status . '</span></span>' .
-                               '<a class="current_audio fl_l"><div class="label fl_l"></div>' . $audio_name . '</a>']);
+    return $ee13vars->ajax(0, ['<span style="display: none;" class="my_current_info"><span class="current_text">' . $raw_status . '</span></span>'
+                               . '<a class="current_audio fl_l"><div class="label fl_l"></div>' . $audio_name . '</a>']);
+} elseif (!empty($raw_status)) {
+    return $ee13vars->ajax(0, ['<span class="my_current_info"><span class="current_text">' . $raw_status . '</span></span>']);
 } else {
-    return $ee13vars->ajax(0, ['<span class="my_current_info"><span class="current_text">' . $current_status . '</span></span>']);
+    return $ee13vars->ajax(0, ['<span class="no_current_info">' . tr('change_status') . '</span>']);
 }

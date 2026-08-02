@@ -133,7 +133,7 @@
                 <div class="fl_l ta_l clear">
                 {if $thatIsThisUser}
                         <!-- я ЗАПРЕЩАЮ форматировать следующую строчку -->
-                        <div class="clear" id="page_current_info"><div onclick="Page.infoEdit()"><span id="current_info">{if !is_null($user->getStatus())}<span class="my_current_info" {if $audioStatus}style="display: none;"{/if}><span class="current_text">{$user->getStatus()}</span></span>{else}<span class="no_current_info">{_change_status}</span>{/if}{if $audioStatus}<a class="current_audio fl_l"><div class="label fl_l"></div>{$audioStatus->getName()}</a>{/if}</span></div><div style="display: none"><span class="no_current_info">{_change_status}</span></div><div class="clear" onclick="cancelEvent(event)">
+                        <div class="clear" id="page_current_info"><div onclick="Page.infoEdit()"><span id="current_info">{if !is_null($user->getStatus())}<span class="my_current_info" {if $audioStatus}style="display: none;"{/if}><span class="current_text">{$user->getStatus()}</span></span>{else}<span {if $audioStatus}style="display: none;"{/if} class="no_current_info">{_change_status}</span>{/if}{if $audioStatus}<a class="current_audio fl_l"><div class="label fl_l"></div>{$audioStatus->getName()}</a>{/if}</span></div><div style="display: none"><span class="no_current_info">{_change_status}</span></div><div class="clear" onclick="cancelEvent(event)">
                             <table cellspacing="0" cellpadding="0" id="currinfo_editor">
                                 <tr>
                                     <td class="sidesh" rowspan="2">
