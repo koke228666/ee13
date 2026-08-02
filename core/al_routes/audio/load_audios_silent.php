@@ -42,7 +42,7 @@ if ($_REQUEST['gid'] || $_REQUEST['id']) {
     foreach ($audios as $audio) {
         $rows[] = [
             $audio->getOwner()->getId(),
-            $audio->getVirtualId(),
+            $audio->getId(),
             $audio->getOriginalURL(),
             $audio->getLength(),
             $audio->getFormattedLength(),
@@ -69,6 +69,7 @@ if ($_REQUEST['gid'] || $_REQUEST['id']) {
             "delete_hash"  => $csrfToken,
             "restore_hash" => $csrfToken,
         ],
+        "exp" => $thisUser->isBroadcastEnabled() ? (object)[$thisUser->getId() => 1] : (object)[],
         'summaryLang' => [
             'all_friend_title'  => tr('audios'),
             'all_friend_htitle' => tr('audios'),

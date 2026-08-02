@@ -1,0 +1,43 @@
+<?php
+use openvk\Web\Models\Repositories\Audios;
+
+if (!$thisUser) {
+    return $ee13vars->ajax(8, [$ee13vars->get_lang("user_reqiured")]);
+}
+if (!$ee13vars->check_csrf()) {
+    return $ee13vars->ajax(8, [$ee13vars->get_lang("csrf_fail")]);
+}
+switch ($ee13vars->rate_limit()) {
+    case 18:
+        return $ee13vars->ajax(5, [$ee13vars->get_lang("ratelim_pizda")]);
+    case 29:
+        return $ee13vars->ajax(7, [tr("rate_limit_error_comment", OPENVK_ROOT_CONF["openvk"]["appearance"]["name"], $ee13vars->get_lang("ratelim_temp"))]);
+}
+
+
+$broadcast = false;
+if ((int)$_REQUEST['exp'] == 1) {
+    $broadcast = true;
+}
+
+$thisUser->setAudio_broadcast_enabled($broadcast);
+$thisUser->save();
+
+if ($_REQUEST['id']) {
+    $id_split = explode("_", $_REQUEST['id']);
+    $owner_id = (int)$id_split[0];
+    $audio_id = (int)$id_split[1];
+}
+
+if ($owner_id && $audio_id && $broadcast) {
+    $audios = new Audios();
+    $audio = $audios->get($audio_id);
+    if (!$audio) {
+        return $ee13vars->ajax(7, [$ee13vars->get_lang("not_found")]);
+    } elseif (!$audio->canBeViewedBy($thisUser)) {
+        return $ee13vars->ajax(8, [$ee13vars->get_lang("access_denied")]);
+    }
+    $audio->listen($thisUser);
+}
+
+return $ee13vars->ajax(0);

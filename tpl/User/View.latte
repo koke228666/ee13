@@ -133,11 +133,11 @@
                 <div class="fl_l ta_l clear">
                 {if $thatIsThisUser}
                         <!-- я ЗАПРЕЩАЮ форматировать следующую строчку -->
-                        <div class="clear" id="page_current_info"><div onclick="Page.infoEdit()"><span id="current_info">{if !$audioStatus}{if !is_null($user->getStatus())}<span class="my_current_info"><span class="current_text">{$user->getStatus()}</span></span>{else}<span class="no_current_info">{_change_status}</span>{/if}{/if}</span></div><div style="display: none"><span class="no_current_info">{_change_status}</span></div><div class="clear" onclick="cancelEvent(event)">
+                        <div class="clear" id="page_current_info"><div onclick="Page.infoEdit()"><span id="current_info">{if !is_null($user->getStatus())}<span class="my_current_info" {if $audioStatus}style="display: none;"{/if}><span class="current_text">{$user->getStatus()}</span></span>{else}<span class="no_current_info">{_change_status}</span>{/if}{if $audioStatus}<a class="current_audio fl_l"><div class="label fl_l"></div>{$audioStatus->getName()}</a>{/if}</span></div><div style="display: none"><span class="no_current_info">{_change_status}</span></div><div class="clear" onclick="cancelEvent(event)">
                             <table cellspacing="0" cellpadding="0" id="currinfo_editor">
                                 <tr>
                                     <td class="sidesh" rowspan="2">
-                                        <div/>
+                                        <div></div>
                                     </td>
                                     <td>
                                         <div class="editor">
@@ -145,25 +145,27 @@
                                             <div class="fl_l button_blue">
                                                 <button id="currinfo_save">{_save}</button>
                                             </div>
-                                            <div class="fl_l checkbox" id="currinfo_audio" onclick="checkbox(this); Page.audioStatusUpdate('eb00775274c1cf1563');">
-                                                <div/>Транслировать в статус играющую музыку</div>
-                                            <div class="fl_l checkbox on unshown" id="currinfo_app" onclick="checkbox(this); Profile.appStatusUpdate('eb00775274c1cf1563')">
-                                                <div/>Показывать это приложение, когда я играю</div>
-                                            <div class="clear"/>
+                                            <div class="fl_l checkbox {if $audioStatus}on{/if}" id="currinfo_audio" onclick="checkbox(this); Page.audioStatusUpdate('{$csrfToken|noescape}');">
+                                                <div></div>{_broadcast_audio}
+                                            </div>
+                                            <div class="fl_l checkbox on unshown" id="currinfo_app" onclick="checkbox(this); Profile.appStatusUpdate('{$csrfToken|noescape}')">
+                                                <div></div>Показывать это приложение, когда я играю
+                                            </div>
+                                            <div class="clear"></div>
                                         </div>
                                     </td>
                                     <td class="sidesh" rowspan="2">
-                                        <div/>
+                                        <div></div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="bottomsh1">
-                                        <div/>
+                                        <div></div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="bottomsh2" colspan="3">
-                                        <div/>
+                                        <div></div>
                                     </td>
                                 </tr>
                             </table>
@@ -173,12 +175,20 @@
                 
                     {if !$audioStatus}
                         {if !is_null($user->getStatus())}
-                            <div class="clear" id="page_current_info">
-                        <span class="current_text">
-                                    {$user->getStatus()}
-                                </span>
-                    </div>
+                        <div class="clear" id="page_current_info">
+                            <span class="current_text">
+                                {$user->getStatus()}
+                            </span>
+                        </div>
                         {/if}   
+                    {else}
+                        <div class="clear" id="page_current_info">
+                            <span id="current_info">
+                                <a class="current_audio fl_l" onmouseover="showTooltip(this, { forcetoup: true, text: 'Прослушать аудиозапись', black: 1, shift: [13, 0, 0] })" onclick="Page.playCurrent(this, '{$audioStatus->getPrettyId()}|noescape', '{$csrfToken|noescape}'); return cancelEvent(event);">
+                                    <div class="label fl_l"></div>{$audioStatus->getName()}
+                                </a>
+                            </span>
+                        </div>
                     {/if}
                 {/if}
             </div>

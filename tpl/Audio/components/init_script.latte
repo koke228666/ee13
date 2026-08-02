@@ -4,7 +4,7 @@ $added_ids = [];
 
 foreach ($audios as $audio) {
     if ($audio->isInLibraryOf($thisUser)) {
-        $added_ids[$audio->getPrettyId()] = 1;
+        $added_ids[$audio->getOwner()->getId() . "_" . $audio->getId()] = 1;
     }
 
     $initial_audios[] = [

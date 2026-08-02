@@ -1,6 +1,6 @@
 <?php
 return $ee13vars->ajax(0, [
     $csrfToken,
-    [], // куда транслируется
+    $thisUser->isBroadcastEnabled() ? (object)[$thisUser->getId() => 1] : (object)[],
     [], // локаль
 ]);

@@ -1,4 +1,4 @@
-{php $audioId = $audio->getPrettyId()}
+{php $audioId = $audio->getOwner()->getId() . "_" . $audio->getId()}
 {php $lyricsId = $audio->getId()}
 {php $isWithdrawn = $audio->isWithdrawn()}
 {php $isAvailable = $audio->isAvailable()}

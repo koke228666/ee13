@@ -1,7 +1,7 @@
 {var $photoCount = (new \openvk\Web\Models\Repositories\Photos())->getUserPhotosCount($user)}
 
-<div class="clear {if $photoCount > 0}module photos_module{/if}" id="profile_photos_module" n:if="($photoCount > 0 && $user->getPrivacyPermission('photos.read', $thisUser ?? NULL)) || (isset($thisUser) && $user->getId() == $thisUser->getId())">
-    <a n:if="$photoCount > 0" href="albums{$user->getId()}?profile=1" onclick="return nav.change({ z: 'albums{$user->getId()}' }, event)" class="module_header">
+<div class="clear module photos_module" id="profile_photos_module" n:if="($user->getPrivacyPermission('photos.read', $thisUser ?? NULL)) || (isset($thisUser) && $user->getId() == $thisUser->getId())">
+    <a href="albums{$user->getId()}?profile=1" onclick="return nav.change({ z: 'albums{$user->getId()}' }, event)" class="module_header">
         <div class="header_top clear_fix">
             <span class="right_link fl_r" onmouseover="this.parentNode.parentNode.href='/albums{$user->getId()}'" onmouseout="this.parentNode.parentNode.href='/albums{$user->getId()}'" style="text-transform:lowercase;">{_all_title}</span>
             {if $photoCount == 1}
