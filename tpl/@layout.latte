@@ -7,6 +7,7 @@
 {php $al = $ee13vars->get_al();}
 {php $isAjax = ($al == 1) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'); }
 {ifset header}{capture $header}{include header}{/capture}{/ifset}
+{capture $leftads}{include "components/leftads.latte"}{/capture}
 {capture $ajaxJs}
     {if $al == -1}
         setTimeout(function() { 
@@ -58,7 +59,7 @@ parent.ajax._framedone({$ee13vars->ajax(0, '', ['newStatic' => implode(',', $cur
 </script>
 
 <script type="text/javascript">
-parent.ajax._frameover({=json_encode($cleanJs, JSON_UNESCAPED_UNICODE)|noescape}, {"leftads":"","ads_can_show":"1","ads_section":"profile"});
+parent.ajax._frameover({=json_encode($cleanJs, JSON_UNESCAPED_UNICODE)|noescape}, {"leftads":{$leftads},"ads_showed":"4f0d9a9b","ads_can_show":"1","ads_section":"profile"});
 </script>
 </head><body></body></html>
 {elseif $isAjax}
@@ -254,7 +255,8 @@ function isAncestor(elem, ancestor) {
                     </div>
                     <div>
                         <small>
-                            <a href="/durov" onclick="return nav.go(this, event)">Павел Дуров</a>
+                            {* <a href="/durov" onclick="return nav.go(this, event)">Павел Дуров</a> *}
+                            {php echo OPENVK_ROOT_CONF["openvk"]["appearance"]["motd"]}
                         </small>
                     </div>
                 </div>

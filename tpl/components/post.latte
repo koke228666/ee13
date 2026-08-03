@@ -163,7 +163,7 @@
                             {if $likesCount > 0}{$likesCount}{/if}
                         </span>
                     </div>
-                    <div class="post_share fl_r {if false}no_shares{/if}" onmouseover="wall.postShareOver('{$postId}')" onmouseout="wall.postShareOut('{$postId}', event)" onclick="wall.likeShareCustom('{$postId}'); event.cancelBubble = true;" n:if="!($forceNoShareLink ?? false)">
+                    <div class="post_share fl_r {if false}no_shares{/if}" onmouseover="wall.postShareOver('{$postId|noescape}')" onmouseout="wall.postShareOut('{$postId|noescape}', event)" onclick="wall.likeShareCustom('{$postId|noescape}'); event.cancelBubble = true;" n:if="!($forceNoShareLink ?? false)">
                         <span class="post_share_link fl_l" id="share_link{$postId}"></span>
                         <i class="post_share_icon sp_main fl_l" id="share_icon{$postId}"></i>
                         <span class="post_share_count fl_l" id="share_count{$postId}">

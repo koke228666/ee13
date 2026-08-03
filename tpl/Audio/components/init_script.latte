@@ -199,11 +199,11 @@ Audio.init({
   performer.replace(/(<span>|<\/span>)/g, '') +
   '" ' +
   'onclick="if (checkEvent(event)) { event.cancelBubble = true; return }; ' +
-  'Audio.selectPerformer({ event: event, name: \' ' +
+  'Audio.selectPerformer(event, \' ' +
   performer
     .replace(/(<span>|<\/span>)/g, ' ')
     .replace(/&#0*39;/g, '&#39;') +
-  ' \' }); return false"',
+  ' \'); return false"',
         actions: actions,
         author: author,
 		onclick: claimed && !cur.claim

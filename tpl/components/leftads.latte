@@ -1,0 +1,58 @@
+{var $ad_id = 1}
+{var $report_id = 1}
+<div n:if="\OPENVK_ROOT_CONF['openvk']['preferences']['adPoster']['enable'] && $thisUser->getLeftMenuItemStatus('poster')" class="ads_ads_box ver repeat_ver size_site">
+    <div class="ads_ads_box2 ver repeat_ver size_site">
+        <div class="ads_ads_box3 ver repeat_ver size_site">
+        <div class="ads_ads_box4 ver repeat_ver size_site">
+            <div class="ads_ad_box ver repeat_ver size_site first" id="ads_ad_box_ad_{$ad_id|noescape}">
+                <div id="left_hidead_{$ad_id|noescape}" class="left_hide_button" onmouseover="leftBlockOver(this);" onmouseout="leftBlockOut(this);" onclick="leftAdBlockClose('ad_{$ad_id|noescape}', '{php echo \OPENVK_ROOT_CONF['openvk']['preferences']['adPoster']['link']}'); return cancelEvent(event);"></div>
+                <div class="ads_ad_close_info" id="ads_ad_close_info_ad_{$ad_id|noescape}"><div class="ads_ad_box_border repeat_ver first"></div>
+                    <div class="ads_ad_close_info2" id="ads_ad_close_info2_ad_{$ad_id|noescape}">
+                        <div class="ads_ad_close_info3" id="ads_ad_close_info3_ad_{$ad_id|noescape}">
+                            <div class="ads_ad_close_info4" id="ads_ad_close_info4_ad_{$ad_id|noescape}">
+                                <div class="ads_ad_close_text">Данное объявление больше не будет Вам показываться.</div>
+                                <div class="ads_ad_close_complain">
+                                    <span class="ads_ad_close_complain_info">Если Вы считаете содержание данного объявления оскорбительным, </span>
+                                    <span class="ads_ad_close_complain_link" onclick="reportAd({$report_id}, this);">сообщите нам.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ads_ad_box_border repeat_ver first"></div>
+                <a class="ads_ad_box2 ver repeat_ver size_site first" id="ads_ad_box2_ad_{$ad_id|noescape}" href="{php echo \OPENVK_ROOT_CONF['openvk']['preferences']['adPoster']['link']}" target="_blank" onmouseover="leftBlockOver('ad_{$ad_id|noescape}');" onmouseout="leftBlockOut('ad_{$ad_id|noescape}');">
+                    <div class="ads_ad_box3 ver"><div class="ads_ad_box4 ver">
+                            <div class="ads_ad_box5 ver repeat_ver">
+                            <div class="ads_ad_box5_spacer ver repeat_ver size_site"></div>
+                                <div class="ads_ad_box6 ver">
+                                    <div class="ads_ad_text_box ver repeat_ver size_site">
+                                        <div class="ads_ad_title_box ver repeat_ver">
+                                            <div class="ads_ad_title_spacer1 ver repeat_ver">
+                                                <div class="ads_ad_title_spacer2 ver repeat_ver"></div>
+                                            </div>
+                                            <div class="ads_ad_title ver repeat_ver">{_ad_poster}</div>
+                                        </div>
+                                        <div class="ads_ad_domain ver"></div>
+                                        <div class="ads_ad_photo_box ver">
+                                            <img class="ads_ad_photo ver" src="{php echo \OPENVK_ROOT_CONF['openvk']['preferences']['adPoster']['src']}">
+                                            <div class="ads_ad_play ver empty" style="display: none;"></div>
+                                        </div><div class="ads_ad_description ver">{php echo \OPENVK_ROOT_CONF['openvk']['preferences']['adPoster']['caption']}</div>
+                                        <div class="ads_ad_community_join" style="display: none;"></div>
+                                        <div class="ads_ad_disclaimers">
+                                            <div class="ads_ad_disclaimer_medical ver" style="display: none;"></div>
+                                            <div class="ads_ad_disclaimer_specialist ver" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="ads_ads_all_ads">
+                <a class="ads_ads_all_ads_link" href="#" onclick="showBox('/ads_light.php?act=all_ads', { window_height: lastWindowHeight }, { params:{ dark: true, hideButtons: true, width: 1118, bodyStyle: 'padding-left: 20px; padding-right: 20px;' } }); return false;">Все объявления</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
