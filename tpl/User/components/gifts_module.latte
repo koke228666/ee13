@@ -1,16 +1,24 @@
 {var $canSeeGifts   = \OPENVK_ROOT_CONF['openvk']['preferences']['commerce']}
 {var $gift_count   = $user->getGiftCount() > 0}
 {var $thatIsThisUser = isset($thisUser) && $user->getId() == $thisUser->getId()}
+{var $completeness = $user->getProfileCompletenessReport()}
 
-<div class="profile_top_sep" n:if="$canSeeGifts && ($gift_count < 1)"></div>
-
-<div id="gifts_count_module" class="counts_module" n:if="$canSeeGifts && ($gift_count < 1)">
+<div id="gifts_count_module" class="counts_module" n:if="$canSeeGifts && ($gift_count < 1) && !$thatIsThisUser">
   <div>
     <a class="gifts clear_fix" onclick="return Profile.giftTooltip(this, event);" onmouseover="Profile.prepareGiftTooltip(event);" href="/gifts?act=pick&user={$user->getId()}">
         <span class="fl_r thumb"></span>
         <div class="profile_gifts_send fl_l">{_send_gift}</div>
     </a>
   </div>
+  {if !$thisUser->prefersNotToSeeRating()}
+    <div class="rate_line">
+        <div class="rate_text">{$completeness->total}%</div>
+        <div class="rate_left fl_l" style="width: {if $completeness->total >= 100}100{else}{$completeness->total}{/if}%;"></div>
+        <div class="rate_right fl_r" style="width: {if $completeness->total >= 100}0{else}{100 - $completeness->total}{/if}%;"></div>
+    </div>
+   {else}
+    <div class="rate_empty_line"></div>
+   {/if}
 </div>
 
 <div class="module clear gifts_list_module" id="profile_gifts" n:if="$canSeeGifts && ($gift_count > 0)">

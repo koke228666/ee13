@@ -8,15 +8,20 @@
   <a href="/edit">Редактировать профиль</a>
 </div>
 
-<div class="profile_rate_warning" n:if="isset($thisUser) && $user->getId() === $thisUser->getId() && sizeof($completeness->unfilled) > 0">
-    <div class="profile_top_sep"></div>
+<div class="profile_top_sep" n:if="!$thisUser->prefersNotToSeeRating()"></div>
 
-    <div class="rate_line">
-        <div class="rate_text">{$completeness->total}%</div>
-        <div class="rate_left fl_l" style="width: {if $completeness->total >= 100}100{else}{$completeness->total}{/if}%;"></div>
-        <div class="rate_right fl_r" style="width: {if $completeness->total >= 100}0{else}{100 - $completeness->total}{/if}%;"></div>
-    </div>
+{if !$thisUser->prefersNotToSeeRating()}
+<div class="rate_line">
+    <div class="rate_text">{$completeness->total}%</div>
+    <div class="rate_left fl_l" style="width: {if $completeness->total >= 100}100{else}{$completeness->total}{/if}%;"></div>
+    <div class="rate_right fl_r" style="width: {if $completeness->total >= 100}0{else}{100 - $completeness->total}{/if}%;"></div>
+</div>
+{else}
+<div class="rate_empty_line"></div>
+{/if}
 
+
+<div class="profile_rate_warning" n:if="isset($thisUser) && $user->getId() === $thisUser->getId() && sizeof($completeness->unfilled) > 0 && !$thisUser->prefersNotToSeeRating()">
     <a n:if="in_array('interests', $completeness->unfilled)" id="rate_warning_clubs" href="/edit?act=interests" class="warning_row clear_fix">
         <div class="img fl_l"></div>
         <div class="label fl_l">{_interests}</div>
@@ -47,12 +52,6 @@
 </div>
 
 <div n:if="!$thatIsThisUser">
-    <div class="rate_line">
-        <div class="rate_text">{$completeness->total}%</div>
-        <div class="rate_left fl_l" style="width: {if $completeness->total >= 100}100{else}{$completeness->total}{/if}%;"></div>
-        <div class="rate_right fl_r" style="width: {if $completeness->total >= 100}0{else}{100 - $completeness->total}{/if}%;"></div>
-    </div>
-
     <div id="profile_main_actions">
         <div id="friend_status">
             <div class="profile_action_btn">
