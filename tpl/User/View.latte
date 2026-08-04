@@ -77,16 +77,16 @@
     {else}
     
     <div id="profile">
-      <div class="narrow_column fl_l" id="profile_narrow">
+    <div class="narrow_column fl_l" id="profile_narrow">
       {if $thatIsThisUser}
         <div id="owner_photo_wrap">
-            <div id="owner_photo_top_bubble_wrap">
-            <div n:if="$hasAvatar" id="owner_photo_top_bubble">
-              <div class="owner_photo_bubble_delete_wrap" onclick="Profile.deletePhoto()" onmouseover="showTooltip(this, { text: 'Удалить фотографию', black: 1, shift: [11, 1, 6] });">
-                <div class="owner_photo_bubble_delete"></div>
-              </div>
+            <div n:if="$hasAvatar" id="owner_photo_top_bubble_wrap">
+                <div id="owner_photo_top_bubble">
+                  <div class="owner_photo_bubble_delete_wrap" onclick="Profile.deletePhoto()" onmouseover="showTooltip(this, { text: 'Удалить фотографию', black: 1, shift: [11, 1, 6] });">
+                    <div class="owner_photo_bubble_delete"></div>
+                  </div>
+                </div>
             </div>
-        </div>
       {/if}
           <div id="page_avatar">
           {if $hasAvatar}
@@ -98,7 +98,7 @@
           {/if}
            </div>
            {if $thatIsThisUser}
-            <div id="owner_photo_bubble_wrap" style="margin-top: -40px;height: 32px;"> <!-- чутка свои стили, потому что миниатюру изменить нельзя -->
+            <div n:if="$hasAvatar" id="owner_photo_bubble_wrap" style="margin-top: -40px;height: 32px;"> <!-- чутка свои стили, потому что миниатюру изменить нельзя -->
                 <div id="owner_photo_bubble">
                     <div class="owner_photo_bubble_action owner_photo_bubble_action_update" onclick="Page.ownerPhoto()">
                         <span class="owner_photo_bubble_action_in">Загрузить новую фотографию</span>
@@ -108,12 +108,17 @@
                     </div>-->
                 </div>
             </div>
+            <a n:if="!$hasAvatar" id="page_load_photo" onclick="Page.ownerPhoto()">
+                {_upload_photo}
+            </a>
             {/if}
       {if $thatIsThisUser}
         </div>
       {/if}
 
     {include "components/actions_module.latte"}
+
+    {include "components/counts_module.latte"}
 
     {include "components/gifts_module.latte"}
 

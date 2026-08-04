@@ -1,0 +1,13 @@
+{var $followers = $user->getFollowersCount()}
+{var $can_view = $user->getPrivacyPermission('friends.read', $thisUser ?? NULL)}
+{var $can_be_showed = $can_view && ($followers > 0)}
+
+<div id="profile_counts" class="counts_module" n:if="$can_be_showed">
+    <div>
+        <a class="fans" href="/friends{$user->getId()}?section=followers" onclick="return Profile.fansBox({$user->getId()}, event);" n:if="$followers > 0">
+            <span class="fl_r thumb"></span>
+            <span class="fl_r">{$followers}</span>
+            {_followers}
+        </a>
+    </div>
+</div>

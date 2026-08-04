@@ -16,10 +16,10 @@ $cur['static'] = [
 {block view_script}
 {if $jsTags}
     <script>
-        {include "components/init_script.latte", profileShow => $profileShow, profileHide => $profileHide}
+        {include "components/init_script.latte"}
     </script>
 {else}
-    {include "components/init_script.latte", profileShow => $profileShow, profileHide => $profileHide}
+    {include "components/init_script.latte"}
 {/if}
 {/block}
 

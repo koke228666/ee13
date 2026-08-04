@@ -1,0 +1,147 @@
+{contentType javascript}
+function friends_tpl(friend, section, first) {
+    var user_id = intval(friend[0]);
+    var user_url = clean(friend[1]);
+    var user_photo = clean(friend[2]);
+    var user_name = friend[5];
+    var user_online = intval(friend[4]);
+    var info_class = cur.canEdit ? 'info' : 'info_no_actions';
+    var actions = '';
+    if (cur.canEdit) {
+        actions = '<div class="actions fl_r">' +
+            '<a class="friends_act" href="/im?sel=' + user_id + '">{_send_message|noescape}</a>' +
+            '<a class="friends_act" onclick="return Friends.deleteFriend(event, ' + user_id + ', this);">{_friends_delete|noescape}</a>' +
+        '</div>';
+    }
+    return [
+        '<div id="user_block' + user_id + '" class="user_block clear_fix' + first + '">',
+            '<div class="friends_bigph_wrap fl_l">',
+                '<a class="img" href="' + user_url + '">',
+                    '<img class="friends_photo_img" src="' + user_photo + '" alt="">',
+                '</a>',
+            '</div>',
+            '<div class="' + info_class + ' fl_l">',
+                '<div class="friends_field"><a href="' + user_url + '"><b>' + user_name + '</b></a></div>',
+                user_online ? '<div class="online">Online</div>' : '',
+                '<div id="lists' + user_id + '" class="lists"></div>',
+            '</div>',
+            actions,
+        '</div>'
+    ];
+}
+
+function friends_common_tpl(friend, type, first) {
+    var user_id = intval(friend[0]);
+    var user_url = clean(friend[1]);
+    var user_photo = clean(friend[2]);
+    var user_info = friend[3] || '';
+    var user_name = friend[5];
+    var user_hash = clean(friend[7] || cur.userHash);
+    var controls = '';
+    if (type == 'out_requests') {
+        controls = '<div class="button_cancel fl_l">' +
+            '<div class="button" onclick="Friends.declineRequest(' + user_id + ', \'' + user_hash + '\', this); return false;">' +
+                '{_friends_reject|noescape}' +
+            '</div>' +
+        '</div>';
+    } else {
+        controls = '<div class="button_blue fl_l">' +
+            '<button id="accept_request_' + user_id + '" onclick="Friends.acceptRequest(' + user_id + ', \'' + user_hash + '\', this); return false;">' +
+                '{_friends_add|noescape}' +
+            '</button>' +
+        '</div>' +
+        '<a class="deny_request fl_l" onclick="Friends.declineRequest(' + user_id + ', \'' + user_hash + '\', this); return false;">' +
+            '{_friends_leave_in_flw|noescape}' +
+        '</a>';
+    }
+    return [
+        '<div id="user_block' + user_id + '" class="user_block common request clear_fix' + first + '">',
+            '<div class="friends_bigph_wrap fl_l">',
+                '<a class="img" href="' + user_url + '">',
+                    '<img class="friends_photo_img" src="' + user_photo + '" alt="">',
+                '</a>',
+            '</div>',
+            '<div class="info_no_actions fl_l">',
+                '<div class="friends_field"><a href="' + user_url + '"><b>' + user_name + '</b></a></div>',
+                user_info ? '<div class="friends_field">' + user_info + '</div>' : '',
+                '<div class="controls clear_fix">',
+                    '<div id="request_controls_' + user_id + '">' + controls + '</div>',
+                '</div>',
+            '</div>',
+        '</div>'
+    ];
+}
+Friends.init({
+    oid: {$user->getId()},
+    gid: 0,
+    section: {$act_json|noescape},
+    shownFriends: 0,
+    friendsPerPage: 20,
+    friendsList: {
+        all: {$friends_json|noescape},
+        requests: {$requests_json|noescape},
+        all_requests: {$followers_json|noescape},
+        out_requests: {$subscriptions_json|noescape},
+        sugg_requests: []
+    },
+    secData: {
+        all: { preload: false },
+        online: { preload: false },
+        requests: { preload: false },
+        all_requests: { preload: false },
+        out_requests: { preload: false }
+    },
+    allFriendsCount: {$friends_count},
+    requestsCount: {$requests_count},
+    allRequestsCount: {$followers_count},
+    outRequestsCount: {$subscriptions_count},
+    suggCount: 0,
+    commonCount: 0,
+    importCount: 0,
+    suggRev: false,
+    sortByDate: false,
+    silent: false,
+    canEdit: {$can_edit|noescape},
+    userHash: {$csrfToken},
+    userLists: {},
+    publicLists: {},
+    universities: {},
+    summaryLang: {
+        all: {tr('friends', $friends_count)},
+        all_no: {tr('friends_zero')},
+        online: {tr('friends_online', $online_friends)},
+        requests: {tr('req', $requests_count)},
+        all_requests: {tr('followers', $followers_count)},
+        out_requests: '%s исходящих заявок',
+        requests_title: {_req},
+        search: ['', {tr('friends_one', '%s')}, {tr('friends_few', '%s')}, {tr('friends_many', '%s')}],
+        search_no: {_no_found},
+        not_found: 'В этом списке пока никого нет.',
+        not_found_filter: 'По заданным параметрам никого не найдено.',
+        friends_sugg_summary: '%s возможных друзей',
+        friends_sort_by_date: {_s_by_date},
+        friends_sort_by_common: 'по общим друзьям',
+        to_users_page: '{php echo '<a href="' . $user->getURL() . '">' . htmlspecialchars($user->getCanonicalName(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8') . '</a>'}'
+    },
+    htitles: {
+        all: {_friends},
+        online: {_friends_online},
+        requests: {_req},
+        all_requests: {_followers},
+        out_requests: {_outcoming_req}
+    },
+    backLang: {_paginator_back}
+}, friends_tpl, friends_common_tpl);
+/*Friends.initFilters({
+    cities: [[0, 'Выберите город']],
+    citiesPl: 'Выберите город',
+    ageFrom: 14,
+    ageTo: 80,
+    langAgeFrom: 'от',
+    langAgeFromEmpty: 'От',
+    langAgeTo: 'до',
+    langAgeToEmpty: 'До'
+});*/
+Friends.section(cur.section, function() {
+    Friends.changeSummary();
+});

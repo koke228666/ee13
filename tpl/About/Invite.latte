@@ -1,14 +1,56 @@
 {extends "../@layout.latte"}
+{php $cur['static'] = [
+    'friends.css',
+    'invite.css',
+]}
+
 {block title}{_invite}{/block}
 
-{block header}
-    {_invite}
-{/block}
-
 {block content}
-    {_you_can_invite}<br><br>
-    <center>
-        <input type="text" readonly value="https://{$_SERVER["HTTP_HOST"]}/reg?ref={rawurlencode($thisUser->getRefLinkId())}" size="50" />
-    </center>
-    <p>{_you_can_invite_2}</p>
+<div id="friends">
+    <div id="friends_find_cont" class="search clear_fix">
+        <a id="friends_import_facebook" class="friends_import_row fl_l" style="width: 277px;" onclick="showFastBox({_invite}, {_section_maintenance})">
+            <div class="friends_import_icon friends_import_facebook"></div>
+            <div class="friends_import_cont">
+                <div class="friends_import_header">Facebook</div>
+                Найти друзей из Facebook
+            </div>
+        </a>
+        <a id="friends_import_google" class="friends_import_row fl_l" style="width: 277px;" onclick="showFastBox({_invite}, {_section_maintenance})">
+            <div class="friends_import_icon"></div>
+            <div class="friends_import_cont">
+                <div class="friends_import_header">Gmail и другие сервисы Google</div>
+                Найти контакты из Gmail
+            </div>
+        </a>
+        <a id="friends_import_ok" class="friends_import_row fl_l unshown" style="width: 277px;" onclick="showFastBox({_invite}, {_section_maintenance})">
+            <div class="friends_import_icon friends_import_ok"></div>
+            <div class="friends_import_cont">
+                <div class="friends_import_header">Одноклассники</div>
+                Найти друзей из Одноклассников
+            </div>
+        </a>
+    <a id="friends_import_twitter" class="friends_import_row fl_l" style="width: 277px;" onclick="showFastBox({_invite}, {_section_maintenance})">
+        <div class="friends_import_icon friends_import_twitter"></div>
+        <div class="friends_import_cont">
+            <div class="friends_import_header">Twitter</div>
+            Найти друзей из Twitter
+        </div>
+    </a>
+    </div>
+
+    <div class="summary_wrap">
+        <div id="friends_summary" class="summary">{_invite}</div>
+    </div>
+
+    <div id="friends_suggestions" class="friends_import_services">
+        <div id="list_content">
+            <div id="not_found" class="info_msg ta_c" style="max-width: none; margin: 15px auto; padding: 40px; font-size: 12px; text-align: center;">
+                {_you_can_invite}<br><br>
+                <input class="text" readonly value="https://{$_SERVER["HTTP_HOST"]}/reg?ref={rawurlencode($thisUser->getRefLinkId())}" type="text" size="75">
+                <p>{_you_can_invite_2}</p>
+            </div>
+        </div>
+    </div>
+</div>
 {/block}

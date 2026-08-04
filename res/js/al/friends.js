@@ -1026,7 +1026,7 @@ var Friends = {
     var controls = ge('request_controls_'+mid);
     var controlsCont = controls.parentNode;
     if (!el) {
-      controls.innerHTML = '<div align="center"><img src="/images/upload.gif"></div>';
+      controls.innerHTML = '<div align="center"><img src="' + vk.st_base_path + '/images/upload.gif"></div>';
     }
     ajax.post('al_friends.php', {act: 'add', mid: mid, hash: hash, request: 1, 'select_list': 1}, {onDone: function(text) {
       controls.innerHTML = text;
@@ -1046,7 +1046,7 @@ var Friends = {
     var controls = ge('request_controls_'+mid);
     var controlsCont = controls.parentNode;
     if (!el) {
-      controls.innerHTML = '<div align="center"><img src="/images/upload.gif"></div>';
+      controls.innerHTML = '<div align="center"><img src="' + vk.st_base_path + '/images/upload.gif"></div>';
     }
     ajax.post('al_friends.php', {act: 'remove', mid: mid, hash: hash, report_spam: 1, from_section: cur.section}, {onDone: function(text) {
       controls.innerHTML = text;
@@ -1121,7 +1121,7 @@ var Friends = {
       controls = ge('result_msg');
       removeClass(controls, 'msg');
     }
-    controls.innerHTML = '<div align="center"><img src="/images/upload.gif"></div>';
+    controls.innerHTML = '<div align="center"><img src="' + vk.st_base_path + '/images/upload.gif"></div>';
     ajax.post('al_friends.php', {act: 'report_spam', mid: mid, hash: hash}, {onDone: function(text) {
       controls.innerHTML = text;
     }});
@@ -1132,7 +1132,7 @@ var Friends = {
     ajax.post('al_friends.php', {act: 'add', mid: id, hash: cur.userHash, cats: cur.savedMasks[id]}, {
       onDone: Friends.onRemoveFriend.pbind(id, true),
       showProgress: function() {
-        el.innerHTML = '<center><img src="/images/upload.gif" /></center>';
+        el.innerHTML = '<center><img src="' + vk.st_base_path + '/images/upload.gif" /></center>';
       },
       hideProgress: function() {
         el.innerHTML = back;
@@ -1145,7 +1145,7 @@ var Friends = {
     ajax.post('al_friends.php', {act: 'remove', mid: id, hash: cur.userHash}, {
       onDone: Friends.onRemoveFriend.pbind(id, false),
       showProgress: function() {
-        el.innerHTML = '<center><img src="/images/upload.gif" /></center>';
+        el.innerHTML = '<center><img src="' + vk.st_base_path + '/images/upload.gif" /></center>';
       },
       hideProgress: function() {
         el.innerHTML = back;
@@ -1212,7 +1212,7 @@ var Friends = {
         //ge('friends_tt_cont_'+uid).tt.close();
       },
       showProgress: function() {
-        obj.innerHTML = '<center><img src="/images/upload.gif" /></center>';
+        obj.innerHTML = '<center><img src="' + vk.st_base_path + '/images/upload.gif" /></center>';
       },
       hideProgress: function() {
         obj.innerHTML = back;
@@ -1581,7 +1581,7 @@ var Friends = {
   hideSuggestion: function(mid, hash, el) {
     var controls = ge('request_controls_'+mid);
     var controlsCont = controls.parentNode;
-    (el || controls).innerHTML = '<div align="center"><img src="/images/upload.gif"></div>';
+    (el || controls).innerHTML = '<div align="center"><img src="' + vk.st_base_path + '/images/upload.gif"></div>';
     ajax.post('al_friends.php', {act: 'hide_suggestion', mid: mid, hash: hash, report_spam: 1}, {onDone: function(text) {
       controls.innerHTML = text;
       cur.suggCount -= 1;
@@ -1596,7 +1596,7 @@ var Friends = {
   },
   addRecommend: function(mid, uid, hash, obj) {
     obj = obj.parentNode;
-    obj.innerHTML = '<img src="/images/upload.gif" />';
+    obj.innerHTML = '<img src="' + vk.st_base_path + '/images/upload.gif" />';
     ajax.post('al_friends.php', {
       act: 'a_suggest_friends',
       mid: mid,

@@ -1,17 +1,97 @@
 {var $thatIsThisUser = isset($thisUser) && $user->getId() == $thisUser->getId()}
+{var $completeness = $user->getProfileCompletenessReport()}
+{var $subStatus = $user->getSubscriptionStatus($thisUser)}
 
-<div id="profile_main_actions" n:if="!$thatIsThisUser" >
-    <div id="friend_status">
-      <div class="profile_action_btn">
-        <div class="button_wide button_blue">
-          <button onclick="return Profile.toggleFriend(this, '{$csrfToken|noescape}', {$user->getId()}, event)">
-            Добавить в друзья
-          </button>
-        </div>
-      </div>
+<div n:if="$thatIsThisUser">
 
-      <div onmouseover="return Profile.friendTooltip()" class="friend_status_info" id="profile_am_subscribed">
-        Пользователь у Вас в друзьях
-      </div>
+<div id="profile_actions">
+  <a href="/edit">Редактировать профиль</a>
+</div>
+
+<div class="profile_rate_warning" n:if="isset($thisUser) && $user->getId() === $thisUser->getId() && sizeof($completeness->unfilled) > 0">
+    <div class="profile_top_sep"></div>
+
+    <div class="rate_line">
+        <div class="rate_text">{$completeness->total}%</div>
+        <div class="rate_left fl_l" style="width: {if $completeness->total >= 100}100{else}{$completeness->total}{/if}%;"></div>
+        <div class="rate_right fl_r" style="width: {if $completeness->total >= 100}0{else}{100 - $completeness->total}{/if}%;"></div>
     </div>
-  </div>
+
+    <a n:if="in_array('interests', $completeness->unfilled)" id="rate_warning_clubs" href="/edit?act=interests" class="warning_row clear_fix">
+        <div class="img fl_l"></div>
+        <div class="label fl_l">{_interests}</div>
+        <div class="plus fl_r">+20%</div>
+    </a>
+    <a n:if="in_array('email', $completeness->unfilled)" id="rate_warning_info" href="/edit?act=contacts" class="warning_row clear_fix">
+        <div class="img fl_l"></div>
+        <div class="label fl_l">Email</div>
+        <div class="plus fl_r">+20%</div>
+    </a>
+    <a n:if="in_array('phone', $completeness->unfilled)" id="rate_warning_card" href="/edit?act=contacts" class="warning_row clear_fix">
+        <div class="img fl_l"></div>
+        <div class="label fl_l">{_phone}</div>
+        <div class="plus fl_r">+20%</div>
+    </a>
+    <a n:if="in_array('telegram', $completeness->unfilled)" id="rate_warning_card" href="/edit?act=contacts" class="warning_row clear_fix">
+        <div class="img fl_l"></div>
+        <div class="label fl_l">Telegram</div>
+        <div class="plus fl_r">+15%</div>
+    </a>
+    <a n:if="in_array('status', $completeness->unfilled)" id="rate_warning_posts" href="/edit" class="warning_row clear_fix">
+        <div class="img fl_l"></div>
+        <div class="label fl_l">{_status}</div>
+        <div class="plus fl_r">+15%</div>
+    </a>
+</div>
+
+</div>
+
+<div n:if="!$thatIsThisUser">
+    <div class="rate_line">
+        <div class="rate_text">{$completeness->total}%</div>
+        <div class="rate_left fl_l" style="width: {if $completeness->total >= 100}100{else}{$completeness->total}{/if}%;"></div>
+        <div class="rate_right fl_r" style="width: {if $completeness->total >= 100}0{else}{100 - $completeness->total}{/if}%;"></div>
+    </div>
+
+    <div id="profile_main_actions">
+        <div id="friend_status">
+            <div class="profile_action_btn">
+                {if $subStatus === 0}
+                <div class="button_wide button_blue">
+                    <button onclick="return Profile.toggleFriend(this, '{$csrfToken|noescape}', 'add', event)">
+                        {_friends_add}
+                    </button>
+                </div>
+                {elseif $subStatus === 1}
+                <div class="button_wide button_blue">
+                    <button onclick="return Profile.toggleFriend(this, '{$csrfToken|noescape}', 'add', event)">
+                        {_friends_add}
+                    </button>
+                </div>
+                {elseif $subStatus === 2}
+                <div class="button_wide button_blue">
+                    <button onclick="return Profile.toggleFan(this, '{$csrfToken|noescape}', 'add', event)">
+                        {_friends_reject}
+                    </button>
+                </div>
+                {elseif $subStatus === 3}
+                <div class="button_wide button_blue">
+                    <button onclick="return Profile.toggleFriend(this, '{$csrfToken|noescape}', 'remove', event)">
+                        {_friends_delete}
+                    </button>
+                </div>
+                {/if}
+            </div>
+
+            <div {if $subStatus === 2}onmouseover="return Profile.friendTooltip()"{/if} class="friend_status_info" id="profile_am_subscribed" n:if="$subStatus != 0">
+                {if $subStatus === 1}
+                    Пользователь отправил Вам заявку в друзья
+                {elseif $subStatus === 2}
+                    Вы отправили заявку в друзья
+                {elseif $subStatus === 3}
+                    Пользователь у Вас в друзьях
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>

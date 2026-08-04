@@ -1,186 +1,207 @@
-{extends "../@listView.latte"}
-{var $perPage = 6} {* Why 6? Check User::_abstractRelationGenerator *}
-
-{var $act = $_GET["act"] ?? "friends"}
-
-{if $act == "incoming"}
-    {var $iterator = iterator_to_array($user->getRequests($page))}
-    {var $count    = $user->getRequestsCount()}
-{elseif $act == "outcoming"}
-    {var $iterator = iterator_to_array($user->getSubscriptions($page))}
-    {var $count    = $user->getSubscriptionsCount()}
-{elseif $act == "followers"}
-    {var $iterator = iterator_to_array($user->getFollowers($page))}
-    {var $count    = $user->getFollowersCount()}
-{elseif $act == "online"}
-    {var $iterator = iterator_to_array($user->getFriendsOnline($page))}
-    {var $count    = $user->getFriendsOnlineCount()}
-{else}
-    {var $iterator = iterator_to_array($user->getFriends($page))}
-    {var $count    = $user->getFriendsCount()}
+{extends "../@layout.latte"}
+{var $can_edit = !is_null($thisUser) && $thisUser->getId() === $user->getId()}
+{var $act = $_GET['section'] ?? 'all'}
+{php $allowed_sections = $can_edit
+    ? ['all', 'online', 'requests', 'all_requests', 'out_requests']
+    : ['all', 'online']}
+{if !in_array($act, $allowed_sections, true)}
+    {var $act = 'all'}
 {/if}
-
+{var $friends_count = $user->getFriendsCount()}
+{var $requests_count = $can_edit ? $thisUser->getRequestsCount() : 0}
+{var $followers_count = $can_edit ? $thisUser->getFollowersCount() : 0}
+{var $subscriptions_count = $can_edit ? $thisUser->getSubscriptionsCount() : 0}
+{var $online_friends = $user->getFriendsOnlineCount()}
+{var $friends_data = []}
+{var $requests_data = []}
+{var $followers_data = []}
+{var $subscriptions_data = []}
+{var $json_flags = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT}
+{foreach $user->getFriends(1, max(1, $friends_count)) as $friend}
+    {php $avatar = $friend->getAvatarUrl('normal');
+        $friends_data[] = [
+        $friend->getId(),
+        $friend->getURL(),
+        str_contains($avatar, "/assets/packages/static/openvk/img/camera_200.png") ? "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/camera_200.png" : $avatar,
+        '',
+        $friend->isOnline() ? 1 : 0,
+        htmlspecialchars($friend->getCanonicalName(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+        0,
+    ]}
+{/foreach}
+{if $can_edit}
+    {foreach $thisUser->getRequests(1, max(1, $requests_count)) as $friend}
+        {php $avatar = $friend->getAvatarUrl('normal');
+            $requests_data[] = [
+            $friend->getId(),
+            $friend->getURL(),
+            str_contains($avatar, "/assets/packages/static/openvk/img/camera_200.png") ? "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/camera_200.png" : $avatar,
+            htmlspecialchars((string) $friend->getStatus(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+            $friend->isOnline() ? 1 : 0,
+            htmlspecialchars($friend->getCanonicalName(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+            0,
+            $csrfToken,
+        ]}
+    {/foreach}
+    {foreach $thisUser->getFollowers(1, max(1, $followers_count)) as $friend}
+        {php $avatar = $friend->getAvatarUrl('normal');
+            $followers_data[] = [
+            $friend->getId(),
+            $friend->getURL(),
+            str_contains($avatar, "/assets/packages/static/openvk/img/camera_200.png") ? "/themepack/" . $theme->getId() . "/" . $theme->getVersion() . "/resource/images/camera_200.png" : $avatar,
+            htmlspecialchars((string) $friend->getStatus(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+            $friend->isOnline() ? 1 : 0,
+            htmlspecialchars($friend->getCanonicalName(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+            0,
+            $csrfToken,
+        ]}
+    {/foreach}
+    {foreach $thisUser->getSubscriptions(1, max(1, $subscriptions_count)) as $friend}
+        {php $subscriptions_data[] = [
+            $friend->getId(),
+            $friend->getURL(),
+            $friend->getAvatarUrl('normal'),
+            htmlspecialchars((string) $friend->getStatus(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+            $friend->isOnline() ? 1 : 0,
+            htmlspecialchars($friend->getCanonicalName(), \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+            0,
+            $csrfToken,
+        ]}
+    {/foreach}
+{/if}
+{var $act_json = json_encode($act, $json_flags)}
+{var $friends_json = json_encode($friends_data, $json_flags)}
+{var $requests_json = json_encode($requests_data, $json_flags)}
+{var $followers_json = json_encode($followers_data, $json_flags)}
+{var $subscriptions_json = json_encode($subscriptions_data, $json_flags)}
+{php $cur['static'] = [
+    'friends.css',
+    'indexer.js',
+    'friends.js',
+]}
 {block title}
-    {if $act == "incoming"}
-        {_incoming_req}
-    {elseif $act == "outcoming"}
-        {_outcoming_req}
-    {elseif $act == "followers"}
-        {_followers}
-    {elseif $act == "online"}
-        {_friends_online}
-    {else}
-        {_friends}
-    {/if}
-{/block} 
-
-{block header}
-    {if isset($thisUser) && $thisUser->getId() == $user->getId()}
-        {_my_friends}
-    {else}
-        <a href="{$user->getURL()}">{$user->getCanonicalName()}</a> »
-        {if $act == "incoming"}
-            {_incoming_req}
-        {elseif $act == "outcoming"}
-            {_outcoming_req}
-        {elseif $act == "followers"}
-            {_followers}
-        {elseif $act == "online"}
-            {_friends_online}
-        {else}
-            {_friends}
-        {/if}
-    {/if}
+    {if $act === 'requests'}Новые заявки в друзья
+    {elseif $act === 'all_requests'}Подписчики
+    {elseif $act === 'out_requests'}Исходящие заявки
+    {elseif $act === 'online'}{_friends_online}
+    {else}{_friends}{/if}
+{/block}
+{block view_script}
+    {if $jsTags}<script>{include "components/friends_init_script.latte"}</script>
+    {else}{include "components/friends_init_script.latte"}{/if}
 {/block}
 
-{block tabs}
-    <div n:attr="id => ($act === 'friends' ? 'activetabs' : 'ki')" class="tab">
-        <a n:attr="id => ($act === 'friends' ? 'act_tab_a' : 'ki')" href="?">{_all_friends}</a>
+{block content}
+<div id="friends">
+    <div class="tabs t_bar clear_fix">
+        <ul id="friends_tabs" class="t0">
+            <li id="tab_all" class="{if $act === 'all'}active_link{/if}">
+                <a href="?section=all" onclick="return Friends.switchTab('all', event);">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_all_friends}</b>
+                </a>
+            </li>
+            <li id="tab_online" class="{if $online_friends > 0}count {/if}{if $act === 'online'}active_link{/if}">
+                <a href="?section=online" onclick="return Friends.switchTab('online', event);">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_friends_online}<span class="count">{$online_friends}</span></b>
+                </a>
+            </li>
+            <li n:if="$can_edit" id="tab_requests"
+                class="{if $requests_count > 0}count {/if}{if in_array($act, ['requests', 'all_requests', 'out_requests'], true)}active_link{/if}">
+                <a href="?section=requests" onclick="return Friends.switchTab('requests', event);">
+                    <b class="tl1"><b></b></b><b class="tl2"></b>
+                    <b class="tab_word">{_req}<span class="count">+{$requests_count}</span></b>
+                </a>
+            </li>
+            <li class="t_r"><a href="/invite">{_invite}</a></li>
+        </ul>
     </div>
-    <div n:attr="id => ($act === 'online' ? 'activetabs' : 'ki')" class="tab">
-        <a n:attr="id => ($act === 'online' ? 'act_tab_a' : 'ki')" href="?act=online">{_online}</a>
-    </div>
-    <div n:if="!is_null($thisUser) && $user->getId() === $thisUser->getId()" n:attr="id => ($act === 'incoming' || $act === 'followers' || $act === 'outcoming' ? 'activetabs' : 'ki')" class="tab">
-        <a n:attr="id => ($act === 'incoming' || $act === 'followers' || $act === 'outcoming' ? 'act_tab_a' : 'ki')" href="?act=incoming">{_req}</a>
-    </div>
-{/block}
 
-{block size}
-    <div n:if="$act === 'incoming' || $act === 'followers' || $act === 'outcoming'" class="mb_tabs">
-        <div n:attr="id => ($act === 'incoming' ? 'active' : 'ki')" class="mb_tab">
-            <div>
-                <a href="?act=incoming">{_incoming_req}</a>
-            </div>
+
+    <div id="friends_search" class="search clear_fix">
+        <div class="button_blue button_wide fl_r">
+            <button id="friends_find" onclick="Friends.goToSearch(this); return false;">
+                {_search_button}
+            </button>
         </div>
-        <div n:attr="id => ($act === 'followers' ? 'active' : 'ki')" class="mb_tab">
-            <div>
-                <a href="?act=followers">{_followers}</a>
-            </div>
-        </div>
-        <div n:attr="id => ($act === 'outcoming' ? 'active' : 'ki')" class="mb_tab">
-            <div>
-                <a href="?act=outcoming">{_outcoming_req}</a>
-            </div>
-        </div>
+
+        <div id="friends_loading"></div>
+        <div id="friends_reset_search" onclick="Friends.updateList(event);"></div>
+
+        <input id="s_search" class="text s_search_inv" type="text" autocomplete="off" placeholder="Начните вводить имя друга" onkeyup="Friends.updateList(event, this);">
     </div>
-    <div style="padding-bottom: 0px;" class="summaryBar">
-        <div class="summary">
-            {if !is_null($thisUser) && $user->getId() === $thisUser->getId()}
-                {if $act == "incoming"}
-                    {tr("req", $count)}
-                {elseif $act == "outcoming"}
-                    {tr("req", $count)}
-                {elseif $act == "followers"}
-                    {tr("followers", $count)}
-                {elseif $act == "online"}
-                    {tr("friends_list_online", $count)}
-                {else}
-                    {tr("friends_list", $count)}
-                {/if}
-            {else}
-                {tr("friends", $count)}
-            {/if}
+
+    <div id="friends_req_tabs" class="summary_tabs clear_fix">
+        <div class="{if $act === 'requests'}summary_tab_sel{else}summary_tab{/if} fl_l">
+            <a id="sum_tab_requests" class="summary_tab2" href="/friends{$user->getId()}?section=requests"
+               onclick="return Friends.switchTab('requests', event);">
+                <div class="summary_tab3"><nobr>{_followers}</nobr></div>
+            </a>
+        </div>
+        <div class="{if $act === 'all_requests'}summary_tab_sel{else}summary_tab{/if} fl_l">
+            <a id="sum_tab_all_requests" class="summary_tab2" href="/friends{$user->getId()}?section=all_requests"
+               onclick="return Friends.switchTab('all_requests', event);">
+                <div class="summary_tab3"><nobr>{_all_followers}</nobr></div>
+            </a>
+        </div>
+        <div class="{if $act === 'out_requests'}summary_tab_sel{else}summary_tab{/if} fl_l">
+            <a id="sum_tab_out_requests" class="summary_tab2" href="/friends{$user->getId()}?section=out_requests"
+               onclick="return Friends.switchTab('out_requests', event);">
+                <div class="summary_tab3"><nobr>{_outcoming_req}</nobr></div>
+            </a>
+        </div>
+        <div id="friends_hide_all" class="button_blue fl_r">
+            <button type="button">Оставить всех в подписчиках</button>
         </div>
     </div>
-{/block}
+    <div class="summary_wrap"><div id="friends_summary" class="summary"></div></div>
 
-{* BEGIN ELEMENTS DESCRIPTION *}
-
-{block link|strip|stripHtml}
-    {$x->getURL()}
-{/block}
-
-{block preview}
-    <img src="{$x->getAvatarUrl('miniscule')}" width="75" alt="Фотография пользователя" loading=lazy />
-{/block}
-
-{block name}
-    {$x->getCanonicalName()}
-    <img n:if="$x->isVerified()" 
-        class="name-checkmark" 
-        src="/assets/packages/static/openvk/img/checkmark.png" 
-    />
-{/block}
-
-{block description}
-    <table class="flexible_table friend_table">
-        <tbody>
-            <tr>
-                <td width="120" valign="top"><span class="nobold">{_pronouns}: </span></td>
-                <td>{$x->isFemale() ? tr("female") : ($x->isNeutral() ? tr("neutral") : tr("male"))}</td>
-            </tr>
-            <tr>
-                <td width="120" valign="top"><span class="nobold">{_relationship}:</span></td>
-                <td>{$x->getLocalizedMaritalStatus()}</td>
-            </tr>
-            <tr>
-                <td width="120" valign="top"><span class="nobold">{_registration_date}: </span></td>
-                <td>{$x->getRegistrationTime()}</td>
-            </tr>
-        </tbody>
-    </table>
-{/block}
-
-{block actions}
-    {if ($x->getId() !== $thisUser->getId()) && ($thisUser->getId() === $user->getId())}
-        {var $subStatus = $x->getSubscriptionStatus($thisUser)}
-        {if $subStatus === 0}
-            <form action="/setSub/user" method="post" class="profile_link_form" id="_submitUserSubscriptionAction">
-                <input type="hidden" name="act" value="add" />
-                <input type="hidden" name="id"  value="{$x->getId()}" />
-                <input type="hidden" name="hash" value="{$csrfToken}" />
-                <input type="submit" class="profile_link" value="{_friends_add}" />
-            </form>
-        {elseif $subStatus === 1}
-            <form action="/setSub/user" method="post" class="profile_link_form" id="_submitUserSubscriptionAction">
-                <input type="hidden" name="act" value="add" />
-                <input type="hidden" name="id"  value="{$x->getId()}" />
-                <input type="hidden" name="hash" value="{$csrfToken}" />
-                <input type="submit" class="profile_link" value="{_friends_accept}" />
-            </form>
-            {if $act !== 'followers'}
-                <form action="/setSub/user" method="post" class="profile_link_form" id="_submitUserSubscriptionAction">
-                    <input type="hidden" name="act" value="rej" />
-                    <input type="hidden" name="id"  value="{$x->getId()}" />
-                    <input type="hidden" name="hash" value="{$csrfToken}" />
-                    <input type="submit" class="profile_link" value="{_friends_leave_in_flw}" />
-                </form>
-            {/if}
-        {elseif $subStatus === 2}
-            <form action="/setSub/user" method="post" class="profile_link_form" id="_submitUserSubscriptionAction">
-                <input type="hidden" name="act" value="rem" />
-                <input type="hidden" name="id"  value="{$x->getId()}" />
-                <input type="hidden" name="hash" value="{$csrfToken}" />
-                <input type="submit" class="profile_link" value="{_friends_reject}" />
-            </form>
-        {elseif $subStatus === 3}
-            <a href="/im?sel={$x->getId()}" class="profile_link" rel="nofollow">{_send_message}</a>
-            <form action="/setSub/user" method="post" class="profile_link_form" id="_submitUserSubscriptionAction">
-                <input type="hidden" name="act" value="rem" />
-                <input type="hidden" name="id"  value="{$x->getId()}" />
-                <input type="hidden" name="hash" value="{$csrfToken}" />
-                <input type="submit" class="profile_link" value="{_friends_delete}" />
-            </form>
-        {/if}
-    {/if}
+    <div id="main_class" class="wide">
+        <table><tbody><tr>
+            <td class="main_panel">
+                <div id="friends_search_cont"></div>
+                <div id="friends_list"><div id="list_content"></div></div>
+                <div id="show_more" class="unshown">
+                    <a class="more" onclick="Friends.showMore(); return false;">{_show_more}</a>
+                </div>
+                <div id="page_end" class="page_end"></div>
+                <div id="friends_search_more" class="unshown">
+                    <a class="more" onclick="Friends.serverSearchMore(); return false;">{_show_more}</a>
+                </div>
+                <div id="not_found" class="info_msg unshown">
+                    <span id="not_found_text" class="empty"></span>
+                    <span class="by_search">{_no_results_by_this_query} <b><span id="search_ph"></span></b></span>
+                </div>
+            </td>
+            <td class="side_panel">
+                <div id="sections_block" class="sections_block">
+                <div style="display:none;">
+                    <div class="friends_fltr">
+                        <div id="friends_fltr_progress" class="fl_r"></div>
+                        <div class="friends_fltr_label">Город</div>
+                        <div class="friends_fltr_sel"><input id="friends_fltr_city"></div>
+                        <div class="friends_fltr_label">Возраст</div>
+                        <div class="friends_fltr_sel clear_fix">
+                            <div class="fl_l"><input id="friends_age_from"></div>
+                            <div class="friends_age_sep fl_l">–</div>
+                            <div class="fl_l"><input id="friends_age_to"></div>
+                        </div>
+                        <div class="friends_fltr_label">Пол</div>
+                        <div id="friends_radio_sex" class="friends_fltr_sel friends_fltr_last">
+                            <div class="radiobtn" onclick="Friends.radioFilter(this, 1);"><div></div>Женский</div>
+                            <div class="radiobtn" onclick="Friends.radioFilter(this, 2);"><div></div>Мужской</div>
+                            <div id="friends_radio_any" class="radiobtn on" onclick="Friends.radioFilter(this, 0);"><div></div>Любой</div>
+                        </div>
+                    </div>
+                    <div class="sep"></div>
+                </div>
+                    <a id="section_all" class="side_filter cur_section" href="?section=all"
+                       onclick="return Friends.switchTab('all', event);">Все друзья</a>
+                    <a style="display:none;" id="friends_create_list" class="side_filter" onclick="Friends.createList(event); return false;">Создать список друзей</a>
+                </div>
+            </td>
+        </tr></tbody></table>
+    </div>
+</div>
 {/block}

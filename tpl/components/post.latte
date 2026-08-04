@@ -10,7 +10,7 @@
     <div class="post_table">
         <div class="post_image">
             <a class="post_image" href="{$author->getURL()}">
-                <img src="{$author->getAvatarURL('miniscule')}" width="50" height="50"/>
+                <img src="{$author->getAvatarURL('miniscule')}" style="max-width: 50px;"/>
             </a>
             <span n:if="!$post->isPostedOnBehalfOfGroup() && $author->isOnline()" class="online">{_online}</span>
         </div>
