@@ -150,7 +150,7 @@
                                             <div class="fl_l button_blue">
                                                 <button id="currinfo_save">{_save}</button>
                                             </div>
-                                            <div class="fl_l checkbox {if $audioStatus}on{/if}" id="currinfo_audio" onclick="checkbox(this); Page.audioStatusUpdate('{$csrfToken|noescape}');">
+                                            <div class="fl_l checkbox {if $user->isBroadcastEnabled()}on{/if}" id="currinfo_audio" onclick="checkbox(this); Page.audioStatusUpdate('{$csrfToken|noescape}');">
                                                 <div></div>{_broadcast_audio}
                                             </div>
                                             <div class="fl_l checkbox on unshown" id="currinfo_app" onclick="checkbox(this); Profile.appStatusUpdate('{$csrfToken|noescape}')">
