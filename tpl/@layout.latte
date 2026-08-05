@@ -243,9 +243,9 @@ function isAncestor(elem, ancestor) {
             </div>
             <div id="footer_wrap" class="fl_r" style="width: 661px;">
                 <div id="bottom_nav">
-                    <a class="bnav_a" href="/about">{_footer_about_instance}</a>
-                    <a class="bnav_a" href="/support?act=new" onclick="return nav.go(this, event);">{_footer_help}</a>
-                    <a class="bnav_a" href="/terms">{_footer_rules}</a>
+                    <a class="bnav_a" href="/about" onclick="return nav.go(this, event, { noback: true });">{_footer_about_instance}</a>
+                    <a class="bnav_a" href="/support?act=new" onclick="return nav.go(this, event, { noback: true });">{_footer_help}</a>
+                    <a class="bnav_a" href="/terms" onclick="return nav.go(this, event, { noback: true });">{_footer_rules}</a>
                     <!--<a class="bnav_a" href="/ads">реклама</a>-->
                     <a class="bnav_a" target="_blank" href="/dev">{_footer_developers}</a>
                     <!--<a class="bnav_a" href="/jobs.php" style="">вакансии</a>-->

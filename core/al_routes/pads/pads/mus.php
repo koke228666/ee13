@@ -1,4 +1,26 @@
 <?php
+use openvk\Web\Models\Repositories\Audios;
+
+$pad_audios = [];
+
+foreach ((new Audios())->getByUser($thisUser, 1, 2147483647) as $audio) {
+  $pad_audios[] = [
+      $audio->getOwner()->getId(),
+      $audio->getId(),
+      $audio->getOriginalURL(),
+      $audio->getLength(),
+      $audio->getFormattedLength(),
+      htmlspecialchars($audio->getPerformer()),
+      htmlspecialchars($audio->getTitle()),
+      !empty($audio->getLyrics()) ? $audio->getId() : 0,
+      $audio->getAlbumId() ?: 0,
+      0, '', 0, 1, 0,
+      (int) $audio->canBeModifiedBy($thisUser),
+  ];
+}
+
+$pad_audios_json = json_encode($pad_audios, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
 ob_start();
 ?>
 <div id="pad_controls">
@@ -132,9 +154,11 @@ ob_start();
                 <?php echo tr('close'); ?>
             </button>
         </div>
-        <div id="pad_footer_text">
-            <a id="pad_footer_link" href="friends1"></a>
-        </div>
+      <div id="pad_footer_text">
+          <a id="pad_footer_link" href="/audios<?php echo $thisUser->getId(); ?>" onclick="return Pads.go(this, event);">
+              Перейти к списку аудиозаписей
+          </a>
+      </div>
     </div>
 </div>
 <?php
@@ -160,14 +184,162 @@ Pads.audioTpl = '<div class="audio %rowclass% fl_l" id="audio%audio_id%" onmouse
     '</div>' +
 '</div>';
 
-// [ДАННЫЕ УДАЛЕНЫ]
+window.lang = extend(window.lang || {}, {
+audio_add_to_audio: 'Добавить в мои аудиозаписи',
+audio_repeat_tooltip: 'Повторять',
+audio_shuffle: 'Перемешать',
+audio_show_recommendations: 'Показать похожие',
+audio_export_tip: 'Транслировать на мою страницу'
+});
+
+extend(Pads, {
+audioInited: true,
+audioPerPage: 25,
+audioShown: 0,
+audioSearchStr: '',
+audioSearchType: 0,
+showAudios: function(reset) {
+  var cont = ge('pad_playlist'), html = [], part, au;
+  if (reset) {
+    Pads.audioShown = 0;
+    cont.innerHTML = '';
+  }
+  part = Pads.audioList.slice(Pads.audioShown, Pads.audioShown + Pads.audioPerPage);
+each(part, function() {
+  var aid = this.full_id || (this[0] + '_' + this[1]);
+  html.push(rs(Pads.audioTpl, {
+    rowclass: 'no_actions',
+    audio_id: aid + '_pad',
+    onclick: 'playAudioNew(\'' + aid + '\');',
+    url: this[2],
+    playtime: this[3],
+    duration: this[4],
+    attr: 'href="/search?section=audios&only_performers=on&q=' + encodeURIComponent(this[5]) + '"onclick="cur.cancelClick = true; Pads.hide(); return nav.go(this, event);"',
+    performer: this[5],
+    title: this[6],
+    author: '',
+    actions: ''
+  }));
+});
+  au = ce('div', {innerHTML: html.join('')});
+  while (au.firstChild) cont.appendChild(au.firstChild);
+  Pads.audioShown += part.length;
+  toggle('pad_more_audio', Pads.audioShown < Pads.audioList.length);
+
+    audioPlayer.genPlaylist(Pads.audioList);
+    if (currentAudioId()) {
+      audioPlayer.setSongInfo();
+      if (audioPlayer.lastSong) audioPlayer.showCurrentTrack();
+    }
+    Pads.update();
+    ge('pad_footer_link').href = '/' + padAudioPlaylist().address;
+},
+audioShowMore: function() {
+  Pads.showAudios();
+},
+audioSearch: function(el) {
+  var q = trim(val(el)).toLowerCase();
+  if (q === Pads.audioSearchStr) return;
+  Pads.audioSearchStr = q;
+  Pads.audioSearchCleared = !q;
+  toggle('pad_audio_reset', !!q);
+  Pads.audioList = [];
+  each(Pads.audioAll, function() {
+    var s = (Pads.audioSearchType ? this[5] : this[5] + ' ' + this[6]).toLowerCase();
+    if (!q || s.indexOf(q) != -1) Pads.audioList.push(this);
+  });
+  audioPlayer.genPlaylist(Pads.audioList);
+  Pads.showAudios(true);
+},
+audioClear: function() {
+  val('pad_search', '');
+  Pads.audioSearch(ge('pad_search'));
+},
+updateAudioPlaylist: function(pl) {
+pl = pl || cur.nextPlaylist || padAudioPlaylist();
+var id = pl && pl.start, list = [];
+while (id) {
+  pl[id].full_id = id;
+  list.push(pl[id]);
+  id = pl[id]._next;
+  if (id == pl.start) break;
+}
+Pads.audioAll = Pads.audioList = list;
+Pads.showAudios(true);
+},
+onAudioReorder: function() {}
+});
+
+audioPlayer.initEvents();
+audioPlayer.registerPlayer('pd', {
+container: ge('pd'),
+performer: ge('pd_performer'),
+title: ge('pd_title'),
+titleWrap: ge('pd_name'),
+duration: ge('pd_duration'),
+load: ge('pd_load_line'),
+progress: ge('pd_pr_line'),
+progressArea: ge('pd_pr'),
+volume: ge('pd_vol_line'),
+volumeArea: ge('pd_vol'),
+play: ge('pd_play'),
+prev: ge('pd_prev'),
+next: ge('pd_next'),
+add: ge('pd_add'),
+repeat: ge('pd_repeat'),
+shuffle: ge('pd_shuffle'),
+rec: ge('pd_rec'),
+status: ge('pd_status'),
+padPlaylist: true,
+fixed: 1
+});
+
+cur.padSearchTypes = [{i: 0, l: '<?php echo tr('by_name'); ?>'}, {i: 1, l: '<?php echo tr('by_performer'); ?>'}];
+cur.padSearchTypeMenu = new DropdownMenu(cur.padSearchTypes, {
+target: ge('pad_search_type'),
+value: 0,
+containerClass: 'dd_menu_stype_act',
+updateTarget: false,
+offsetLeft: 0,
+offsetTop: 0,
+showHover: false,
+fadeSpeed: 0,
+onSelect: function(event) {
+  var i = event.target.index || 0, text = cur.padSearchTypes[i].l + '<span class="arrow"></span>';
+  Pads.audioSearchType = i;
+  cur.padSearchTypeMenu.header.innerHTML = '<div>' + text + '</div>';
+  ge('pad_search_type').innerHTML = text;
+  Pads.audioSearchStr = null;
+  Pads.audioSearch(ge('pad_search'));
+}
+});
+
+hide('pad_audio_reset');
+if (padAudioPlaylist()) {
+Pads.updateAudioPlaylist(padAudioPlaylist());
+} else {
+Pads.audioAll = Pads.audioList = padAudios;
+audioPlayer.genPlaylist(Pads.audioAll);
+audioPlayer.setPadPlaylist(clone(cur.nextPlaylist));
+Pads.showAudios(true);
+}
+
 
 <?php
 $init_script = ob_get_clean();
 
+$on_load_script = "
+var prevNext = cur.nextPlaylist;
+Pads.audioAll = Pads.audioList = {$pad_audios_json};
+audioPlayer.genPlaylist(Pads.audioAll);
+audioPlayer.setPadPlaylist(clone(cur.nextPlaylist));
+cur.nextPlaylist = prevNext;
+if (window.onPlaylistLoaded) { onPlaylistLoaded(); delete window.onPlaylistLoaded; }
+";
+
 return $ee13vars->ajax(0, [
     $player_layout,
     $init_script,
-    (object)[]],
+    (object)['onLoadScript' => $on_load_script]],
     ["newStatic" => "pads.css,pads.js,notifier.js,audioplayer.css,audioplayer.js,sorter.js,audio.js,audio.css,ui_controls.css,ui_controls.js,indexer.js"
 ]);
