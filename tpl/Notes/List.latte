@@ -1,133 +1,127 @@
-{extends "../@listView.latte"}
+{extends "../@layout.latte"}
 {var $iterator = iterator_to_array($notes)}
+
+{php $cur['static'] = [
+    'wall.js',
+    'wall.css',
+    'page.js',
+    'page.css',
+    'wk.js',
+    'wk.css',
+    'notes.js',
+    'notes.css',
+    'pagination.js',
+]}
 
 {block title}{_notes}{/block}
 
-{block header}
-        {if isset($thisUser) && $thisUser->getId() == $owner->getId()}
-            {_my_notes}
-        {else}
-            <a href="{$owner->getURL()}">
-            {$owner->getCanonicalName()}</a>
-            »
-            {_notes}
-        {/if}
+{block view_script}
+    {if $jsTags}<script>{include "components/list_init_script.latte"}</script>
+    {else}{include "components/list_init_script.latte"}{/if}
 {/block}
 
-{block size}
-    <div style="padding-bottom: 0px; padding-top: 0;" class="summaryBar">
-        <div class="summary">
-                {tr("notes_list", $count)}
-                <span n:if="isset($thisUser) && $thisUser->getId() == $owner->getId()">
-                    &nbsp;|&nbsp;
-                    <a href="/notes/create" rel='nofollow'>{_create_note}</a>
-                </span>
-        </div>
-    </div>
-{/block}
+{block content}
+<div class="full_wall_tabs t_bar clear_fix">
+    <div class="fl_r progress" id="full_wall_progress"></div>
 
-{block actions}
-    
-{/block}
+    <ul id="full_wall_filters" class="t0">
+        <li>
+            <a href="/wall{$owner->getId()}?type=owners" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{tr("users_posts", ovk_proc_strtr($owner->getFirstName(), 20))}</b>
+            </a>
+        </li>
+        <li>
+            <a href="/wall{$owner->getId()}" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{_all_posts}</b>
+            </a>
+        </li>
+        <li class="active_link">
+            <a href="/notes{$owner->getId()}" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{_notes}</b>
+            </a>
+        </li>
+    </ul>
+</div>
 
-{* BEGIN ELEMENTS DESCRIPTION *}
+<div class="big_wall_post"><div class="wall_module"></div></div>
 
-{block specpage}
-    <style>
-        #userContent img {
-            max-width: 245pt;
-            max-height: 200pt;
-        }
+<div class="summary_wrap" id="fw_summary_wrap">
+    <div class="pg_pages fl_r" id="fw_pages"></div>
+    <div class="summary" id="fw_summary">{tr("notes", $count)}</div>
+</div>
 
-        #userContent blockquote {
-            background-color: #f3f3f3;
-            border-bottom: 5px solid #969696;
-            padding: 1;
-        }
+<div class="wall_wrap clear_fix">
+    <div class="big_wall wide_wall_module">
+        <div class="wall_module">
+            <div id="page_wall_posts">
+            {var $data = is_array($iterator) ? $iterator : iterator_to_array($iterator)}
+            {if sizeof($data) > 0}
+                <div n:foreach="$data as $dat" id="post{$owner->getId() . '_note' . $dat->getId()|noescape}" class="post" onmouseover="wall.postOver('{$owner->getId() . '_note' . $dat->getId()|noescape}')" onmouseout="wall.postOut('{$owner->getId() . '_note' . $dat->getId()|noescape}')" onclick="wall.postClick('{$owner->getId() . '_note' . $dat->getId()|noescape}', event)">
+                    <div class="post_table">
+                        <div class="post_image">
+                            <a class="post_image" href="{$owner->getURL()}">
+                                <img src="{$owner->getAvatarUrl('miniscule')}" style="max-width: 50px;">
+                            </a>
+                        </div>
+                        <div class="post_info">
 
-        #userContent cite {
-            margin-top: 1em;
-            display: block;
-        }
-
-        #userContent cite::before {
-            content: "— ";
-        }
-
-        #userContent .underline {
-            text-decoration: underline;
-        }
-    </style>
-
-    <div class="container_gray scroll_container" style="background: white; border-top: none;">
-
-        {var $data = is_array($iterator) ? $iterator : iterator_to_array($iterator)}
-        {if sizeof($data) > 0}
-
-        <div class='scroll_node' n:foreach="$data as $dat">
-            <div class="profile_thumb">
-                <a href="{$owner->getURL()}">
-                <img src="{$owner->getAvatarUrl('miniscule')}" style="width: 50px;">
-                </a>
-            </div>
-            <article class="note_body" id="userContent" style="width: 540px; display: inline-block; margin-bottom: 35px;">
-                <div class="note_header">
-                    <div class="note_title">
-                        <div class="note_title">
-                            <a href="/note{$dat->getPrettyId()}">{$dat->getName()}</a>
+                            <div class="wall_text">
+                                <a class="author" href="{$owner->getURL()}">{$owner->getCanonicalName()}</a>
+                                <div id="wpt{$owner->getId() . '_note' . $dat->getId()|noescape}">
+                                    <div class="wall_post_text">
+                                        <a class="wall_note_type" href="/note{$dat->getPrettyId()}">{$dat->getName()}</a>
+                                            {$dat->getText(750)|noescape}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="replies">
+                                <div class="reply_link_wrap" id="wpe_bottom{$owner->getId() . '_note' . $dat->getId()|noescape}">
+                                    <small>
+                                        <a href="/note{$dat->getPrettyId()}">
+                                            <span class="rel_date">{$dat->getPublicationTime()}</span>
+                                        </a>
+                                    </small>
+                                </div>
+                                {* TODO: COMMENTS <div class="replies_wrap clear" id="replies_wrap{$owner->getId() . '_note' . $dat->getId()|noescape}" style="">
+                                    <div id="replies{$owner->getId() . '_note' . $dat->getId()|noescape}"><input type="hidden" id="start_reply{$owner->getId() . '_note' . $dat->getId()|noescape}" value="26103356">
+                                        <div id="post1note_26103356" class="reply reply_dived clear " onmouseover="wall.replyOver('1note_26103356')" onmouseout="wall.replyOut('1note_26103356')">
+                                            <div class="reply_table">
+                                                <a class="reply_image" href="/web/20130105203612/http://vk.com/zadorozhnaya_natasha">
+                                                    <img src="/web/20130105203612im_/http://vk.com/images/deactivated_c.gif" width="50" height="50" class="reply_image">
+                                                </a>
+                                                <div class="reply_info">
+                                                    <div class="reply_text">
+                                                        <a class="author" href="/web/20130105203612/http://vk.com/zadorozhnaya_natasha">Natasha Zadorozhnaya</a>
+                                                        <div id="wpt1note_26103356">
+                                                            <div class="wall_reply_text">Жаль только,что далеко не всем это дано от природы,многим приходиться это развивать со временем,но немногим удается))<br>Не смотря на всю простоту фразы,она имеет глубокий смысл))стоило бы действительно задуматься))</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="info_footer" id="wpe_bottom1note_26103356">
+                                                        <span class="rel_date">8 апр 2011</span> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> *}
+                            </div>
                         </div>
                     </div>
-                    <div class="byline">
-                        <span><a href="{$owner->getURL()}">{$owner->getCanonicalName()}</a></span> {$dat->getPublicationTime()}
-                        <span n:if="$dat->getEditTime() > $dat->getPublicationTime()">({_edited} {$dat->getEditTime()})</span>
-                    </div>
                 </div>
-                <div style="margin-left: 6px;">
-                    {$dat->getText(750)|noescape}
-                </div>
-                <div class="note_footer" style="margin: 10px 0 0;">
-                    <div class="comments_count">
-                        <a href="/note{$dat->getPrettyId()}">
-
-                            {if $dat->getCommentsCount() > 0}
-                                {_comments} ({$dat->getCommentsCount()})
-                            {else}
-                                {_no_comments}
-                            {/if}
-                            
-                        </a>
-                        <span n:if="isset($thisUser) && $thisUser->getId() === $dat->getOwner()->getId()">&nbsp;|&nbsp;
-                            <a id="_noteDelete" href="/note{$dat->getOwner()->getId()}_{$dat->getId()}/delete">{_delete}</a>
-                            &nbsp;|&nbsp;
-                            <a href="/note{$dat->getOwner()->getId()}_{$dat->getVirtualId()}/edit" rel='nofollow'>{_edit}</a>
-                        </span>
-                    </div>
-                </div>
-            </article>    
-        </div>      
-        
-        {include "../components/paginator.latte", conf => (object) [
-            "page"     => $page,
-            "count"    => $count,
-            "amount"   => sizeof($data),
-            "perPage"  => 10,
-            "atBottom" => true,
-            "atTop"   => false,
-            "tidy"    => false
-        ]}
-        
-        {else}
-            {if isset($thisUser) && $thisUser->getId() == $owner->getId()}
-
-                <div style="padding: 10px 20px 20px;"><h4 style="border: none;padding-bottom: 5px;">{_welcome}</h4>{_notes_start_screen}</div>
-            
-            {else}
-                {ifset customErrorMessage}
-                    {include ../customErrorMessage}
-                {else}
-                    {include ../components/nothing.latte}
-                {/ifset}
             {/if}
-        {/if} 
+            </div>
+        </div>
+
+        <a id="fw_load_more" class="pg_more_link" onclick="Pagination.showMore()" style="display: none">
+            <span>к предыдущим записям</span>
+            <div id="fw_more_progress" class="pg_more_progress progress"></div>
+        </a>
     </div>
+</div>
 {/block}

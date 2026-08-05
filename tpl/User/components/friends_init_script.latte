@@ -101,7 +101,7 @@ Friends.init({
     suggRev: false,
     sortByDate: false,
     silent: false,
-    canEdit: {$can_edit|noescape},
+    canEdit: {(int)$can_edit},
     userHash: {$csrfToken},
     userLists: {},
     publicLists: {},
@@ -145,3 +145,7 @@ Friends.init({
 Friends.section(cur.section, function() {
     Friends.changeSummary();
 });
+
+{if $_REQUEST['_ref'] != 'left_nav'}
+    showBackLink({$user->getURL()}, {htmlspecialchars($user->getCanonicalName())});
+{/if}

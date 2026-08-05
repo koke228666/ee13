@@ -252,4 +252,8 @@ show(cur.audioFriends);
 hide(cur.audioAlbums);
 {/if}
 
+{if $_REQUEST['_ref'] != 'left_nav'}
+    showBackLink({$owner->getURL()}, {htmlspecialchars($owner->getCanonicalName())});
+{/if}
+
 cur.module = 'audio';

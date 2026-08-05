@@ -1,0 +1,67 @@
+{contentType javascript}
+stManager.add(["wall.js", "wk.js", "pagination.js", "page.js", "wide_dd.js", "notes.js"], function () {
+    var opts = {
+        "owner_id": {$owner->getId()},
+        "post_id": 0,
+        "note_id": {$note->getId()},
+        "note": true,
+        "seen": [[]],
+        "scroll": false,
+        "start": 0,
+        "offset": 20,
+        "per_page": "20",
+        "count": 0,
+        "url": "/note{$note->getPrettyId()|noescape}",
+        "params": false,
+        "href": "/note{$note->getPrettyId()|noescape}",
+        "max_post_len": 280,
+        "post_hash": "",
+        "rmedia_types": [
+            ["photo", "Фотографию"],
+            ["video", "Видеозапись"],
+            ["audio", "Аудиозапись"],
+            ["graffiti", "Граффити"],
+            ["doc", "Документ"],
+            ["map", "Карту"],
+            ["poll", "Опрос", {
+                    "lang": {
+                        "q": "Тема опроса",
+                        "a": "Варианты ответа",
+                        "i": "Добавить вариант",
+                        "d": "Удалить вариант",
+                        "c": "Анонимное голосование"
+                    }
+                }]
+            ],
+        "share": {
+            "timehash": "1356093371_b41c45f28034ccc5ed"
+        },
+        "reply_names": [],
+        "wall_type": "full"
+    },
+    preload = [0, 40, "", []];
+    cur.lang = extend(cur.lang || {}, {
+        wall_n_replies: ["", "%s comment", "%s comments"],
+        wall_no_replies: 'No comments',
+        global_add_media: 'Attach',
+        wall_fix_post: 'Pin post',
+        wall_unfix_post: 'Unpin post'
+    });
+    var st = opts.scroll;
+    if (st) {
+        st = ge(st);
+    }
+    if (st) {
+        opts.scroll = getXY(st)[1];
+        animate(st, {
+            backgroundColor: '#EDF1F5'
+        }, 200, animate.pbind(st, {
+                backgroundColor: '#FFF'
+            }, 5000));
+    }
+    //FullWall.initOnePost(opts, preload);
+});
+
+{if $_REQUEST['_ref'] != 'left_nav'}
+    showBackLink({$owner->getURL()}, {htmlspecialchars($owner->getCanonicalName())});
+{/if}

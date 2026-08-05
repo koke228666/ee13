@@ -1,0 +1,60 @@
+{contentType javascript}
+var opts = {
+    "owner_id": {$owner->getId()},
+    "start": 0,
+    "offset": 20,
+    "per_page": "20",
+    "count": 6,
+    "url": "/notes{$owner->getId()|noescape}",
+    "params": false,
+    "href": "/notes{$owner->getId()|noescape}?offset=",
+    "max_post_len": 280,
+    "post_hash": "c8f9fb664c03127b26",
+    "media_types": false,
+    "reply_names": {},
+    "wall_type": "full_all",
+    "with_id": 0,
+    "rmedia_types": [
+        ["photo", "Фотографию"],
+        ["video", "Видеозапись"],
+        ["audio", "Аудиозапись"],
+        ["graffiti", "Граффити"],
+        ["doc", "Документ"],
+        ["map", "Карту"],
+        ["poll", "Опрос", {
+                "lang": {
+                    "q": "Тема опроса",
+                    "a": "Варианты ответа",
+                    "i": "Добавить вариант",
+                    "d": "Удалить вариант",
+                    "c": "Анонимное голосование"
+                }
+            }]
+        ],
+    "share": {
+        "url": "badbrowser.php?target=upload.php",
+        "hash": {$csrfToken},
+        "rhash": {$csrfToken},
+        "timehash": {$csrfToken}
+    },
+    "search": false
+}, preload = [6, 40, "", []];
+
+cur.lang = extend(cur.lang || {}, {
+    wall_my_friends_only: 'Эта запись видна только Вашим друзьям',
+    create_poll: 'Опрос',
+    wall_link_label: 'Ссылка',
+    dont_attach: 'Не прикреплять',
+    wall_x_posts_at_all: ["", "Всего %s запись", "Всего %s записи", "Всего %s записей"],
+    wall_no_posts: 'Нет записей',
+    wall_one_post: 'Единственная запись.',
+    attachments_limit: ["", "Одна запись не может содержать более %s вложения.", "Одна запись не может содержать более %s вложений.", "Одна запись не может содержать более %s вложений."],
+    publish_postponed_title: 'Подтверждение действия',
+    publish_postponed_confirm: 'Вы действительно хотите опубликовать отложенную запись прямо сейчас?',
+    publish_postponed_btn: 'Опубликовать'
+});
+FullWall.init(opts, preload);
+
+{if $_REQUEST['_ref'] != 'left_nav'}
+    showBackLink({$owner->getURL()}, {htmlspecialchars($owner->getCanonicalName())});
+{/if}

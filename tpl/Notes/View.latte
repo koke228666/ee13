@@ -1,6 +1,24 @@
 {extends "../@layout.latte"}
 
+{php $cur['static'] = [
+    'wall.js',
+    'wall.css',
+    'page.js',
+    'page.css',
+    'wk.js',
+    'wk.css',
+    'notes.js',
+    'notes.css',
+    'pagination.js',
+]}
+{var $owner = $note->getOwner()}
+
 {block title}{$note->getName()}{/block}
+
+{block view_script}
+    {if $jsTags}<script>{include "components/note_init_script.latte"}</script>
+    {else}{include "components/note_init_script.latte"}{/if}
+{/block}
 
 {block headIncludes}
     {var $notePreview = $note->getPreview(200)}
@@ -12,81 +30,64 @@
     <meta n:if="!empty($notePreview)" name="twitter:description" content="{$notePreview}" />
 {/block}
 
-{block header}
-    {var $author = $note->getOwner()}
-    <a href="{$author->getURL()}">{$author->getCanonicalName()}</a>
-    »
-    <a href="/notes{$author->getId()}">{_notes}</a>
-    »
-    {$note->getName()}
-{/block}
-
 {block content}
-    {var $author = $note->getOwner()}
-    <style>
-        #userContent img {
-            max-width: 245pt;
-            max-height: 200pt;
-        }
+<div class="full_wall_tabs t_bar clear_fix">
+    <div class="fl_r progress" id="full_wall_progress"></div>
 
-        #userContent blockquote {
-            background-color: #f3f3f3;
-            border-bottom: 5px solid #969696;
-            padding: 1;
-        }
+    <ul id="full_wall_filters" class="t0">
+        <li>
+            <a href="/wall{$owner->getId()}?type=owners" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{tr("users_posts", ovk_proc_strtr($owner->getFirstName(), 20))}</b>
+            </a>
+        </li>
+        <li>
+            <a href="/wall{$owner->getId()}" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{_all_posts}</b>
+            </a>
+        </li>
+        <li>
+            <a href="/notes{$owner->getId()}" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{_notes}</b>
+            </a>
+        </li>
+        <li class="active_link">
+            <a href="/notes{$note->getPrettyId()}" onclick="return checkEvent(event)" onmousedown="return FullWall.go(this, event)">
+                <b class="tl1"><b></b></b>
+                <b class="tl2"></b>
+                <b class="tab_word">{_note}</b>
+            </a>
+        </li>
+    </ul>
+</div>
 
-        #userContent cite {
-            margin-top: 1em;
-            display: block;
-        }
-
-        #userContent cite::before {
-            content: "— ";
-        }
-
-        #userContent .underline {
-            text-decoration: underline;
-        }
-    </style>
-
-    <article id="userContent" style="margin: 10px 10px 0;">
-        <div class="note_header">
-            <div class="note_title">
-                <div class="note_title">
-                    <a>{$note->getName()}</a>
-                </div>
-            </div>
-            <div class="byline">
-                <span><a href="{$author->getURL()}">{$author->getCanonicalName()}</a></span> {$note->getPublicationTime()}
-                <span n:if="$note->getEditTime() > $note->getPublicationTime()">({_edited} {$note->getEditTime()})</span>
-            </div>
+<div id="fw_post_wrap">
+    <div class="fwn_header">
+        <div>
+            <a class="fwn_title" href="/note{$note->getPrettyId()}" onclick="return nav.go(this, event)">{$note->getName()}</a>
         </div>
-        <div style="margin-left: 6px; width: 535px;">
-            {$note->getText()|noescape}
-        </div>
-    </article>
-
-    <div class="note_footer" style="margin: 10px 10px 0;">
-        <div class="comments_count">
-            {if sizeof($comments) > 0}
-                {_comments} ({$note->getCommentsCount()})
-            {else}
-                {_no_comments}
-            {/if}
-            <span n:if="isset($thisUser) && $thisUser->getId() === $note->getOwner()->getId()">&nbsp;|&nbsp;
-                <a id="_noteDelete" href="/note{$note->getOwner()->getId()}_{$note->getId()}/delete">{_delete}</a>
-                &nbsp;|&nbsp;
-                <a href="/note{$note->getOwner()->getId()}_{$note->getVirtualId()}/edit" rel='nofollow'>{_edit}</a>
-            </span>
+        <div class="fwn_author_wrap">
+            <a class="fwn_author" href="{$owner->getURL()}" onclick="return nav.go(this, event)">{$owner->getCanonicalName()}</a>
         </div>
     </div>
-    <div style="margin: 6px 10px 10px;border-top: 1px solid #ddd;">
-        {include "../components/comments.latte",
-            comments => $comments,
-            count => $cCount,
-            page => $cPage,
-            model => "notes",
-            parent => $note,
-            showTitle => false}
+
+    <div id="fw_post" class="fw_note"><div class="fwn_table">
+        <div id="note{$note->getPrettyId()|noescape}" class="fwn_post wk_text">{$note->getText()|noescape}</div>
+        <div class="fwn_bottom">
+            <div class="fl_l fw_post_date">{$note->getPublicationTime()}<span class="divide unshown">|</span></div>
+            {*<div class="fw_like_wrap fl_l" onmouseover="wall.likeOver('{$owner->getId() . '_note' . $note->getId()|noescape}')" onmouseout="wall.likeOut('{$owner->getId() . '_note' . $note->getId()|noescape}')" onclick="wall.like('{$owner->getId() . '_note' . $note->getId()|noescape}', 'fcfd2f2f094d064155')">
+                <span class="fw_like_link fl_l" id="like_link{$owner->getId() . '_note' . $note->getId()|noescape}">Like</span>
+                <i class="fw_like_icon  fl_l" id="like_icon{$owner->getId() . '_note' . $note->getId()|noescape}"></i>
+                <span class="fw_like_count fl_l" id="like_count{$owner->getId() . '_note' . $note->getId()|noescape}">40149</span>
+            </div>*}
+        </div>
+        </div>
     </div>
+</div>
+{* todo: comments *}
 {/block}
